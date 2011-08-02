@@ -1,0 +1,12 @@
+# Tex temp files
+*.out
+*.log
+*.aux
+*.dvi
+*.toc
+# Backup files
+*~
+*.tex.backup
+*.synctex.gz
+*.metadata
+

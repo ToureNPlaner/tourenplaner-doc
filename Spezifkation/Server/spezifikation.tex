@@ -1,0 +1,126 @@
+\documentclass[a4paper,10pt,titlepage]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{graphicx}
+\usepackage{a4wide}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{float}
+
+\usepackage[pdfborder={0 0 0}]{hyperref}
+
+\graphicspath{{./grafiken/}}
+
+\author{}%TODO
+\title{Spezifikation ToureNPlaner\\ Stupro 2011/2012}
+
+\newcommand{\shortcut}[1]
+{\texttt{#1}}
+
+\newcommand{\usecase}[7]
+{\subsection{#1}
+\begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
+\hline
+  Ziel & #2\\\hline
+  Vorbedingung & #3\\\hline
+  Normalablauf & #6\\\hline
+  Nachbedingung & #4\\\hline
+  Sonderfall & #7\\\hline
+  Nachbedingung im Sonderfall& #5\\\hline
+ \end{tabular}
+}
+
+\newcommand{\begriff}[7]
+{\subsection{#1}
+\begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
+\hline
+  Bedeutung & #2\\\hline
+  Abgrenzung & #3\\\hline
+  Gültigkeit & #4\\\hline
+  Bezeichnung & #5\\\hline
+  Unklarheiten & #6\\\hline
+  Querverweise & #7\\\hline
+ \end{tabular}}
+
+\newcommand{\doaction}[1]
+{Der Benutzer führt die Aktion „\nameref{#1}“ (\ref{#1}) aus.}
+
+\begin{document}
+
+\pagenumbering{alph}
+\maketitle
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{Einleitung}
+\subsection{Zweck der Spezifikation}
+Die Spezifikation beschreibt die Anforderungen und Funktionalitäten von Tourenplaner. Sie ist die Grundlage für alle folgenden Dokumente; insbesondere muss sie ständig mit dem Entwurf verglichen und bei Bedarf angepasst werden.
+
+Bei der Erstellung der Spezifikation wurde bewusst auf die Festlegung von Implementierungsdetails verzichtet, um gewisse Freiheiten in der Umsetzung der Anforderungen zu erhalten.
+
+\subsection{Leserkreis}
+Der Leserkreis dieses Dokuments besteht aus folgenden Personengruppen:
+\begin{itemize}
+\item Die Entwickler
+\item Die Beteiligten des Spezifikationsreviews
+\item Der Kunde
+\item Die Betreuer des Studienprojekts
+\end{itemize}
+
+\subsection{Motivation}
+
+\subsection{Konventionen}
+
+\section{Funktionale Anforderungen}
+
+\clearpage
+\section{Nichtfunktionale Anforderungen}
+\subsection{Mengengerüst}
+\label{Mengengeruest}
+
+\subsection{Entwurfseinschränkungen}
+\subsubsection{Systemumgebung}
+
+\subsubsection{Layout und Gestaltung}
+
+\subsubsection{Datenhaltung}
+\label{datenhaltung}
+
+\subsection{Robustheit}
+
+\subsection{Portabilität}
+
+\subsection{Erweiterbarkeit}
+
+\subsection{Distributionsform und Installation}
+
+\subsection{Sprachunterstützung}
+
+\clearpage
+\section{Benutzeroberfläche}
+
+
+\clearpage
+\section{Anwendungsfälle (Use-Cases)}
+\begin{figure}[H]
+  \centering
+  %TODO
+  %\includegraphics[width=\linewidth]{usecases.png}
+  \caption{Task}
+\end{figure}
+
+%\usecase{Name}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
+
+
+\clearpage
+\appendix
+\section{Begriffslexikon}
+
+%\begriff{Begriff}{Bedeutung}{Abgrenzung}{Gültigkeit}{Bezeichnung}{Unklarheiten}{Querverweise}
+
+\end{document}
