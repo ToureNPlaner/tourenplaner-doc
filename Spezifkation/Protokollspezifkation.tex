@@ -1,0 +1,452 @@
+\documentclass[ngerman]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{babel}
+\usepackage{wrapfig}
+\usepackage{longtable}
+\usepackage[unicode=true,pdfusetitle,bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+\lstset{ %
+	language=C,                % the language of the code
+	basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+	stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+	                                % will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code
+	backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores
+	frame=single,                   % adds a frame around the code
+	tabsize=4,                      % sets default tabsize to 2 spaces
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	                                % also try caption instead of title
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	morekeywords={*,...}            % if you want to add more keywords to the set
+}
+
+% adjust table padding
+\setlength{\tabcolsep}{8pt} \renewcommand{\arraystretch}{1.5}
+ 
+\title{Protokollspezifikation}
+\author{ToureNPlaner Team}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\pagebreak
+
+\section{Einleitung}
+
+	\subsection{Zweck}
+	
+	Diese Spezifikation dient als Grundlage jeglicher Kommunikation zwischen Client und Server. 
+	Sie enthält alle Funktionen, die der Server bereit stellt, und beschreibt welche Daten diese Funktion benötigt und welche Sie zurückliefert. 
+	Die Spezifikation dient den Teammitgliedern als Grundlage und Richtlinie für die Entwicklung sowohl des Clients als auch des Servers.
+	
+	\subsection{Leserkreis}
+	
+	Dieses Dokument ist für den folgenden Leserkreis bestimmt:
+	
+	\begin{itemize}
+		\item Das gesamte Projektteam
+		\item Den Kunden
+		\item Die künftigen Programmierer bzw. Betreuer dieses Projektes
+	\end{itemize}
+	
+\section{Generelles}
+
+	In diesem Kapitel werden einige der Standards bzw. Protokolle aufgelistet, die zur Implementierung verwendet werden.
+
+	\subsection{HTTP 1.1}
+
+	Die Kommunikation zwischen Client und Server findet prinzipiell mit Hilfe des HTTP (Hyper Text Transport Protocol) 1.1 Protokolls statt. 
+	Falls Passwörter übertragen werden müssen, wird zudem SSL (Secure Socket Layer) verwendet um die Verbindung zu verschlüsseln.\\ 
+	
+	Zur Authentisierung des Nutzers, wird ein Feature von HTTP 1.1 verwendet, das HTTP Basic Authentication Verfahren.
+	Dabei werden Benutzername und Passwort (bzw. in unserem Fall Email und Passwort) mit einer Base64-Kodierung als Teil des HTTP-Headers an den Server gesendet.
+	
+	\subsection{JSON}
+	
+	JSON, kurz für JavaScript Object Notation, wird zur Schachtelung der Daten verwendet.
+	Prinzipiell besteht JSON aus zwei Typen, die beliebig ineinander geschachtelt werden können. \\
+	Arrays beginnen mit [ und enden mit ] und enthalten eine durch Komma getrennte, unsortierte Liste von Werten. \\
+	Objekte beginnen mit \{ und enden mit \} und enthalten eine durch Komma getrennte Liste von Schlüssel-Wert-Paaren, die jeweils durch einen Doppelpunkt getrennt sind.
+	
+	\subsection{World Geodetic System 1984}
+	
+	Zur Kodierung der Längen- und Breitengrade einer Position auf der Karte wird das WGS 84 verwendet.
+
+\section{Serverinformation}
+
+	Die Serverinformationen geben Aufschluss über die Eigenschaften des Servers und die Algorithmen, die er ausführen kann.
+
+	\subsection*{Request}
+	
+	Als Request wird ein GET-Request für \textit{/info} an den Server gesendet.
+	
+	\subsection*{Response}
+	
+	Die Antwort des Servers sollte einen 200er Code haben und etwa den untenstehenden Aufbau besitzen.
+	
+	\begin{lstlisting}
+{
+    "version": 1,
+    "anonymous": true/false,
+    "algorithms": [
+        {
+            "version": 2,
+            "name": "Dijkstra"
+            "urlsuffix": "dijkstra",
+            "pointconstraints": [                    
+                {
+                    "name": "H\"ohenmeter",
+                    "type": "int",
+                    "min": 0,
+                    "max": 2000
+                }
+            ],
+            "constraints": {
+                   "minPoints": 2,
+                   "sourceIsTarget": true/false 
+            }
+        }, { ... }
+    ],
+}
+    \end{lstlisting}
+    
+    \subsubsection*{Erklärung}
+    
+    \begin{tabular}{|c|p{14cm}|}
+    	\hline
+    	\textbf{Feld} & \textbf{Beschreibung} \\ 
+    	\hline \hline
+    	
+    	version & Die Version des Protokolls, die der Server spricht. \\ 
+    	\hline
+    	
+    	anonymous & Gibt an, ob der Server anonyme Anfragen erlaubt. Sollte er anonyme Anfragen erlauben, so wird die Verbindung nicht verschlüsselt und ein Login ist nicht möglich. \\
+    	\hline
+    	
+    	algorithms & Ein Array aller Algorithmen, die der Server unterstützt. \\
+    	\hline
+    \end{tabular}
+    
+    \subsubsection*{Algorithmen}
+    
+    Pro Algorithmus können noch die folgenden Optionen angegeben werden.
+    
+    \noindent \begin{tabular}{|c|p{11.5cm}|}
+    	\hline
+    	\textbf{Feld} & \textbf{Beschreibung} \\ 
+    	\hline \hline
+    	
+    	version & Die Version des Protokolls des Algorithmuses. \\ 
+    	\hline
+    	
+    	name & Der Name des Algorithmus. \\
+    	\hline
+    	
+    	urlsuffix & Der Requeststring der Anfrage. \\
+    	\hline
+    	
+    	pointconstraints & Array von Constraints, die für jeden einzelnen Punkt benötigt werden. \\
+    	\hline
+    	
+    	pointconstraints.name & Name des Constraints. \\
+    	\hline
+    	
+    	pointconstraints.type & Der Typ des Constraints, um dem Nutzer entsprechende Anzeigen/Hilfen geben zu können. \\ 
+    	\hline
+    	
+    	pointconstraints.min & Minimaler Wert des Constraints. \\
+    	\hline
+    	
+    	pointconstraints.max & Maximaler Wert des Constraints. \\
+    	\hline
+    	
+    	constraints & Constraints, die nur einmal pro Route benötigt werden und nicht Punktspezifisch sind. Kann Objekte wie in pointconstraints enthalten. \\
+    	\hline
+    	
+    	constraints.minPoints & Die minimale Anzahl an Punkten, die benötigt wird um eine sinnvolle Antwort vom Algorithmus zu erhalten.\\ 
+		\hline
+		
+		constraints.sourceIsTarget & Gibt an, ob Start und Ziel der gleiche Punkt sind.\\    		\hline    		
+   	\end{tabular}
+   	
+\section{Benutzer}
+
+Auf den meisten Servern wird ein Benutzer einen Account benötigen und muss eingeloggt sein, um einen Algorithmus auf dem Server laufen lassen zu können.
+Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeiten seines Accounts gegeben, sowie eine Auflistung der durchgeführten Requests sowie ihrer Kosten.
+
+	\subsection{Registrierung}
+	
+	Bei der Registrierung werden Email, Password, Vor- und Nachname sowie die Rechnungsadresse (falls benötigt) abgefragt. 
+	Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Client statt.
+	
+		\subsubsection*{Request}
+		
+		Ein POST-Request an \textit{/register} mit folgender Datenstruktur:
+		
+		\begin{lstlisting}
+{
+	"email": "max.mustermann@online.de",
+	"password": "1234",
+	"firstname": "Max",
+	"lastname": "Mustermann",
+	"adress": "Musterstrasse 10, 12345 Musterstadt"
+	
+}
+		\end{lstlisting}
+		
+		\subsubsection*{Response}
+		
+		Der Server liefert bei erfolgreicher Registrierung ein 200 OK zurück, im Fehlerfall den entsprechenden Fehlercode und zusätzlich eine Fehlermeldung.
+		
+	\subsection{Login}
+	
+	Zum Einloggen muss der Benutzer nur seine Emailadresse und sein Passwort angeben.
+	Diese werden bei jedem weiteren Request per HTTP Basic Authentication mitgeschickt.
+	Der Loginrequest dient deshalb nur der einmaligen Überprüfung auf Korrektheit.
+	
+		\subsubsection*{Request}
+		
+		Ein GET-Request an \textit{/login} mit den Daten im HTTP Basic Authentication Header.
+		
+		\subsubsection*{Response}
+		
+		Der Server antwortet entweder mit einem 200 OK Status oder gibt ein 403 Access Denied zurück.
+		
+	\subsection{Anzeigen}
+	
+	Da die Daten des Nutzers zuerst nicht lokal gespeichert sind, müssen diese zuerst vom Server geholt werden. Nach dem erstmaligen Anzeigen bzw. Bearbeiten der Daten könnten diese vom Client für diese Session gecached werden.
+	
+		\subsubsection*{Request}
+		
+		Ein GET-Request an \textit{/retrieve}.
+		
+		\subsubsection*{Response}
+		
+		Da keine Daten mitgegeben wurden, wird die ID des Benutzers mit Hilfe der HTTP Basic Authentication Daten gesucht und anschließend im Format der Registrierung zurückgeliefert.
+		
+	\subsection{Bearbeiten}
+
+	Um an die Daten des Benutzers zu kommen, müssen diese vor dem Start des Bearbeitens erst einmal vom Server geholt werden. Siehe dazu "Anzeigen".
+	
+	Nach dem Bearbeiten werden die Daten im Format der Registrierung wieder an den Server zurückgeschickt. Dieser antwortet mit einem Status 200 OK oder einer Fehlermeldung und dem entsprechenden Fehlercode.
+	
+	\subsection{Billing}
+	
+	Hierbei werden alle bisherigen Anfragen an den Dienst zurückgeliefert, inklusive der dabei entstandenen Kosten.
+	
+		\subsubsection*{Request}
+		
+		Ein GET-Request an \textit{/billing}.
+		
+		\subsubsection*{Response}
+		
+		Da keine Daten mitgegeben wurden, wird die ID des Benutzers mit Hilfe der HTTP Basic Authentication Daten gesucht und alle Billinginformationen in folgender Form zurückgeliefert:
+		
+		\begin{lstlisting}
+[
+	{
+		"timestamp": 20000000,
+		"request": { ... },
+		"duration": 12.5,
+		"costs": 2.45
+	},
+	{...}
+]
+		\end{lstlisting}
+		
+		Ein solcher Datensatz besteht also aus einem Zeitstempel (timestamp), der Anfrage (request), der Dauer (duration) und den Kosten (costs).
+	
+
+\section{Administration}
+
+Benutzer, bei denen das Adminflag gesetzt ist, können die anderen Benutzer im System verwalten. 
+Dazu gibt es zum einen eine Übersicht über alle Benutzer, sowie Einzelansichten des ausgewählten Benutzers, die prinzipiell wie die entsprechende Funktion für normale Benutzer aufgebaut sind.
+Es wird nur noch ein weiterer Parameter (id) übergeben, um den Benutzer auszuwählen.
+
+Zusätzlich gibt es für Administratoren die Möglichkeit Benutzer zu löschen und Benutzer ohne Registrierungsformular anzulegen.
+
+	\subsection{Benutzerübersicht}
+	
+		\subsubsection*{Request}
+		
+		Ein GET-Request an \textit{/users}.
+		
+		Es besteht die Möglichkeit die Anzahl der zurückgegebenen Benutzer über die GET-parameter "limit" und "offset" zu ändern. Dabei gibt "limit" die maximale Anzahl zurückgegebener Benutzer an und "offset" die Verschiebung vom ersten Benutzer.
+		
+		\subsubsection*{Response}
+		
+		Zurückgegeben wird ein Array aller Benutzer bzw., bei Angabe entsprechender Parameter, nur ein Teil der Benutzer, oder ein Status 403 Access denied, wenn der Benutzer nicht über genügend Rechte verfügt.
+		
+		Das Array enthält dabei alle Daten des jeweiligen Benutzers in Form eines Objektes.
+	
+	\subsection{Benutzer anlegen}
+	
+		Im Prinzip funktioniert das Ganze genau wie bei der Registrierung, nur dass diese für bereits registrierte Nutzer nicht zur Verfügung steht.
+	
+		\subsubsection*{Request}
+		
+		Ein POST-Request an \textit{/register}. Siehe Registrierung.
+		
+		\subsubsection*{Response}
+		
+		Der Server liefert bei erfolgreicher Registrierung ein 200 OK zurück, im Fehlerfall den entsprechenden Fehlercode und zusätzlich eine Fehlermeldung.
+	
+	\subsection{Benutzer löschen}
+	
+		\subsubsection*{Request}
+		
+		Ein GET-Request an \textit{/delete} mit dem Parameter "id".
+		Dieser sollte auf einen vorhandenen Benutzer zeigen.
+		
+		\subsubsection*{Response}
+		
+		War das Löschen erfolgreich, so gibt der Server einen Status 200 OK.
+		Sollte der Benutzer kein Admin sein, so gibt der Server einen Status 403 Access denied zurück.
+		Kam es zu einem anderen Fehler, so gibt der Server den entsprechenden Fehlerstatus zurück und liefert eine Fehlermeldung mit.
+		
+   	
+\section{Algorithmen}
+
+Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur ein generelles Format vorgegeben. Die korrekten Parameter können der Dokumentation des jeweiligen Algorithmus bzw. den Serverinformationen entnommen werden.
+
+	\subsection*{Request}
+	
+	Der Request wird als POST-Request an den URL-Suffix des Algorithmuses geschickt. Dieser kann den Serverinformationen entnommen werden.
+	
+	\begin{lstlisting}
+{
+    "version": 1,
+    "points": [
+         { "lt": -9.5123, "ln": 8.12, "k": 100 },
+         { ... }
+    ],
+    "constraints": { "t": 100 }
+}    	
+	\end{lstlisting}
+	
+		\subsubsection*{Erklärung}
+	
+	    \noindent \begin{tabular}{|c|p{12cm}|}
+	    	\hline
+	    	\textbf{Feld} & \textbf{Beschreibung} \\ 
+	    	\hline \hline
+	    	
+	    	version & Die Protokollversion, die der Client verwendet.\\
+	    	\hline
+	    	
+	    	points & Array aller Punkte. Der erste Punkt ist der Startpunkt, der Letzte falls nötig der Zielpunkt. \\ 
+	    	\hline
+	    	
+	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. \\ 
+	    	\hline
+	    	
+	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. \\
+	    	\hline
+	    	
+	    	points.k & Ein Beispielconstraint, der für jeden Punkt benötigt wird.\\ 
+	    	\hline
+	    	
+	    	constraints & Array globaler Constraints.\\ 
+	    	\hline
+	    	
+	    	constraints.t & Ein Beispielconstraint, der Global gilt.\\ 
+	    	\hline
+	    \end{tabular}
+    
+	\subsection*{Response}
+	
+	Der Server antwortet mit einem Status 200 OK oder einer Fehlermeldung mit entsprechendem Code.
+	
+	Bei erfolgreichem Request wird zudem die folgende Struktur mitgesendet.
+	
+	\begin{lstlisting}
+{
+	"points": [
+		{"lt": -9.5123, "ln": 8.12 },
+		{ ... }
+	],
+	"result": {
+		"distance": 100,
+		"abx": 0.5
+	}
+}
+	\end{lstlisting}
+	
+		\subsubsection*{Erklärung}
+		
+		\begin{tabular}{|c|p{12cm}|}
+			\hline
+			\textbf{Feld} & \textbf{Beschreibung} \\ 
+			\hline \hline
+			
+			points & Ein Array aller Punkte.\\
+			\hline
+			
+	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. \\ 
+	    	\hline
+	    	
+	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. \\
+	    	\hline
+	    	
+	    	result & Ein assoziatives Array mit algorithmus spezifischen Ergebnissen. \\
+	    	\hline
+	    	
+	    	result.distance & Ein Beispielergebnis, in diesem Fall die Distanz zwischen Start und Ziel.\\
+	    	\hline
+		\end{tabular}
+	
+
+\section{Anhang}
+
+	\subsection{Gespeicherte Daten}
+	
+	Für jeden Benutzer müssen in einer Datenbanktabelle die Informationen gespeichert werden, die zum Login sowie zur Rechnungserstellung benötigt werden. 
+	Das sind:
+	
+	\begin{itemize}
+		\item Email
+		\item Passwort
+		\item Vorname
+		\item Nachname
+		\item Rechnungsadresse
+		\item Adminflag
+	\end{itemize}
+	
+	Das Passwort sollte dabei durch einen sicheren Hash repräsentiert werden.
+	
+	Zudem wird für die Rechnungserstellung und das Debugging in einer Tabelle alle eingehenden Anfragen, sowie die Ausführungsdauer und die Kosten abgespeichert.
+	Diese Tabelle enthält folgende Daten:
+	
+	\begin{itemize}
+		\item UserId
+		\item Zeitpunkt der Anfrage
+		\item die Anfrage
+		\item Berechnungsdauer (in CPU-Zeit)
+		\item Kosten
+	\end{itemize}	
+
+	\subsection{Versionshistorie}
+	
+	\subsubsection*{Version 0.1 (02.08.2011)}
+
+	\begin{itemize}
+		\item Erste Version veröffentlicht
+	\end{itemize}
+
+
+\end{document}
