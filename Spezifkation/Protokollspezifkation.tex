@@ -50,8 +50,8 @@
 
 	\subsection{Zweck}
 	
-	Diese Spezifikation dient als Grundlage jeglicher Kommunikation zwischen Client und Server. 
-	Sie enthält alle Funktionen, die der Server bereit stellt, und beschreibt welche Daten diese Funktion benötigt und welche Sie zurückliefert. 
+	Diese Spezifikation dient als Grundlage jeglicher Kommunikation zwischen Client und Server.\\
+	Sie enthält alle Funktionen, die der Server bereit stellt, und beschreibt welche Daten diese Funktionen benötigen und welche Sie zurückliefern. 
 	Die Spezifikation dient den Teammitgliedern als Grundlage und Richtlinie für die Entwicklung sowohl des Clients als auch des Servers.
 	
 	\subsection{Leserkreis}
@@ -70,18 +70,19 @@
 
 	\subsection{HTTP 1.1}
 
-	Die Kommunikation zwischen Client und Server findet prinzipiell mit Hilfe des HTTP (Hyper Text Transport Protocol) 1.1 Protokolls statt. 
+	Die Kommunikation zwischen Client und Server baut auf HTTP (Hyper Text Transport Protocol) in der Version 1.1 auf. 
 	Falls Passwörter übertragen werden müssen, wird zudem SSL (Secure Socket Layer) verwendet um die Verbindung zu verschlüsseln.\\ 
 	
-	Zur Authentisierung des Nutzers, wird ein Feature von HTTP 1.1 verwendet, das HTTP Basic Authentication Verfahren.
+	Zur Authentifizierung des Nutzers das HTTP Basic Authentication Verfahren, ein Feature von HTTP 1.1 verwendet.\\
 	Dabei werden Benutzername und Passwort (bzw. in unserem Fall Email und Passwort) mit einer Base64-Kodierung als Teil des HTTP-Headers an den Server gesendet.
 	
 	\subsection{JSON}
 	
-	JSON, kurz für JavaScript Object Notation, wird zur Schachtelung der Daten verwendet.
-	Prinzipiell besteht JSON aus zwei Typen, die beliebig ineinander geschachtelt werden können. \\
-	Arrays beginnen mit [ und enden mit ] und enthalten eine durch Komma getrennte, unsortierte Liste von Werten. \\
+	JSON, kurz für JavaScript Object Notation, wird zur Repräsentation der Daten verwendet.
+	Prinzipiell besteht JSON aus zwei Datentypen, die beliebig ineinander geschachtelt werden können. \\
+	Arrays beginnen mit [ und enden mit ] und enthalten eine durch Komma getrennte, Liste von Werten. \\
 	Objekte beginnen mit \{ und enden mit \} und enthalten eine durch Komma getrennte Liste von Schlüssel-Wert-Paaren, die jeweils durch einen Doppelpunkt getrennt sind.
+	Dies ist dabei sowohl analog zu einer klassischen HashMap als auch zu Javascript Objekten welche als HashMaps verwaltet werden.
 	
 	\subsection{World Geodetic System 1984}
 	
@@ -89,7 +90,7 @@
 
 \section{Serverinformation}
 
-	Die Serverinformationen geben Aufschluss über die Eigenschaften des Servers und die Algorithmen, die er ausführen kann.
+	Die Serverinformationen geben Aufschluss über die Eigenschaften des Servers und die Algorithmen, die er bereit stellt.
 
 	\subsection*{Request}
 	
@@ -101,19 +102,19 @@
 	
 	\begin{lstlisting}
 {
-    "version": 1,
+    "version": 1.0,
     "anonymous": true/false,
     "algorithms": [
         {
             "version": 2,
-            "name": "Dijkstra"
-            "urlsuffix": "dijkstra",
+            "name": "Shortest Path"
+            "urlsuffix": "sp",
             "pointconstraints": [                    
                 {
-                    "name": "H\"ohenmeter",
-                    "type": "int",
-                    "min": 0,
-                    "max": 2000
+                    "name": "height",
+                    "type": "meter",
+                    "min": 0.0,
+                    "max": 2000.0
                 }
             ],
             "constraints": {
@@ -151,7 +152,7 @@
     	\textbf{Feld} & \textbf{Beschreibung} \\ 
     	\hline \hline
     	
-    	version & Die Version des Protokolls des Algorithmuses. \\ 
+    	version & Die Version des des Algorithmus. \\ 
     	\hline
     	
     	name & Der Name des Algorithmus. \\
@@ -166,7 +167,7 @@
     	pointconstraints.name & Name des Constraints. \\
     	\hline
     	
-    	pointconstraints.type & Der Typ des Constraints, um dem Nutzer entsprechende Anzeigen/Hilfen geben zu können. \\ 
+    	pointconstraints.type & Der Typ des Constraints, um dem Nutzer entsprechende Anzeigen/Hilfen geben zu können. Koordinatenconstraints werden immer angenommen.\\ 
     	\hline
     	
     	pointconstraints.min & Minimaler Wert des Constraints. \\
@@ -191,7 +192,7 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 
 	\subsection{Registrierung}
 	
-	Bei der Registrierung werden Email, Password, Vor- und Nachname sowie die Rechnungsadresse (falls benötigt) abgefragt. 
+	Bei der Registrierung werden Email, Passwort, Vor- und Nachname sowie die Rechnungsadresse (falls benötigt) abgefragt. 
 	Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Client statt.
 	
 		\subsubsection*{Request}
@@ -364,7 +365,7 @@ Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur
 	    	constraints & Array globaler Constraints.\\ 
 	    	\hline
 	    	
-	    	constraints.t & Ein Beispielconstraint, der Global gilt.\\ 
+	    	constraints.t & Ein Beispielconstraint, der an keinen Punkt gebunden ist.\\ 
 	    	\hline
 	    \end{tabular}
     
@@ -380,7 +381,7 @@ Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur
 		{"lt": -9.5123, "ln": 8.12 },
 		{ ... }
 	],
-	"result": {
+	"misc": {
 		"distance": 100,
 		"abx": 0.5
 	}
@@ -403,10 +404,10 @@ Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur
 	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. \\
 	    	\hline
 	    	
-	    	result & Ein assoziatives Array mit algorithmus spezifischen Ergebnissen. \\
+	    	misc & Ein assoziatives Array mit algorithmus spezifischen Ergebnissen, welche nicht zum eigentlichen Pfad gehören \\
 	    	\hline
 	    	
-	    	result.distance & Ein Beispielergebnis, in diesem Fall die Distanz zwischen Start und Ziel.\\
+	    	misc.distance & Ein Beispielergebnis, in diesem Fall die Distanz zwischen Start und Ziel.\\
 	    	\hline
 		\end{tabular}
 	
@@ -437,7 +438,7 @@ Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur
 		\item Zeitpunkt der Anfrage
 		\item die Anfrage
 		\item Berechnungsdauer (in CPU-Zeit)
-		\item Kosten
+		\item Kosten (evtl. berrechnet statt gespeichert)
 	\end{itemize}	
 
 	\subsection{Versionshistorie}
