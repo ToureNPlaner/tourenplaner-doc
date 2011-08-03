@@ -66,22 +66,21 @@ Bei der Erstellung der Spezifikation wurde bewusst auf die Festlegung von Implem
 \subsection{Leserkreis}
 Der Leserkreis dieses Dokuments besteht aus folgenden Personengruppen:
 \begin{itemize}
-\item Die Entwickler
+\item Die Entwickler der ToureNPlaner Serverkomponente
 \item Die Beteiligten des Spezifikationsreviews
 \item Der Kunde
 \item Die Betreuer des Studienprojekts
 \end{itemize}
 
 \subsection{Motivation}
-Betrachtet man das Angebot an Karten/Graph basierten Webanwendungen wie OpenStreetMap und Google Maps, so fällt auf, dass
+Betrachtet man das Angebot an Karten- oder Graphbasierten Webanwendungen wie OpenStreetMap und Google Maps, so fällt auf, dass
 es zahlreiche Angebote zum berechnen eines kürzesten Weges von A nach B gibt, jedoch kaum allgemeinere Funktionen zur
-Berechnung von (Rund-)Touren.\\
-Da viele der Problemstellungen im Bereich der Graphbasierten Runtouren NP schwer sind, braucht es hier desweiteren Approximationsalgorithmen und
+Berechnung von (Rund-)Touren oder kürzesten Wegen unter bestimmten Bedingungen.\\
+Da viele der Problemstellungen im Bereich der Graphbasierten Rundtouren NP-schwer sind, braucht es hier desweiteren Approximationsalgorithmen und
 nicht zu vernachlässigenden Rechenaufwand.\\
-Auch fällt auf das viele dieser Algorithmen ähnliche Backend Daten wie zum Beispiel eine Graphrepräsentation brauchen. Es macht also, will man diese Probleme lösen,
-Sinn ein flexibles Framework zu schaffen.\\
-Dieses sollte dabei sowohl eine Umgebung bieten in der auch aufwendige Berechnungen durchgeführt werden können als auch die den Algorithmen gemeinsamen Daten und Interfaces
-bereitstellen und bündeln. Hierbei scheint es uns sinnvoll eine Client-Server Struktur einzuführen, bei der aufwendige Berechnungen auf einem potentiell leistungsstarken Server erfolgen, während die Darstellung und Eingabe der Daten auf Webbasierten und/oder Mobilen Clients erfolgt.
+Auch fällt auf, dass viele dieser Algorithmen ähnliche Backend-Daten wie zum Beispiel eine Graphrepräsentation benötigen. Es ist also sinnvoll, ein flexibles Framework zu schaffen, um solcherlei Probleme zu lösen.\\
+Dieses sollte dabei sowohl eine Umgebung bieten, in der auch aufwendige Berechnungen durchgeführt werden können, als auch die den Algorithmen gemeinsamen Daten und Interfaces
+bereitstellen und zu bündeln. Hierbei scheint es uns sinnvoll, eine Client-Server Struktur einzuführen, bei der aufwendige Berechnungen auf einem potentiell leistungsstarken Server erfolgen, während die Darstellung und Eingabe der Daten auf Webbasierten und/oder Mobilen Clients erfolgt.
 %\subsection{Konventionen}
 
 \section{Funktionale Anforderungen}
@@ -91,24 +90,24 @@ Der Server stellt den implementierten Algorithmen folgende Supportfunktionen ber
  \item Geteilte Graphrepräsentation
   \begin{itemize}
    \item 
-    Basierend auf OpenStreetMap und einem textbasierten Graphformat welches 
+    Basiert auf OpenStreetMap und einem textbasierten Graphformat, welches 
     bereits erfolgreich in der Abteilung Algorithmik der Universität Stuttgart eingesetzt wird
    \item
     Threadsicheres abstrahierendes Interface zum Zugriff auf die Graphdaten
   \end{itemize}
   \item Bereitstellung eines allgemeinen Interfaces für Algorithmen welches diese implementieren
   \begin{itemize}
-   \item Ermöglicht es mehrere Algorithmeninstanzen auch verschiedener Algorithmen gleichzeitig zu bearbeiten (Multithreading)
-   \item Bietet Algorithmen die Möglichkeit Probleminstanzen als JSON von Netzwerkclienten zu erhalten (siehe Protokollspezifikation)
+   \item Ermöglicht es, mehrere Algorithmeninstanzen auch verschiedener Algorithmen gleichzeitig zu bearbeiten (Multithreading)
+   \item Bietet Algorithmen die Möglichkeit, Probleminstanzen als JSON von Netzwerkclienten zu erhalten (siehe Protokollspezifikation)
   \end{itemize}
- \item Implementierung eines HTTP basierten Netzwerkservers, der JSON Anfragen entgegen nimmt und auf das Algorithmeninterface abbildet, sowie
+ \item Implementierung eines HTTP-basierten Netzwerkservers, der JSON-Anfragen entgegennimmt und auf das Algorithmeninterface abbildet, sowie
  die Ergebnisse des jeweiligen Algorithmus an den Client zurück sendet.
 \end{itemize}
 \subsection{Algorithmen}
 Der Server unterstützt in erster Ausbaustufe mindestens folgende Algorithmen:
 \begin{itemize}
  \item Shortest Path (z.B. Dijkstra oder Dijkstra+Contraction Hiearchies)
- \item Travelling-Salesmen
+ \item Traveling-Salesmen
  \item Constrained Shortest Path
 \end{itemize}
 
@@ -116,17 +115,22 @@ Der Server unterstützt in erster Ausbaustufe mindestens folgende Algorithmen:
 \section{Nichtfunktionale Anforderungen}
 \subsection{Effizienz}
 Die Implementierung der Graphrepräsentation sowie der Algorithmen soll auf Effizienz ausgelegt sein.
-Insbesondere bedeutet dies auch, dass wenn Aufgrund der eingesetzten Technologien nötig höhere Abstraktion in den Interfaces der nötigen Performanz
-untergeordnet werden kann. Da Zugriffe auf den Graph in den meisten Algorithmen einen beträchtlichen Teil des Aufwands ausmachen hat hier
+Insbesondere bedeutet dies auch, dass höhere Abstraktion in den Interfaces der nötigen Performanz
+untergeordnet werden kann (wenn dies Aufgrund der eingesetzten Technologien nötig ist). Da Zugriffe auf den Graph in den meisten Algorithmen einen beträchtlichen Teil des Aufwands ausmachen, hat hier
 Geschwindigkeit besondere Priorität.\\
 Auch in den Algorithmen selbst, sowie in den von Ihnen verwendeten Datenstrukturen (z.B. Priority Queues) ist auf höchst mögliche Effizienz zu achten.
 \subsection{Erweiterbarkeit}
-Eine weitere wichtige Anforderung ist die gute Erweiterbarkeit des zu entwickelnden Systems um neue Algorithmen, Graphdaten aber auch neue Clients.
+Eine weitere wichtige Anforderung ist die gute Erweiterbarkeit des zu entwickelnden Systems, um neue Algorithmen, Graphdaten, aber auch um neue Clients.
 Bei den Algorithmen soll es hierbei möglichst einfach zu implementierende Interfaces geben, die neuen Algorithmen die gesammte Funktionalität des Servers,
-also sowohl die Erreichbarkeit über das Netzwerk als auch den Zugriff auf die Graphdaten zugänglich machen.\\
-Der Server fungiert hierbei als generisches Framework zur Implementierung verschiedener Graph/Kartenbasierter Algorithmen.
+also sowohl die Erreichbarkeit über das Netzwerk, als auch den Zugriff auf die Graphdaten zugänglich machen.\\
+Der Server fungiert hierbei als generisches Framework zur Implementierung verschiedener Graph- und Kartenbasierter Algorithmen.
 \subsection{Mengengerüst}
 \label{Mengengeruest}
+Die Angaben sind gültig für das Zielsystem "Alge", das 24 Kerne sowie 96 Gigabyte Arbeitsspeicher besitzt.
+\begin{itemize}
+ \item Es soll mindestens beliebig auf dem gesamten Deutschlandgraph operiert werden können
+ \item Anzahl gleichzeitig laufender Berechnungen sowie die Warteschlangenlänge ist frei konfigurierbar
+\end{itemize}
 
 \subsection{Entwurfseinschränkungen}
 \subsubsection{Systemumgebung}
