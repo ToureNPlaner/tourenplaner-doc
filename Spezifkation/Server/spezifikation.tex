@@ -81,11 +81,28 @@ Auch fällt auf das viele dieser Algorithmen ähnliche Backend Daten wie zum Bei
 Sinn ein flexibles Framework zu schaffen.\\
 Dieses sollte dabei sowohl eine Umgebung bieten in der auch aufwendige Berechnungen durchgeführt werden können als auch die den Algorithmen gemeinsamen Daten und Interfaces
 bereitstellen und bündeln. Hierbei scheint es uns sinnvoll eine Client-Server Struktur einzuführen, bei der aufwendige Berechnungen auf einem potentiell leistungsstarken Server erfolgen, während die Darstellung und Eingabe der Daten auf Webbasierten und/oder Mobilen Clients erfolgt.
-\subsection{Konventionen}
+%\subsection{Konventionen}
 
 \section{Funktionale Anforderungen}
+\subsection{Grundfunktionen}
+Der Server stellt den implementierten Algorithmen folgende Supportfunktionen bereit:
+\begin{itemize}
+ \item Geteilte Graphrepräsentation
+  \begin{itemize}
+   \item 
+    Basierend auf OpenStreetMap und einem textbasierten Graphformat welches 
+    bereits erfolgreich in der Abteilung Algorithmik der Universität Stuttgart eingesetzt wird
+   \item
+    Threadsicheres abstrahierendes Interface zum Zugriff auf die Graphdaten
+  \end{itemize}
+  \item Bereitstellung eines allgemeinen Interfaces für Algorithmen welches diese implementieren
+  \begin{itemize}
+   \item Ermöglicht es mehrere Algorithmeninstanzen auch verschiedener Algorithmen gleichzeitig zu bearbeiten (Multithreading)
+   \item Bietet Algorithmen die Möglichkeit Probleminstanzen als JSON von Netzwerkclienten zu erhalten (siehe Protokollspezifikation)
+  \end{itemize}
+ \item Implementierung eines HTTP basierten Netzwerkservers, der JSON Anfragen parsed und auf das Algorithmeninterface abbildet
+\end{itemize}
 
-\clearpage
 \section{Nichtfunktionale Anforderungen}
 \subsection{Mengengerüst}
 \label{Mengengeruest}
