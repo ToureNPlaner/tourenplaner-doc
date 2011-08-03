@@ -12,8 +12,8 @@
 
 \graphicspath{{./grafiken/}}
 
-\author{}%TODO
-\title{Spezifikation ToureNPlaner\\ Stupro 2011/2012}
+\author{Christoph Haag, Peter Vollmer, Sascha Meusel, Niklas Schnelle}
+\title{Spezifikation ToureNPlaner Server\\ Stupro 2011/2012}
 
 \newcommand{\shortcut}[1]
 {\texttt{#1}}
@@ -60,8 +60,7 @@
 
 \section{Einleitung}
 \subsection{Zweck der Spezifikation}
-Die Spezifikation beschreibt die Anforderungen und Funktionalitäten von Tourenplaner. Sie ist die Grundlage für alle folgenden Dokumente; insbesondere muss sie ständig mit dem Entwurf verglichen und bei Bedarf angepasst werden.
-
+Die Spezifikation beschreibt die Anforderungen und Funktionalität von Tourenplaner. Sie ist die Grundlage für alle weiteren Dokumente; insbesondere muss sie fortlaufend mit dem Entwurf verglichen und bei Bedarf angepasst werden.\\
 Bei der Erstellung der Spezifikation wurde bewusst auf die Festlegung von Implementierungsdetails verzichtet, um gewisse Freiheiten in der Umsetzung der Anforderungen zu erhalten.
 
 \subsection{Leserkreis}
@@ -74,12 +73,37 @@ Der Leserkreis dieses Dokuments besteht aus folgenden Personengruppen:
 \end{itemize}
 
 \subsection{Motivation}
-
-\subsection{Konventionen}
+Betrachtet man das Angebot an Karten/Graph basierten Webanwendungen wie OpenStreetMap und Google Maps, so fällt auf, dass
+es zahlreiche Angebote zum berechnen eines kürzesten Weges von A nach B gibt, jedoch kaum allgemeinere Funktionen zur
+Berechnung von (Rund-)Touren.\\
+Da viele der Problemstellungen im Bereich der Graphbasierten Runtouren NP schwer sind, braucht es hier desweiteren Approximationsalgorithmen und
+nicht zu vernachlässigenden Rechenaufwand.\\
+Auch fällt auf das viele dieser Algorithmen ähnliche Backend Daten wie zum Beispiel eine Graphrepräsentation brauchen. Es macht also, will man diese Probleme lösen,
+Sinn ein flexibles Framework zu schaffen.\\
+Dieses sollte dabei sowohl eine Umgebung bieten in der auch aufwendige Berechnungen durchgeführt werden können als auch die den Algorithmen gemeinsamen Daten und Interfaces
+bereitstellen und bündeln. Hierbei scheint es uns sinnvoll eine Client-Server Struktur einzuführen, bei der aufwendige Berechnungen auf einem potentiell leistungsstarken Server erfolgen, während die Darstellung und Eingabe der Daten auf Webbasierten und/oder Mobilen Clients erfolgt.
+%\subsection{Konventionen}
 
 \section{Funktionale Anforderungen}
+\subsection{Grundfunktionen}
+Der Server stellt den implementierten Algorithmen folgende Supportfunktionen bereit:
+\begin{itemize}
+ \item Geteilte Graphrepräsentation
+  \begin{itemize}
+   \item 
+    Basierend auf OpenStreetMap und einem textbasierten Graphformat welches 
+    bereits erfolgreich in der Abteilung Algorithmik der Universität Stuttgart eingesetzt wird
+   \item
+    Threadsicheres abstrahierendes Interface zum Zugriff auf die Graphdaten
+  \end{itemize}
+  \item Bereitstellung eines allgemeinen Interfaces für Algorithmen welches diese implementieren
+  \begin{itemize}
+   \item Ermöglicht es mehrere Algorithmeninstanzen auch verschiedener Algorithmen gleichzeitig zu bearbeiten (Multithreading)
+   \item Bietet Algorithmen die Möglichkeit Probleminstanzen als JSON von Netzwerkclienten zu erhalten (siehe Protokollspezifikation)
+  \end{itemize}
+ \item Implementierung eines HTTP basierten Netzwerkservers, der JSON Anfragen parsed und auf das Algorithmeninterface abbildet
+\end{itemize}
 
-\clearpage
 \section{Nichtfunktionale Anforderungen}
 \subsection{Mengengerüst}
 \label{Mengengeruest}
