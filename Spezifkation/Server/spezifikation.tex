@@ -101,10 +101,30 @@ Der Server stellt den implementierten Algorithmen folgende Supportfunktionen ber
    \item Ermöglicht es mehrere Algorithmeninstanzen auch verschiedener Algorithmen gleichzeitig zu bearbeiten (Multithreading)
    \item Bietet Algorithmen die Möglichkeit Probleminstanzen als JSON von Netzwerkclienten zu erhalten (siehe Protokollspezifikation)
   \end{itemize}
- \item Implementierung eines HTTP basierten Netzwerkservers, der JSON Anfragen parsed und auf das Algorithmeninterface abbildet
+ \item Implementierung eines HTTP basierten Netzwerkservers, der JSON Anfragen entgegen nimmt und auf das Algorithmeninterface abbildet, sowie
+ die Ergebnisse des jeweiligen Algorithmus an den Client zurück sendet.
+\end{itemize}
+\subsection{Algorithmen}
+Der Server unterstützt in erster Ausbaustufe mindestens folgende Algorithmen:
+\begin{itemize}
+ \item Shortest Path (z.B. Dijkstra oder Dijkstra+Contraction Hiearchies)
+ \item Travelling-Salesmen
+ \item Constrained Shortest Path
 \end{itemize}
 
+
 \section{Nichtfunktionale Anforderungen}
+\subsection{Effizienz}
+Die Implementierung der Graphrepräsentation sowie der Algorithmen soll auf Effizienz ausgelegt sein.
+Insbesondere bedeutet dies auch, dass wenn Aufgrund der eingesetzten Technologien nötig höhere Abstraktion in den Interfaces der nötigen Performanz
+untergeordnet werden kann. Da Zugriffe auf den Graph in den meisten Algorithmen einen beträchtlichen Teil des Aufwands ausmachen hat hier
+Geschwindigkeit besondere Priorität.\\
+Auch in den Algorithmen selbst, sowie in den von Ihnen verwendeten Datenstrukturen (z.B. Priority Queues) ist auf höchst mögliche Effizienz zu achten.
+\subsection{Erweiterbarkeit}
+Eine weitere wichtige Anforderung ist die gute Erweiterbarkeit des zu entwickelnden Systems um neue Algorithmen, Graphdaten aber auch neue Clients.
+Bei den Algorithmen soll es hierbei möglichst einfach zu implementierende Interfaces geben, die neuen Algorithmen die gesammte Funktionalität des Servers,
+also sowohl die Erreichbarkeit über das Netzwerk als auch den Zugriff auf die Graphdaten zugänglich machen.\\
+Der Server fungiert hierbei als generisches Framework zur Implementierung verschiedener Graph/Kartenbasierter Algorithmen.
 \subsection{Mengengerüst}
 \label{Mengengeruest}
 
