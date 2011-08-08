@@ -7,6 +7,7 @@
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{float}
+\usepackage{paralist}
 
 \usepackage[pdfborder={0 0 0}]{hyperref}
 
@@ -18,18 +19,27 @@
 \newcommand{\shortcut}[1]
 {\texttt{#1}}
 
+\makeatletter
+\def\ifEmpty#1{\def\@temp{#1}\ifx\@temp\@empty}
+\makeatother
+
 \newcommand{\usecase}[8]
 {\subsection{#1}
-\begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
+\begin{tabular}{|p{0.2\textwidth}|p{0.9\textwidth}|}
 \hline
   Akteur & #2\\\hline
   Ziel & #3\\\hline
-  Vorbedingung & #4\\\hline
-  Normalablauf & #7\\\hline
-  Nachbedingung & #5\\\hline
+  Vorbedingungen & \begin{compactitem}[-]#4\end{compactitem}\\\hline
+  Normalablauf & \begin{compactenum}[1.]#7\end{compactenum}\\\hline
+  Nachbedingungen & \begin{compactitem}[-]#5\end{compactitem}\\\hline
   Sonderfall & #8\\\hline
+  %\ifEmpty{#8}{}\else{Sonderfall & #8\\\hline}\fi
   Nachbedingung im Sonderfall& #6\\\hline
+  %Makro doesn't work yet for last row
+  %\ifEmpty{#6}{}\else{Nachbedingung im Sonderfall& #6\\\hline}\fi
  \end{tabular}
+ 
+\renewcommand{\arraystretch}{\oldArrayStretch}
 }
 
 \newcommand{\begriff}[7]
@@ -164,6 +174,17 @@ Die Angaben sind gültig für das Zielsystem "Alge", das 24 Kerne sowie 96 Gigab
 \end{figure}
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
+
+\usecase
+{Server-Informationen abfragen}
+{Client}
+{Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.}
+{\item Der Server ist in Betrieb.
+\item Der Server hat einen Request über \textit{/info} vom Client erhalten.}
+{\item Die Server-Informationen wurden dem Client gesendet.}
+{}
+{\item Der Server sendet die aktuellsten Server-Informationen als Response.}
+{}
 
 
 \clearpage
