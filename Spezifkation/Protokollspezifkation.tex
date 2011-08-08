@@ -263,6 +263,7 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 	{
 		"timestamp": 20000000,
 		"request": { ... },
+		"result":{ ... },
 		"duration": 12.5,
 		"costs": 2.45
 	},
@@ -270,7 +271,7 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 ]
 		\end{lstlisting}
 		
-		Ein solcher Datensatz besteht also aus einem Zeitstempel (timestamp), der Anfrage (request), der Dauer (duration) und den Kosten (costs).
+		Ein solcher Datensatz besteht also aus einem Zeitstempel (timestamp), der Anfrage (request), das Ergebnis (result), der Dauer (duration) und den Kosten (costs).
 	
 
 \section{Administration}
@@ -311,7 +312,7 @@ Zusätzlich gibt es für Administratoren die Möglichkeit Benutzer zu löschen u
 	
 		\subsubsection*{Request}
 		
-		Ein GET-Request an \textit{/delete} mit dem Parameter "id".
+		Ein GET-Request an \textit{/delete} mit dem Parameter 		"`id"'.
 		Dieser sollte auf einen vorhandenen Benutzer zeigen.
 		
 		\subsubsection*{Response}
@@ -437,6 +438,7 @@ Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur
 		\item UserId
 		\item Zeitpunkt der Anfrage
 		\item die Anfrage
+		\item das Ergebnis
 		\item Berechnungsdauer (in CPU-Zeit)
 		\item Kosten (evtl. berrechnet statt gespeichert)
 	\end{itemize}	
