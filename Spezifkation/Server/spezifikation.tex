@@ -80,7 +80,7 @@ Da viele der Problemstellungen im Bereich der Graphbasierten Rundtouren NP-schwe
 nicht zu vernachlässigenden Rechenaufwand.\\
 Auch fällt auf, dass viele dieser Algorithmen ähnliche Backend-Daten wie zum Beispiel eine Graphrepräsentation benötigen. Es ist also sinnvoll, ein flexibles Framework zu schaffen, um solcherlei Probleme zu lösen.\\
 Dieses sollte dabei sowohl eine Umgebung bieten, in der auch aufwendige Berechnungen durchgeführt werden können, als auch die den Algorithmen gemeinsamen Daten und Interfaces
-bereitstellen und zu bündeln. Hierbei scheint es uns sinnvoll, eine Client-Server Struktur einzuführen, bei der aufwendige Berechnungen auf einem potentiell leistungsstarken Server erfolgen, während die Darstellung und Eingabe der Daten auf Webbasierten und/oder Mobilen Clients erfolgt.
+bereitstellen und bündeln. Hierbei scheint es uns sinnvoll, eine Client-Server Struktur einzuführen, bei der aufwendige Berechnungen auf einem potentiell leistungsstarken Server erfolgen, während die Darstellung und Eingabe der Daten auf Webbasierten und/oder Mobilen Clients erfolgt.
 %\subsection{Konventionen}
 
 \section{Funktionale Anforderungen}
@@ -126,33 +126,41 @@ also sowohl die Erreichbarkeit über das Netzwerk, als auch den Zugriff auf die 
 Der Server fungiert hierbei als generisches Framework zur Implementierung verschiedener Graph- und Kartenbasierter Algorithmen.
 \subsection{Mengengerüst}
 \label{Mengengeruest}
-Die Angaben sind gültig für das Zielsystem "Alge", das 24 Kerne sowie 96 Gigabyte Arbeitsspeicher besitzt.
+
 \begin{itemize}
- \item Es soll mindestens beliebig auf dem gesamten Deutschlandgraph operiert werden können
+ \item Die Algorithmen sollen mindestens auf dem gesamten Deutschlandgraph operieren können
  \item Anzahl gleichzeitig laufender Berechnungen sowie die Warteschlangenlänge ist frei konfigurierbar
 \end{itemize}
 
 \subsection{Entwurfseinschränkungen}
 \subsubsection{Systemumgebung}
+Das System wird für Rechner entwickelt mit mindestens 4 GB RAM und 4 Kernen. Jedoch wird darauf geachtet, dass das System gut skaliert und auch auf größeren Rechnern die zusätzliche Leistung nutzen kann.
+Als Referenz kann das System ''Alge" dienen, das 24 Kerne sowie 96 Gigabyte Arbeitsspeicher besitzt.
 
-\subsubsection{Layout und Gestaltung}
-
+\begin {itemize}
+ \item Nutzt Java Runtime Environment 6 and up
+ \item Soll auf allen von Java SE unterstützten Systemen laufen, primär auf Unix-basierten Systemen.
+\end {itemize}
 \subsubsection{Datenhaltung}
 \label{datenhaltung}
+Benutzerkonten sowie Request-Log Daten werden in einer MySQL-Datenbank gehalten.\\
+Die Graphdaten werden zur Laufzeit im RAM gespeichert. Sie werden aus einer Graphdatei geladen siehe Dokument Graphformat.
 
 \subsection{Robustheit}
-
+Durch softwaretechnische Maßnahmen, wie Unit-Tests und einem ausgiebigen Systemtest wird die Robustheit der Serverkomponente sichergestellt.
 \subsection{Portabilität}
-
+siehe Systemumgebung
 \subsection{Erweiterbarkeit}
-
+Wie im Abschnitt Funktionale Anforderungen beschrieben, stellt der Server eine Schnittstelle für die Implementierung von Graphalgorithmen bereit.
 \subsection{Distributionsform und Installation}
-
+Die Serverapplikation wird als ausführbares "`Jar"' ausgeliefert, außerdem werden für ausgewählte Linux Distributionen Pakete bereitgestellt. Zur Installation wird ein MySQL-Server benötigt die Einrichtung der Datenbank wird über mitgelieferte Skripte erleichtert.
 \subsection{Sprachunterstützung}
+Als Sprache wird Englisch unterstützt. 
+
 
 \clearpage
 \section{Benutzeroberfläche}
-
+Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Client.
 
 \clearpage
 \section{Anwendungsfälle (Use-Cases)}
