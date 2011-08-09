@@ -94,24 +94,42 @@ Das Dokument endet schließlich mit einem angehängten Begriffslexikon.
 \section{Nichtfunktionale Anforderungen}
 \subsection{Mengengerüst}
 \label{Mengengeruest}
+Die mindest Punktanzahl um einen sinnvollen Weg zu berechnen beträgt 2.
+Nach obenhin soll ToureNPlaner mit bis zu 100 Punkten zurecht kommen.\\
+Der Client wird immer nur von einem Benutzer gleichzeitig verwendet.
 
 \subsection{Entwurfseinschränkungen}
 \subsubsection{Systemumgebung}
+Der Webclient wir auf der aktuellen Version von Firefox - Version 5 - und Chromium - Version 13 - lauffähig sein.\\
+Für Android setzten wir Version 2.1 oder neuer voraus.
 
 \subsubsection{Layout und Gestaltung}
+Die Oberfläche wir beim Webclient mit Hilfe von HTML 5 und CSS 3, die des Androidclient mit XML und den Android Developer Tools umgesetzt.
 
 \subsubsection{Datenhaltung}
 \label{datenhaltung}
+Im Webclient werden die benötigten Daten in Cookies abgelegt.\\
+Der Androidclient benutz hierzu eine Konfigurations-API.
 
 \subsection{Robustheit}
+Der Webclient verfügt über keine besondere Robustheit.\\
+Auf Android können Daten wiederhergestellt werden.
 
 \subsection{Portabilität}
+Der Webclient ist gut auf andere Browser adaptierbar.\\
+Android ist wegen des ADTs nur auf Android-Geräten lauffähig.
 
 \subsection{Erweiterbarkeit}
+Alle Informationen über Algorithem kommt vom Server, deshalb können einfach neue Algorithem hinzugefügt werden.
+Daher werden nur Algorithem unterstützt, welche mit Pfaden auf einem Graphen arbeiten.
 
 \subsection{Distributionsform und Installation}
+Zur Installation müssen die Daten für die Webclienten auf den Webserver kopiert werden.\\
+Für den Androidclient werden Android Packages (APKs) verfügbar sein.
 
 \subsection{Sprachunterstützung}
+Beide Client haben dieselbe Übersetztungsdateien als Grundlange, somit soll Konsitenz gewährleistet werden.
+Die Übersetzungen werden mit Hilfe von GNU gettext implementiert.
 
 \clearpage
 \section{Funktionale Anforderungen}
@@ -196,9 +214,13 @@ Das Dokument endet schließlich mit einem angehängten Begriffslexikon.
 \subsection{Versionshistorie}
 
 	\subsubsection*{Version 0.1 (03.08.2011)}
-	
 	\begin{itemize}
 		\item Erste veröffentlichte Version
+	\end{itemize}
+
+	\subsubsection*{Version 0.2 (09.08.2011)}
+	\begin{itemize}
+		\item Nichtfunktionale Anforderungen hinzugefügt
 	\end{itemize}
 
 \end{document}
