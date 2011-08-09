@@ -22,8 +22,6 @@
 {\texttt{#1}}
 
 \makeatletter
-\def\ifEmpty#1{\def\@temp{#1}\ifx\@temp\@empty}
-\def\ifNotEmpty#1{\def\@temp{#1}\iffalse\@temp\@empty}
 \newcommand\novspace{\@minipagetrue}
 
 \newenvironment{owncompactitem}{%
@@ -42,14 +40,7 @@
 }
 \makeatother
 
-
-\newcommand{\abc}[2][\empty]{%%% \empty: Standardwert des optionalen Parameters
-  \ifthenelse{\equal{#1}{\empty}}
-    {no opt, mand.: \textbf{#2}}
-    {opt: \textbf{#1}, mand.: \textbf{#2}}
-}
-
-\newcommand{\usecase}[8]
+\newcommand{\usecase}[7]
 {\subsection{#1}
 \setlength{\extrarowheight}{2pt}
 \begin{tabular}{|p{0.2\textwidth}|p{0.9\textwidth}|}
@@ -59,16 +50,11 @@
   Vorbedingungen & \novspace
   	\begin{owncompactitem}[-] #4 \end{owncompactitem} \\\hline
   Normalablauf & \vspace{-7pt}
-  	\begin{owncompactenum}[1.] #7 \end{owncompactenum} \\\hline
+  	\begin{owncompactenum}[1.] #6 \end{owncompactenum} \\\hline
   Nachbedingungen & \novspace
   	\begin{owncompactitem}[-] #5 \end{owncompactitem} \\\hline
-  Sonderfall & #8\\\hline
-  %\ifNotEmpty{#8}{Sonderfall & #8\\\hline}\fi
-  Nachbedingung im Sonderfall& #6\\\hline
-  %Makro doesn't work yet for last row
-  %\ifEmpty{#6}{\end{tabular}}\else{Nachbedingung im Sonderfall& #6\\\hline \end{tabular}}\fi
+  #7
 \end{tabular}
- 
 }
 
 \newcommand{\begriff}[7]
@@ -210,30 +196,28 @@ Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Clien
   \caption{Task}
 \end{figure}
 
-%\usecase{Name}{Akteur}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
+%\usecase{Name}{Akteur}{Ziel}{Vorbedingungen}{Nachbedingungen}{Normalablauf}{Sonderfälle und dessen Nachbedingungen}
 
 \usecase
 {Server-Informationen abfragen}
 {Client}
 {Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.}
 {\item Der Server ist in Betrieb.
-\item Der Server hat einen Request über \textit{/info} vom Client erhalten.
-\item test
-\item test
-\item test
-\item test}
-{\item Die Server-Informationen wurden dem Client gesendet.
-\item test
-\item test
-\item test
-\item test}
-{}
-{\item Der Server sendet die aktuellsten Server-Informationen als Response.
-\item test
-\item test
-\item test
-\item test}
-{}
+\item Der Server hat einen Request über \textit{/info} vom Client erhalten.}
+{\item Die Server-Informationen wurden dem Client gesendet.}
+{\item Der Server sendet die aktuellsten Server-Informationen als Response.}
+{Sonderfall 1a & \vspace{-10pt}
+	\textit{Internetverbindung ausgefallen}
+  	\begin{owncompactenum}[{1a}.1]
+  	\item Fehler ins Log schreiben
+  	\item Erneuter Versuch
+  	\end{owncompactenum} \\\hline
+Nachbedingungen im Sonderfall& \novspace
+	\begin{owncompactitem}[-]
+		\item Fehler
+		\item Fehler
+	\end{owncompactitem} \\\hline
+}
 
 
 \clearpage
