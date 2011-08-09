@@ -126,11 +126,63 @@ Das Dokument endet schließlich mit einem angehängten Begriffslexikon.
   \centering
   %TODO
   %\includegraphics[width=\linewidth]{usecases.png}
-  \caption{Task}
+  \caption{Usecase-Diagramm}
 \end{figure}
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
 
+\subsection*{Benutzerverwaltungsfunktionen}
+\usecase{Benutzer registrieren}
+{Benutzer}{Der Benutzer will sich ein Benutzerkonto anlegen.}{Keine}{Das Konto wurde erfolgreich im System angelegt.}{Der Benutzer sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Benutzer navigiert zum Registrierungsformular.
+\item Der Benutzer gibt seine Daten ein.
+\item Der Benutzer bestätigt seine Angaben.
+\end{enumerate}
+}{Es gab einen Fehler beim Erstellen des Kontos.}
+
+\usecase{Anmelden}
+{Benutzer}{Der Benutzer will sich am System anmelden.}{Keine}{Der Benutzer ist am System angemeldet.}{Der Benutzer sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item (optional) Der Benutzer wählt den Server aus.
+\item Der Benutzer gibt seine Anmeldedaten ein.
+\item Der Benutzer bestätigt seine Angaben.
+\end{enumerate}
+}{Die Anmeldedaten sind falsch.}
+
+\usecase{Benutzerdaten anzeigen}
+{Benutzer}{Der Benutzer will seine Daten einsehen.}{Der Benutzer hat sich eingeloggt.}{Der Benutzer sieht seine Daten.}{Der Benutzer sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Benutzer navigiert zur Benutzerdatenansicht.
+\item Der Benutzer sieht seine Daten.
+\end{enumerate}
+}{Es gibt einen Fehler.}
+
+\usecase{Benutzerdaten bearbeiten}
+{Benutzer}{Der Benutzer will seine Daten bearbeiten.}{Der Benutzer hat sich eingeloggt.}{Die Daten des Benutzers sind geändert.}{Der Benutzer sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Benutzer navigiert zur Benutzerdatenansicht.
+\item Der Benutzer ändert seine Daten.
+\item Der Benutzer bestätigt seine Angaben.
+\end{enumerate}
+}{Es gibt einen Fehler.}
+
+\usecase{Abrechnung anzeigen}
+{Benutzer}{Der Benutzer will seine Abrechnung sehen.}{Der Benutzer hat sich eingeloggt.}{Der Benutzer sieht seine Abrechnung.}{Der Benutzer sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Benutzer navigiert zur Abrechnungsansicht.
+\item Der Benutzer sieht seine Abrechnung.
+\end{enumerate}
+}{Es gibt einen Fehler.}
+
+\usecase{Alte Abfrage anzeigen}
+{Benutzer}{Der Benutzer will eine alte Route sehen.}{Der Benutzer hat sich eingeloggt.}{Der Benutzer sieht seine alte Route.}{Der Benutzer sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Benutzer navigiert zur Abrechnungsansicht.
+\item Der Benutzer wählt eine alte Abfrage aus.
+\item Der Benutzer sieht seine alte Abfrage.
+\end{enumerate}
+}{Es gibt einen Fehler.}
 
 \clearpage
 \appendix
