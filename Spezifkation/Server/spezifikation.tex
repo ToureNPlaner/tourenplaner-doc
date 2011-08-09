@@ -8,6 +8,8 @@
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{paralist}
+\usepackage{array}
+\usepackage{ifthen}
 
 \usepackage[pdfborder={0 0 0}]{hyperref}
 
@@ -21,25 +23,52 @@
 
 \makeatletter
 \def\ifEmpty#1{\def\@temp{#1}\ifx\@temp\@empty}
+\def\ifNotEmpty#1{\def\@temp{#1}\iffalse\@temp\@empty}
+\newcommand\novspace{\@minipagetrue}
+
+\newenvironment{owncompactitem}{%
+\compactitem
+}{%
+\@finalstrut\@arstrutbox
+\@nameuse{endcompactitem}%
+\aftergroup\let\aftergroup\@finalstrut\aftergroup\@gobble
+}
+\newenvironment{owncompactenum}{%
+\compactenum
+}{%
+\@finalstrut\@arstrutbox
+\@nameuse{endcompactenum}%
+\aftergroup\let\aftergroup\@finalstrut\aftergroup\@gobble
+}
 \makeatother
+
+
+\newcommand{\abc}[2][\empty]{%%% \empty: Standardwert des optionalen Parameters
+  \ifthenelse{\equal{#1}{\empty}}
+    {no opt, mand.: \textbf{#2}}
+    {opt: \textbf{#1}, mand.: \textbf{#2}}
+}
 
 \newcommand{\usecase}[8]
 {\subsection{#1}
+\setlength{\extrarowheight}{2pt}
 \begin{tabular}{|p{0.2\textwidth}|p{0.9\textwidth}|}
 \hline
   Akteur & #2\\\hline
   Ziel & #3\\\hline
-  Vorbedingungen & \begin{compactitem}[-]#4\end{compactitem}\\\hline
-  Normalablauf & \begin{compactenum}[1.]#7\end{compactenum}\\\hline
-  Nachbedingungen & \begin{compactitem}[-]#5\end{compactitem}\\\hline
+  Vorbedingungen & \novspace
+  	\begin{owncompactitem}[-] #4 \end{owncompactitem} \\\hline
+  Normalablauf & \vspace{-7pt}
+  	\begin{owncompactenum}[1.] #7 \end{owncompactenum} \\\hline
+  Nachbedingungen & \novspace
+  	\begin{owncompactitem}[-] #5 \end{owncompactitem} \\\hline
   Sonderfall & #8\\\hline
-  %\ifEmpty{#8}{}\else{Sonderfall & #8\\\hline}\fi
+  %\ifNotEmpty{#8}{Sonderfall & #8\\\hline}\fi
   Nachbedingung im Sonderfall& #6\\\hline
   %Makro doesn't work yet for last row
-  %\ifEmpty{#6}{}\else{Nachbedingung im Sonderfall& #6\\\hline}\fi
- \end{tabular}
+  %\ifEmpty{#6}{\end{tabular}}\else{Nachbedingung im Sonderfall& #6\\\hline \end{tabular}}\fi
+\end{tabular}
  
-\renewcommand{\arraystretch}{\oldArrayStretch}
 }
 
 \newcommand{\begriff}[7]
@@ -188,10 +217,22 @@ Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Clien
 {Client}
 {Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.}
 {\item Der Server ist in Betrieb.
-\item Der Server hat einen Request über \textit{/info} vom Client erhalten.}
-{\item Die Server-Informationen wurden dem Client gesendet.}
+\item Der Server hat einen Request über \textit{/info} vom Client erhalten.
+\item test
+\item test
+\item test
+\item test}
+{\item Die Server-Informationen wurden dem Client gesendet.
+\item test
+\item test
+\item test
+\item test}
 {}
-{\item Der Server sendet die aktuellsten Server-Informationen als Response.}
+{\item Der Server sendet die aktuellsten Server-Informationen als Response.
+\item test
+\item test
+\item test
+\item test}
 {}
 
 
