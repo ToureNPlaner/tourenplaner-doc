@@ -1,3 +1,4 @@
+%server specification
 \documentclass[a4paper,10pt,titlepage]{article}
 
 \usepackage[utf8]{inputenc}
@@ -45,7 +46,7 @@
 \setlength{\extrarowheight}{2pt}
 \begin{tabular}{|p{0.2\textwidth}|p{0.9\textwidth}|}
 \hline
-  Akteur & #2\\\hline
+  Akteure & #2\\\hline
   Ziel & #3\\\hline
   Vorbedingungen & \novspace
   	\begin{owncompactitem}[-] #4 \end{owncompactitem} \\\hline
@@ -56,6 +57,26 @@
   #7
 \end{tabular}
 }
+
+\newcommand{\sonderfall}[4][\empty]
+{
+Sonderfall #2 & \vspace{-10pt}
+	\textit{#3}
+  	\begin{owncompactenum}[{#2}.1] #4 \end{owncompactenum}
+  	 	\ifthenelse{\equal{#1}{\empty}}
+    		{\\\hline} %no opt
+    		{\ensuremath{\rightarrow} #1 \\ [+1pt] \hline} %opt
+    	
+}
+
+\newcommand{\sondernachbedingung}[1]
+{
+Nachbedingungen im Sonderfall& \novspace
+	\begin{owncompactitem}[-]
+		#1
+	\end{owncompactitem} \\\hline
+}
+
 
 \newcommand{\begriff}[7]
 {\subsection{#1}
@@ -198,26 +219,35 @@ Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Clien
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingungen}{Nachbedingungen}{Normalablauf}{Sonderfälle und dessen Nachbedingungen}
 
-\usecase
-{Server-Informationen abfragen}
-{Client}
-{Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.}
+%\sonderfall[optionale letzte Zeile für "-> Schritt ..."]{Nummer}{Bezeichnung}{Ablauf}
+
+%\sondernachbedingung{Bedingungen}
+
+%\usecase{}{}%Name und Akteure{}%Ziel{}%Vorbedingungen{}%Nachbedingungen{}%Normalablauf{}%Sondernachbedingungen und Sonderfälle
+
+%\sonderfall[]{}%Letzte Zeile und Nummer
+{}%Bezeichnung
+{}%Sonderfallablauf
+
+\usecase{Server-Informationen abfragen}{Client}%Name und Akteure
+{Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.}%Ziel
 {\item Der Server ist in Betrieb.
-\item Der Server hat einen Request über \textit{/info} vom Client erhalten.}
-{\item Die Server-Informationen wurden dem Client gesendet.}
-{\item Der Server sendet die aktuellsten Server-Informationen als Response.}
-{Sonderfall 1a & \vspace{-10pt}
-	\textit{Internetverbindung ausgefallen}
-  	\begin{owncompactenum}[{1a}.1]
-  	\item Fehler ins Log schreiben
+\item Der Server hat einen Request über \textit{/info} vom Client erhalten.}%Vorbedingungen
+{\item Die Server-Informationen wurden dem Client gesendet.}%Nachbedingungen
+{\item Der Server sendet die aktuellsten Server-Informationen als Response.}%Normalablauf
+{\sondernachbedingung{\item Fehler
+		\item Fehler}
+\sonderfall[Weiter mit Schritt 2a.1]{1a}%Letzte Zeile und Nummer
+	{Internetverbindung ausgefallen}%Bezeichnung
+  	{\item Fehler ins Log schreiben
   	\item Erneuter Versuch
-  	\end{owncompactenum} \\\hline
-Nachbedingungen im Sonderfall& \novspace
-	\begin{owncompactitem}[-]
-		\item Fehler
-		\item Fehler
-	\end{owncompactitem} \\\hline
-}
+  	\item Und nochmal}%Sonderfallablauf
+\sonderfall[Schritt 1a.1]{2a}%Letzte Zeile und Nummer
+	{Internetverbindung ausgefallen}%Bezeichnung
+  	{\item Fehler ins Log schreiben
+  	\item Erneuter Versuch
+  	\item Und nochmal}%Sonderfallablauf
+}%Sondernachbedingungen und Sonderfälle
 
 
 \clearpage
