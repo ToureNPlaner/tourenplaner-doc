@@ -178,53 +178,69 @@ Zudem soll er eine Übersicht aller getätigten Requests erhalten.
 \section{Benutzeroberfläche}
 \subsection{Web-Client}
 \subsubsection{Überblick}
-Die Benutzeroberfläche des Web-Clients wird folgende Funktionen ermöglichen
+Die Benutzeroberfläche des Web-Clients ermöglicht folgende Funktionen
 \begin{itemize}
-\item Auswahl eines Servers
-\item Anmelden mit Benutzernamen und Kennwort
-\item ’Passwort vergessen?’ Funktion
+\item Anmeldung mit Benutzernamen und Kennwort
+\item Funktion: ’Passwort vergessen?’
 \item Benutzerverwaltung
 \item Auswahl des gewünschten Algorithmus
 \item Auswahl der Billing-Anzeige 
 \item Kartenansicht
-\item Marker auf der Karte anlegen
-\item Marker Eigenschaften zuweisen
-\item Route berechnen
-\item Route auf der Kartenansicht anzeigen
+\item Anlegen eines Markers auf der Karte
+\item Zuweisung der Markereigenschaften
+\item Berechnung der Route
+\item Anzeigen der Route auf der Kartenasicht
 \end{itemize}
 \subsubsection{Darstellung des Web-Clients}
-Folgende Abbildungen sollen als Vorlage zur genauen Realisierung dienen.
-%TODO insert screenshots
+Folgende Abbildung dient als Vorlage zur genauen Realisierung der Benutzeroberfläche.
+
+\includegraphics[scale=0.30]{media/web/Index.png} 
+
 \subsubsection{Kartenansicht}
-Hier kann der Benutzer auf der eingeblendeten Kartenansicht folgende Operationen durchführen.
+Operationsmöglichkeiten des Benutzers auf der eingeblendeten Kartenansicht.
 \begin {itemize}
-\item kurzer Linksklick erstellt einen Marker an dieser Position 
-\item kurzer Rechtsklick noch nicht definiert
-\item Drücken auf einen Marker ermöglicht das Verändern der Eigenschaften dieses Markers
-\item gedrückter Linksklick ziehen auf der Karte ändert den Fokus der Kartenansicht
-\item die Benutzund des Mausscrollrades ermöglicht die Änderung des momentanen Zoomfaktors auf der Kartenansicht 
+\item kurzer Linksklick ist nicht definiert
+\item kurzer Rechtsklick blendet ein Kontextmenü ein
+\item kurzer Linksklick auf einen Marker ermöglicht das Verändern seiner Eigenschaften
+\item gedrückter Linksklick ändert den Fokus auf der Karte durch ziehen
+\item das Mausscrollrad ermöglicht die Änderung des Zoomfaktors
 \end {itemize}
-%TODO insert screenshots
-Nachdem die Route berechnet wurde, kann das Ergebnis anhand eines angezeigten Pfades auf der Karte nachvollzogen werden.
+Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pfades, auf der Karte nachvollzogen werden.
+
+\subsubsection{Die Loginmaske}
+In diesem Pop-up kann der Benutzer seine E-mail Adresse und sein Passwort eingeben.
+\begin {center}
+\includegraphics[scale=0.5]{media/web/Login.png}
+\end {center}
+\subsubsection{Die Registrierungsmaske}
+In diesem Pop-up kann der Benutzer die Registrierung durchführen.
+\begin {center}
+\includegraphics[scale=0.5]{media/web/Register.png}
+\end {center}
+\subsubsection{Die Billingmaske}
+In diesem Pop-up kann sich der Benutzer die Kosten für seine bisherigen Berechnungen anzeigen lassen.
+\begin {center}
+\includegraphics[scale=0.5]{media/web/Billing.png}
+\end {center}
 
 \newpage
 \subsection{Android-Client}
 \subsubsection{Überblick}
-Die Benutzeroberfläche des Android-Clients wird folgende Funktionen ermöglichen
+Die Benutzeroberfläche des Android-Clients ermöglicht folgende Funktionen
 \begin{itemize}
 \item Auswahl eines Servers
-\item Anmelden mit Benutzernamen und Kennwort
-\item 'Passwort vergessen?' Funktion
+\item Anmeldung mit Benutzernamen und Kennwort
+\item Funktion 'Passwort vergessen?'
 \item Auswahl des gewünschten Algorithmus
 \item Auswahl der Billing-Anzeige 
 \item Kartenansicht
-\item Marker auf der Karte anlegen
-\item Marker Eigenschaften zuweisen
-\item Route berechnen
-\item Route auf der Kartenansicht anzeigen
+\item Anlegen eines Markers auf der Karte
+\item Zuweisung der Markereigenschaften
+\item Berechnung der Route
+\item Anzeigen der Route auf der Kartenasicht
 \end{itemize}
 \subsubsection{Darstellung des Android-Clients}
-Es folgen nun Layouts aller Aktivities, die als Vorlage zur genauen Realisierung dienen sollen.
+Es folgen nun Layouts aller 'Activities', die als Vorlage zur genauen Realisierung dienen.
 
 \subsubsection{Auswahl des Servers}
 Hier kann der Benutzer einen gewünschten Server auswählen.
@@ -233,28 +249,28 @@ Hier kann der Benutzer einen gewünschten Server auswählen.
 \end {center}
 
 \subsection{Anmeldeinformationen}
-Hier kann der Benutzer seine Anmeldeinformationen eingeben und sich mit dem Server verbinden.
+Hier kann der sich der Benutzer mit seiner E-mail Adresse und Passwort auf dem Server verbinden.
 \begin {center}
 \includegraphics[scale=0.35]{media/android/login.jpg}
 \end {center}
 
 \subsection{Algorithmus auswählen}
-Hier kann der Benutzer den von ihm gewünschten Algorithmus auswählen.
+Hier kann der Benutzer einen Algorithmus auswählen.
 \begin {center}
 \includegraphics[scale=0.47]{media/android/algorithms.jpg}
 \end {center}
 
 \newpage
 \subsection{Kartenansicht}
-Hier kann der Benutzer auf der eingeblendeten Kartenansicht folgende Operationen durchführen.
+Hier kann der Benutzer, auf der eingeblendeten Kartenansicht, folgende Operationen durchführen:
 \begin {itemize}
-\item kurzes Drücken ist noch nicht definiert
+\item kurzes Drücken ist nicht definiert
 \item langes Drücken erstellt einen Marker an dieser Position
-\item Drücken auf einen Marker ermöglicht das Verändern der Eigenschaften dieses Markers
+\item Drücken auf einen Marker ermöglicht das Verändern seiner Eigenschaften
 \item Ziehen auf der Karte ändert den Fokus der Kartenansicht
-\item Klicken auf einen der Zoom-Schaltflächen ermöglicht die Änderung des momentanen Zoomfaktors auf der Kartenansicht 
+\item Klicken auf einen der Zoom-Schaltflächen ermöglicht die Änderung des Zoomfaktors
 \end {itemize}
-Nachdem die Route berechnet wurde, kann das Ergebnis anhand eines angezeigten Pfades auf der Karte nachvollzogen werden.
+Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pfades, auf der Karte nachvollzogen werden.
 
 \begin {center}
 \includegraphics[scale=0.4]{media/android/map.jpg}
@@ -284,9 +300,9 @@ Nachdem die Route berechnet wurde, kann das Ergebnis anhand eines angezeigten Pf
 
 \usecase{Start/Zielpunkt setzen}{Benutzer}{Einen Marker als Ziel/Startpunkt setzen}{Ein Marker muss vorhanden sein}{Ein Marker ist Start/Zielpunkt}{keine}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer setzt ihn als Start/Zielpunkt}{keine}
 
-\usecase{Route berechnen}{Benutzer}{Eine Route berechnen}{Es müssen Marker auf der Karte plaziert worden sein}{Eine Route wurde berechnet}{Es wurde eine Fehlermeldung geworfen}{1. Der Benutzer bestätigt seine Eingaben \newline 2. Der Benutzer berechnet seine Route}{Benötigte angaben für die Berechnung fehlen}
+\usecase{Route berechnen}{Benutzer}{Eine Route berechnen}{Es müssen Marker auf der Karte plaziert worden sein}{Eine Route wurde berechnet}{Es wird eine Fehlermeldung ausgegeben}{1. Der Benutzer bestätigt seine Eingaben \newline 2. Der Benutzer berechnet seine Route}{Benötigte angaben für die Berechnung fehlen}
 
-\usecase{Route anzeigen}{Benutzer}{Die Route nachverfolgen können}{Eine Route muss berechnet worden sein}{Es wurde eine Route auf die Kartenansicht gezeichnet}{Es wurde eine Fehlermeldung ausgegeben}{1. Der Benutzer wählt Route anzeigen aus}{Bei der Berechnung der Route traten Fehler auf}
+\usecase{Route anzeigen}{Benutzer}{Die Route nachverfolgen können}{Eine Route muss berechnet worden sein}{Es wurde eine Route auf die Kartenansicht gezeichnet}{Es wird eine Fehlermeldung ausgegeben}{1. Der Benutzer wählt Route anzeigen aus}{Bei der Berechnung der Route traten Fehler auf}
 
 \subsection*{Benutzerverwaltungsfunktionen}
 \usecase{Benutzer registrieren}
