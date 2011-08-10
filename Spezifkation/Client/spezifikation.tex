@@ -176,6 +176,91 @@ Zudem soll er eine Übersicht aller getätigten Requests erhalten.
 
 \clearpage
 \section{Benutzeroberfläche}
+\subsection{Web-Client}
+\subsubsection{Überblick}
+Die Benutzeroberfläche des Web-Clients wird folgende Funktionen ermöglichen
+\begin{itemize}
+\item Auswahl eines Servers
+\item Anmelden mit Benutzernamen und Kennwort
+\item ’Passwort vergessen?’ Funktion
+\item Benutzerverwaltung
+\item Auswahl des gewünschten Algorithmus
+\item Auswahl der Billing-Anzeige 
+\item Kartenansicht
+\item Marker auf der Karte anlegen
+\item Marker Eigenschaften zuweisen
+\item Route berechnen
+\item Route auf der Kartenansicht anzeigen
+\end{itemize}
+\subsubsection{Darstellung des Web-Clients}
+Folgende Abbildungen sollen als Vorlage zur genauen Realisierung dienen.
+%TODO insert screenshots
+\subsubsection{Kartenansicht}
+Hier kann der Benutzer auf der eingeblendeten Kartenansicht folgende Operationen durchführen.
+\begin {itemize}
+\item kurzer Linksklick erstellt einen Marker an dieser Position 
+\item kurzer Rechtsklick noch nicht definiert
+\item Drücken auf einen Marker ermöglicht das Verändern der Eigenschaften dieses Markers
+\item gedrückter Linksklick ziehen auf der Karte ändert den Fokus der Kartenansicht
+\item die Benutzund des Mausscrollrades ermöglicht die Änderung des momentanen Zoomfaktors auf der Kartenansicht 
+\end {itemize}
+%TODO insert screenshots
+Nachdem die Route berechnet wurde, kann das Ergebnis anhand eines angezeigten Pfades auf der Karte nachvollzogen werden.
+
+\newpage
+\subsection{Android-Client}
+\subsubsection{Überblick}
+Die Benutzeroberfläche des Android-Clients wird folgende Funktionen ermöglichen
+\begin{itemize}
+\item Auswahl eines Servers
+\item Anmelden mit Benutzernamen und Kennwort
+\item 'Passwort vergessen?' Funktion
+\item Auswahl des gewünschten Algorithmus
+\item Auswahl der Billing-Anzeige 
+\item Kartenansicht
+\item Marker auf der Karte anlegen
+\item Marker Eigenschaften zuweisen
+\item Route berechnen
+\item Route auf der Kartenansicht anzeigen
+\end{itemize}
+\subsubsection{Darstellung des Android-Clients}
+Es folgen nun Layouts aller Aktivities, die als Vorlage zur genauen Realisierung dienen sollen.
+
+\subsubsection{Auswahl des Servers}
+Hier kann der Benutzer einen gewünschten Server auswählen.
+\begin {center}
+\includegraphics[scale=0.40]{media/android/server.jpg}
+\end {center}
+
+\subsection{Anmeldeinformationen}
+Hier kann der Benutzer seine Anmeldeinformationen eingeben und sich mit dem Server verbinden.
+\begin {center}
+\includegraphics[scale=0.35]{media/android/login.jpg}
+\end {center}
+
+\subsection{Algorithmus auswählen}
+Hier kann der Benutzer den von ihm gewünschten Algorithmus auswählen.
+\begin {center}
+\includegraphics[scale=0.47]{media/android/algorithms.jpg}
+\end {center}
+
+\newpage
+\subsection{Kartenansicht}
+Hier kann der Benutzer auf der eingeblendeten Kartenansicht folgende Operationen durchführen.
+\begin {itemize}
+\item kurzes Drücken ist noch nicht definiert
+\item langes Drücken erstellt einen Marker an dieser Position
+\item Drücken auf einen Marker ermöglicht das Verändern der Eigenschaften dieses Markers
+\item Ziehen auf der Karte ändert den Fokus der Kartenansicht
+\item Klicken auf einen der Zoom-Schaltflächen ermöglicht die Änderung des momentanen Zoomfaktors auf der Kartenansicht 
+\end {itemize}
+Nachdem die Route berechnet wurde, kann das Ergebnis anhand eines angezeigten Pfades auf der Karte nachvollzogen werden.
+
+\begin {center}
+\includegraphics[scale=0.4]{media/android/map.jpg}
+\end {center}
+\newpage
+
 
 
 \clearpage
@@ -188,6 +273,20 @@ Zudem soll er eine Übersicht aller getätigten Requests erhalten.
 \end{figure}
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
+\subsection*{Benutzeroberflächenfunktionen}
+\usecase{Algorithmus auswählen}{Benutzer}{Algorithmus auswählen}{Der Benutzer ist am Server angemeldet}{Der Benutzer hat einen Algorithmus ausgewählt}{Der Benutzer bekommt eine Fehlermeldung}{1. Der Benutzer wählt seinen Algorithmus \newline 2. Benutzer bestätigt seine Eingabe}{Die Verbindung zum Server wurde unterbrochen}
+
+\usecase{Marker hinzufügen}{Benutzer}{Einen Marker auf der Karten hinzufügen}{Die Karte wird angezeigt}{Ein Marker wurde an die gewünschte Stelle plaziert}{Der Marker konnte nicht angelegt werden}{1. Der Benutzer wählt einen gewünschten Punkt auf der Karte \newline 2. Der Benutzer erstellt dort einen Marker}{ungültiger Bereich}
+
+\usecase{Marker editieren}{Benutzer}{Einen vorhandenen Marker editieren}{Ein Marker muss existieren}{Der Marker wurde editiert}{Der Marker wurde auf seine vorherigen Werte zurückgesetzt}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer ändert die gewünschten Werte des Markers \newline 3. Der Benutzer bestätigt seine Eingaben}{ungültige Eingaben}
+
+\usecase{Marker löschen}{Benutzer}{Einen vorhandenen Marker löschen}{Ein Marker muss vorhanden sein}{Der Marker wurde gelöscht}{keine}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer bestätigt das Löschen}{keine}
+
+\usecase{Start/Zielpunkt setzen}{Benutzer}{Einen Marker als Ziel/Startpunkt setzen}{Ein Marker muss vorhanden sein}{Ein Marker ist Start/Zielpunkt}{keine}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer setzt ihn als Start/Zielpunkt}{keine}
+
+\usecase{Route berechnen}{Benutzer}{Eine Route berechnen}{Es müssen Marker auf der Karte plaziert worden sein}{Eine Route wurde berechnet}{Es wurde eine Fehlermeldung geworfen}{1. Der Benutzer bestätigt seine Eingaben \newline 2. Der Benutzer berechnet seine Route}{Benötigte angaben für die Berechnung fehlen}
+
+\usecase{Route anzeigen}{Benutzer}{Die Route nachverfolgen können}{Eine Route muss berechnet worden sein}{Es wurde eine Route auf die Kartenansicht gezeichnet}{Es wurde eine Fehlermeldung ausgegeben}{1. Der Benutzer wählt Route anzeigen aus}{Bei der Berechnung der Route traten Fehler auf}
 
 \subsection*{Benutzerverwaltungsfunktionen}
 \usecase{Benutzer registrieren}
