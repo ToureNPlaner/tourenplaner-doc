@@ -4,6 +4,10 @@
 *.aux
 *.dvi
 *.toc
+
+# Tex output files
+*.pdf
+
 # Backup files
 *~
 *.tex.backup
