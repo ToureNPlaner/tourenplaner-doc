@@ -133,6 +133,46 @@ Die Übersetzungen werden mit Hilfe von GNU gettext implementiert.
 
 \clearpage
 \section{Funktionale Anforderungen}
+\subsection{Anmeldung und Registrierung}
+Kostenpflichtige als auch kostenlose Berechnungen sollen nur nach Anmeldung am Client möglich sein.
+Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung am WebClient durchgeführt hat.
+
+\subsection{Angaben zur Berechnung}
+Am Client soll der User zunächst einen Algorithmus auswählen, mit dem er eine Berechnung durchführen möchte.
+Anschließend soll er mithilfe der Karte folgende Operationen durchführen können, 
+bevor er seine Berechnung an den Server abschickt:
+\begin{itemize}
+ \item Start- und Zielpunkt setzen
+ \item ggfs. weitere Punkte hinzufügen
+ \item bereits gesetzte Punkte editieren
+ \item bereits gesetzte Punkte löschen.
+\end{itemize}
+Hat der User seine Angaben zum Algorithmus getätigt, so kann er diese letzendlich zum Server abschicken.
+
+\subsection{Betrachten des Ergebnis}
+Nachdem das Ergebnis vom Server zurückgesendet wurde, soll dieses in Form einer Route auf der Karte angezeigt werden.
+Dem User sollen dabei folgende Funktionen zur Verfügung stehen:
+\begin{itemize}
+ \item hinein- und hinauszoomen
+ \item auf der Karte navigieren (Karte mit der Maus verschieben)
+\end{itemize}
+
+\subsection{Benutzerverwaltung}
+Der User soll seine Benutzerdaten anzeigen und bearbeiten können.
+
+\subsection{Billing}
+Der User soll über den WebClient Zugriff auf seine Billing-Informationen haben.
+
+
+\subsection{Administration}
+Der Administrator soll auf eine Übersicht aller Benutzer zugreifen können, auf der folgende Funktionalitäten verfügbar sind:
+\begin{itemize}
+ \item Benutzer anlegen
+ \item Benutzer bearbeiten
+ \item Benutzer löschen
+\end{itemize}
+
+Zudem soll er eine Übersicht aller getätigten Requests erhalten.
 
 \clearpage
 \section{Benutzeroberfläche}
