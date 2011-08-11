@@ -224,7 +224,7 @@ Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Clien
   \centering
   %TODO
   %\includegraphics[width=\linewidth]{usecases.png}
-  \caption{Task}
+  \caption{Use Cases}
 \end{figure}
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingungen}{Nachbedingungen}{Normalablauf}{Sonderfälle und dessen Nachbedingungen}
@@ -263,8 +263,8 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 \item Der Server sendet die aktuellsten Server-Informationen als Response.
 }{%Sondernachbedingungen und Sonderfälle
 \sondernachbedingung{
-	\item Der Server ist in Betrieb.
-	\item Fehlermeldungen wurden soweit möglich verschickt und ins Log gespeichert.}
+	\item Der Server führt seine Arbeit wie gewohnt fort.
+	\item Fehlermeldungen wurden soweit möglich und nötig verschickt und ins Log gespeichert.}
 
 \sonderfall{1a}%Letzte Zeile und Nummer
 	{%Bezeichnung
@@ -274,23 +274,77 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
   	\item Fehlermeldung "`Zugriff auf Server-Informationen nicht möglich"' an Admins verschicken
   	\item Fehlermeldung an Client schicken}
 
-\sonderfall{1a.3}%Letzte Zeile und Nummer
+\sonderfall{1a.3a}%Letzte Zeile und Nummer
 	{%Bezeichnung
-	Verbindung zu Client ist abgebrochen wegen serverseitgem Internetausfall
+	TCP/IP Verbindung abgebrochen, serverseitge Ursache
 	}{%Sonderfallablauf
 	\item Fehlermeldung "`Serverseitiger Internetausfall"' ins Log schreiben
   	\item Fehlermeldung "`Serverseitiger Internetausfall"' an Admins verschicken}
+
+\sonderfall{1a.3b}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	TCP/IP Verbindung abgebrochen, clientseitge Ursache
+	}{%Sonderfallablauf
+	\item Der Fehler "Clientseitiger Verbindungsabbruch" wird ins Log geschrieben.}
   	
 \kurzersonderfall[1a.3.1]{2a}%Letzte Zeile und Nummer
 	{%Bezeichnung
-	Verbindung zu Client ist abgebrochen wegen serverseitgem Internetausfall}
+	TCP/IP Verbindung abgebrochen, serverseitge Ursache}
 	
 \sonderfall{2b}%Letzte Zeile und Nummer
 	{%Bezeichnung
-	Verbindung zu Client ist abgebrochen, aber serverseitig kein Internetausfall
+	TCP/IP Verbindung abgebrochen, clientseitge Ursache
 	}{%Sonderfallablauf	
-	\item Zähler von abgebrochenen Clientverbindungen um eins hochzählen.}
-	
+	\item Der Fehler "Clientseitiger Verbindungsabbruch" wird ins Log geschrieben.}
+}
+
+\usecase{Algorithmusrequest bearbeiten}{Client, Abrechnungs DB}%Name und Akteure
+{Der Client möchte eine Probleminstanz berechnet haben}%Ziel
+{%Vorbedingungen
+\item Der Server ist in Betrieb.
+\item Der Server hat einen Request über \textit{/algsuffix} vom Client erhalten.
+}
+{%Nachbedingungen
+\item Der Client hat das Berechnungsergebnis erhalten
+\item Der Server hat die Berechnung in der Abrechnungs DB gelogged
+}
+{%Normalablauf
+\item Der Server schreibt den zu berechnenden Request als \textit{pending} in die Abrechnungs DB
+\item Der Server wählt die passende Algorithmusinstanz aus den vorhandenen Algorithmen
+\item Der Server berechnet mit der Algorithmusinstanz die Lösung der Probleminstanz
+\item Der Server trägt die Lösung in die Abrechnungs DB ein (nun nicht mehr \textit{pending})
+\item Der Server sendet die Lösung an den Client
+}
+{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+\item Der Server führt seine Arbeit wie gewohnt fort
+}
+\sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Server wird beendet
+  	}
+\sonderfall[Panic]{4a}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs DB verloren}%Bezeichnung
+	{\item \textit{siehe 2a}}
+\sonderfall[Weiter mit normalem Betrieb]{2a}%Letzte Zeile und Nummer
+	{Keine Passende Algorithmusinstanz}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält eine entsprechende Fehlermeldung
+  	}
+\sonderfall[Weiter mit normalem Betrieb]{3a}%Letzte Zeile und Nummer
+	{Die Berechnung bricht mit einem Fehler ab}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Request wird in der Abrechnungs DB auf failed gesetzt und der genaue Fehler eingetragen
+	\item Der Client erhält eine entsprechende Fehlermeldung
+  	}
+\sonderfall[Weiter mit normalem Betrieb]{5a}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+  	{\item Der Fehler wird ins Log geschrieben
+  	}
 }
 
 
