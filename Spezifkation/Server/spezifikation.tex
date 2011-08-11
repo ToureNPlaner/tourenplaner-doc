@@ -62,11 +62,21 @@
 {
 Sonderfall #2 & \vspace{-10pt}
 	\textit{#3}
-  	\begin{owncompactenum}[{#2}.1] #4 \end{owncompactenum}
-  	 	\ifthenelse{\equal{#1}{\empty}}
-    		{\\\hline} %no opt
-    		{\ensuremath{\rightarrow} #1 \\ [+1pt] \hline} %opt
-    	
+	\begin{owncompactenum}[{#2}.1] {#4} \end{owncompactenum}
+  	\ifthenelse{\equal{#1}{\empty}}
+    	{\\\hline} %no opt
+    	{\ensuremath{\rightarrow} #1 \\ [+1pt] \hline} %opt
+
+}
+
+\newcommand{\kurzersonderfall}[3][\empty]
+{
+Sonderfall #2 & \vspace{-10pt}
+	\textit{#3}
+  	\ifthenelse{\equal{#1}{\empty}}
+    	{\\\hline} %no opt
+    	{\\&\ensuremath{\rightarrow} #1 \\ [+1pt] \hline} %opt
+
 }
 
 \newcommand{\sondernachbedingung}[1]
@@ -223,31 +233,65 @@ Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Clien
 
 %\sondernachbedingung{Bedingungen}
 
-%\usecase{}{}%Name und Akteure{}%Ziel{}%Vorbedingungen{}%Nachbedingungen{}%Normalablauf{}%Sondernachbedingungen und Sonderfälle
+%\usecase{}{}%Name und Akteure
+{%Ziel
+}{%Vorbedingungen
+}{%Nachbedingungen
+}{%Normalablauf
+}{%Sondernachbedingungen und Sonderfälle
+}
 
 %\sonderfall[]{}%Letzte Zeile und Nummer
-{}%Bezeichnung
-{}%Sonderfallablauf
+{%Bezeichnung
+}{%Sonderfallablauf
+}
+
+%\kurzersonderfall[]{}%Letzte Zeile und Nummer
+{%Bezeichnung
+}
 
 \usecase{Server-Informationen abfragen}{Client}%Name und Akteure
-{Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.}%Ziel
-{\item Der Server ist in Betrieb.
-\item Der Server hat einen Request über \textit{/info} vom Client erhalten.}%Vorbedingungen
-{\item Die Server-Informationen wurden dem Client gesendet.}%Nachbedingungen
-{\item Der Server sendet die aktuellsten Server-Informationen als Response.}%Normalablauf
-{\sondernachbedingung{\item Fehler
-		\item Fehler}
-\sonderfall[Weiter mit Schritt 2a.1]{1a}%Letzte Zeile und Nummer
-	{Internetverbindung ausgefallen}%Bezeichnung
-  	{\item Fehler ins Log schreiben
-  	\item Erneuter Versuch
-  	\item Und nochmal}%Sonderfallablauf
-\sonderfall[Schritt 1a.1]{2a}%Letzte Zeile und Nummer
-	{Internetverbindung ausgefallen}%Bezeichnung
-  	{\item Fehler ins Log schreiben
-  	\item Erneuter Versuch
-  	\item Und nochmal}%Sonderfallablauf
-}%Sondernachbedingungen und Sonderfälle
+{%Ziel
+Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.
+}{%Vorbedingungen
+\item Der Server ist in Betrieb.
+\item Der Server hat einen Request über \textit{/info} vom Client erhalten.
+}{%Nachbedingungen
+\item Die Server-Informationen wurden dem Client gesendet.
+}{%Normalablauf
+\item Der Server holt sich die aktuellsten Server-Informationen.
+\item Der Server sendet die aktuellsten Server-Informationen als Response.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Server ist in Betrieb.
+	\item Fehlermeldungen wurden soweit möglich verschickt und ins Log gespeichert.}
+
+\sonderfall{1a}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Zugriff auf Server-Informationen nicht möglich
+	}{%Sonderfallablauf
+	\item Fehlermeldung "`Zugriff auf Server-Informationen nicht möglich"' ins Log schreiben
+  	\item Fehlermeldung "`Zugriff auf Server-Informationen nicht möglich"' an Admins verschicken
+  	\item Fehlermeldung an Client schicken}
+
+\sonderfall{1a.3}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Verbindung zu Client ist abgebrochen wegen serverseitgem Internetausfall
+	}{%Sonderfallablauf
+	\item Fehlermeldung "`Serverseitiger Internetausfall"' ins Log schreiben
+  	\item Fehlermeldung "`Serverseitiger Internetausfall"' an Admins verschicken}
+  	
+\kurzersonderfall[1a.3.1]{2a}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Verbindung zu Client ist abgebrochen wegen serverseitgem Internetausfall}
+	
+\sonderfall{2b}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Verbindung zu Client ist abgebrochen, aber serverseitig kein Internetausfall
+	}{%Sonderfallablauf	
+	\item Zähler von abgebrochenen Clientverbindungen um eins hochzählen.}
+	
+}
 
 
 \clearpage
