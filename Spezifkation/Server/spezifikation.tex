@@ -250,7 +250,7 @@ Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Clien
 {%Bezeichnung
 }
 
-\usecase{Server-Informationen abfragen}{Client}%Name und Akteure
+\usecase{Server Informationen abfragen}{Client}%Name und Akteure
 {%Ziel
 Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.
 }{%Vorbedingungen
@@ -298,26 +298,28 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	\item Der Fehler "Clientseitiger Verbindungsabbruch" wird ins Log geschrieben.}
 }
 
-\usecase{Algorithmusrequest bearbeiten}{Client, Abrechnungs DB}%Name und Akteure
+
+
+\usecase{Probleminstanz bearbeiten}{Client, Abrechnungs DB}%Name und Akteure
 {Der Client möchte eine Probleminstanz berechnet haben}%Ziel
 {%Vorbedingungen
-\item Der Server ist in Betrieb.
-\item Der Server hat einen Request über \textit{/algsuffix} vom Client erhalten.
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen Request über \textit{/algsuffix} vom Client erhalten.
 }
 {%Nachbedingungen
-\item Der Client hat das Berechnungsergebnis erhalten
-\item Der Server hat die Berechnung in der Abrechnungs DB gelogged
+  \item Der Client hat das Berechnungsergebnis erhalten
+  \item Der Server hat die Berechnung in der Abrechnungs DB gelogged
 }
 {%Normalablauf
-\item Der Server schreibt den zu berechnenden Request als \textit{pending} in die Abrechnungs DB
-\item Der Server wählt die passende Algorithmusinstanz aus den vorhandenen Algorithmen
-\item Der Server berechnet mit der Algorithmusinstanz die Lösung der Probleminstanz
-\item Der Server trägt die Lösung in die Abrechnungs DB ein (nun nicht mehr \textit{pending})
-\item Der Server sendet die Lösung an den Client
-}
+  \item Der Server schreibt den zu berechnenden Request als \textit{pending} in die Abrechnungs DB
+  \item Der Server wählt die passende Algorithmusinstanz aus den vorhandenen Algorithmen
+  \item Der Server berechnet mit der Algorithmusinstanz die Lösung der Probleminstanz
+  \item Der Server trägt die Lösung in die Abrechnungs DB ein (nun nicht mehr \textit{pending})
+  \item Der Server sendet die Lösung an den Client
+  }
 {%Sondernachbedingungen und Sonderfälle
 \sondernachbedingung{
-\item Der Server führt seine Arbeit wie gewohnt fort
+  \item Der Server führt seine Arbeit wie gewohnt fort
 }
 \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
 	{Verbindung zu Abrechnungs DB verloren}%Bezeichnung
@@ -347,7 +349,163 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
   	}
 }
 
+\usecase{Nutzer registrieren}{Client, Abrechnungs DB}%Name und Akteure
+{}%Ziel
+{%Vorbedingungen
+  \item
+}
+{%Nachbedingungen
+  \item
+}
+{%Normalablauf
+  \item
+}
+{%Sondernachbedingungen und Sonderfälle
+  \sondernachbedingung{
+	\item
+	}
+  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+	  {}%Bezeichnung
+	  {
+	  \item .
+	  }
+}
 
+\usecase{Nutzer Anmelden}{Client, Abrechnungs DB}%Name und Akteure
+{}%Ziel
+{%Vorbedingungen
+  \item
+}
+{%Nachbedingungen
+  \item
+}
+{%Normalablauf
+  \item
+}
+{%Sondernachbedingungen und Sonderfälle
+  \sondernachbedingung{
+	\item
+	}
+  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+	  {}%Bezeichnung
+	  {
+	  \item .
+	  }
+}
+
+\usecase{Nutzerdaten abfragen}{Client, Abrechnungs DB}%Name und Akteure
+{}%Ziel
+{%Vorbedingungen
+  \item
+}
+{%Nachbedingungen
+  \item
+}
+{%Normalablauf
+  \item
+}
+{%Sondernachbedingungen und Sonderfälle
+  \sondernachbedingung{
+	\item
+	}
+  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+	  {}%Bezeichnung
+	  {
+	  \item .
+	  }
+}
+
+
+\usecase{Nutzerdaten verändern}{Client, Abrechnungs DB}%Name und Akteure
+{}%Ziel
+{%Vorbedingungen
+  \item
+}
+{%Nachbedingungen
+  \item
+}
+{%Normalablauf
+  \item
+}
+{%Sondernachbedingungen und Sonderfälle
+  \sondernachbedingung{
+	\item
+	}
+  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+	  {}%Bezeichnung
+	  {
+	  \item .
+	  }
+}
+
+
+\usecase{Billinginformationen Abfragen}{Client, Abrechnungs DB}%Name und Akteure
+{}%Ziel
+{%Vorbedingungen
+  \item
+}
+{%Nachbedingungen
+  \item
+}
+{%Normalablauf
+  \item
+}
+{%Sondernachbedingungen und Sonderfälle
+  \sondernachbedingung{
+	\item
+	}
+  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+	  {}%Bezeichnung
+	  {
+	  \item .
+	  }
+}
+
+\usecase{Nutzerliste Abfragen}{Client, Abrechnungs DB}%Name und Akteure
+{}%Ziel
+{%Vorbedingungen
+  \item
+}
+{%Nachbedingungen
+  \item
+}
+{%Normalablauf
+  \item
+}
+{%Sondernachbedingungen und Sonderfälle
+  \sondernachbedingung{
+	\item
+	}
+  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+	  {}%Bezeichnung
+	  {
+	  \item .
+	  }
+}
+
+
+
+\usecase{Benutzer löschen}{Client, Abrechnungs DB}%Name und Akteure
+{}%Ziel
+{%Vorbedingungen
+  \item
+}
+{%Nachbedingungen
+  \item
+}
+{%Normalablauf
+  \item
+}
+{%Sondernachbedingungen und Sonderfälle
+  \sondernachbedingung{
+	\item
+	}
+  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+	  {}%Bezeichnung
+	  {
+	  \item .
+	  }
+}
 \clearpage
 \appendix
 \section{Begriffslexikon}
