@@ -467,51 +467,58 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	}
 }
 
-%TODO: schauen, ob wir das wollen
-%\usecase{Nutzerdaten verändern}{Client, Benutzer-DB}%Name und Akteure
-%{Client verändert seine Nutzerdaten}%Ziel
-%{%Vorbedingungen
-%  \item Der Server ist in Betrieb.
-%  \item Der Server hat einen Request über \textit{/TODO} vom Client empfangen
-%}
-%{%Nachbedingungen
-%  \item Client hat die Nutzerdaten verändert.
-%}
-%{%Normalablauf
-%  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
-%  \item Nutzerdaten werden an Client geschickt.
-%  \item Geänderte Nutzerdaten werden in die Datenbank geschrieben
-%}
-%{%Sondernachbedingungen und Sonderfälle
-%  \sondernachbedingung{
-%	\item Client hat 403 Access Denied erhalten.
-%	\item Fehler steht im Log.
-%	}
-%	
-%	\sonderfall[Weiter mit normalem Betrieb]{1a}
-%    {Ungültige Authentifizerung}
-%    {
-%    \item Fehler wird ins Log geschrieben
-%  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
-%    }
-%
-%	 \sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
-%	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
-%  	{
-%	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-%	\item Der Client erhält eine entsprechende Fehlermeldung
-%	\item Der Server wird beendet
-%  	}
-%
-%\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
-%	{TCP/IP Verbindung abgebrochen}%Bezeichnung
-%	{
-%	\item Fehlermeldung wird ins Log geschrieben
-%	}
-%}
+\usecase{Nutzerdaten verändern}{Client, Benutzer-DB}%Name und Akteure
+{Client verändert seine Nutzerdaten}%Ziel
+{%Vorbedingungen
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen POST-Request mit optionalem id-Parameter über \textit{/update} vom Client empfangen
+}
+{%Nachbedingungen
+  \item Nutzerdaten wurden geändert.
+}
+{%Normalablauf
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Nutzerdaten werden anhand des id-Parameters bzw. aus Basic-Auth-Informationen aus der Datenbank gelesen.
+  \item Nutzerdaten werden an Client geschickt.
+  \item Geänderte Nutzerdaten werden in die Datenbank geschrieben
+}
+{%Sondernachbedingungen und Sonderfälle
+  \sondernachbedingung{
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
+	}
+	
+	\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+    
+   	\sonderfall[Weiter mit normalem Betrieb]{2a}
+    {Ungültige id}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung
+    }
+
+	 \sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
+}
 
 %TODO: Billing vs History
-\usecase{Billinginformationen Abfragen}{Client, Benutzer-DB}%Name und Akteure
+\usecase{Billinginformationen Abfragen}{Client, Abrechnungs-DB, Benutzer-DB}%Name und Akteure
 {Die in der Benutzer-DB gespeicherten Requests des Benutzers sowie deren Ergebnisse (bzw. Status) und Kosten sollen angezeigt werden}%Ziel
 {%Vorbedingungen
   \item Der Server hat einen Get-Request an /billing erhalten
@@ -521,9 +528,8 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 }
 {%Normalablauf
   \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
-  \item Der Server liest aus der Datenbank alle vom Benutzer berechnet Requests aus
-  \item Der Server liest aus der Datenbank die Zahlungsinformationen zu den Requests aus (evtl. beides in einem Schritt)
-  \item Der Server schickt dem Client eine Liste seiner bisher berechneten und \textit{pending} Requests und Zahlungsinformationen
+  \item Der Server liest aus der Abrechnungs-DB alle vom Benutzer berechneten Requests sowie Zahlungsinformationen zu diesen Requests aus
+  \item Der Server schickt dem Client eine Liste seiner bisher berechneten und \textit{pending} Requests sowie Zahlungsinformationen
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
@@ -574,27 +580,52 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 %	  }
 %}
 
-%TODO Was macht Steffen?
-\usecase{Nutzerliste Abfragen}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+%TODO Protokollspezifikation??
+\usecase{Nutzerliste Abfragen}{Client, Benutzer-DB}%Name und Akteure
+{Eine Liste der Benutzer wird abgefragt}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server hat einen Get-Request an /users erhalten
 }
 {%Nachbedingungen
-  \item
+  \item Die entsprechenden Informationen wurden gesendet
 }
 {%Normalablauf
-  \item
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Der Server liest aus der Benutzer-DB alle durch die offset- und limit-Parameter ausgewählten Benutzer-Informationen aus
+  \item Der Server schickt dem Client die ausgelesenen Informationen
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
-	  {
-	  \item .
-	  }
+		\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+
+	\sonderfall[Weiter mit normalem Betrieb]{2a}%Letzte Zeile und Nummer
+	{Ungültiges Offset/Limit}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält eine entsprechende Fehlermeldung
+  	}
+  	    
+	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
 }
 
 
@@ -666,7 +697,7 @@ ToureNPlaner
 }{%Bedeutung
 ToureNPlaner ist die Bezeichnung für das Studienprojekt ToureNPlaner und für die Software ToureNPlaner.
 }{%Abgrenzung
--
+Es ist kein allgemeiner Tourenplaner gemeint.
 }{%Gültigkeit
 -
 }{%Bezeichnung
@@ -683,7 +714,7 @@ Studienprojekt ToureNPlaner, synonym Stupro
 }{%Bedeutung
 Das Studienprojekt ToureNPlaner ist ein Studienprojekt im Rahmen des Studienganges Softwaretechnik an der Universität Stuttgart. Im Rahmen von diesem Projekt muss die Software ToureNPlaner entwickelt werden.
 }{%Abgrenzung
--
+Es ist nicht die Software ToureNPlaner gemeint.
 }{%Gültigkeit
 Das Studienprojekt ToureNPlaner hat am Anfang des Sommersemesters 2011 begonnen und wird voraussichtlich am Anfang des Sommersemesters 2012 beendet sein.
 }{%Bezeichnung
@@ -700,7 +731,7 @@ Software ToureNPlaner
 }{%Bedeutung
 Die Software ToureNPlaner ist die Bezeichnung für die Gesamtheit aller im Rahmen des Projektes entwickelten und verwendeten Systeme, auch die zu entwickelnde Software genannt. Dazu gehören der Server und die Clients sowie ihre verwendeten Komponenten.
 }{%Abgrenzung
--
+Es ist nicht das Projekt ToureNPlaner gemeint.
 }{%Gültigkeit
 Die Software ToureNPlaner hat mit dem Beginn des Studienprojektes angefangen zu existieren, unabhängig von der Funktionalität der Software. Im Rahmen des Studienprojektes entstehende Dokumente und Systeme sind Teil der Software, auch wenn diese letztendlich nicht mit ausgeliefert oder gelöscht werden. Die Software ToureNPlaner wird nach dem Ende des Studienprojektes ToureNPlaner noch weiter bestehen.
 }{%Bezeichnung
@@ -717,13 +748,13 @@ graphbasierte Webanwendung
 }{%Bedeutung
 Eine Webanwendung, die Dienste für bestimmte Graphprobleme anbietet. Ein bekanntes Beispiel ist die Berechnung des kürzesten Weges zwischen zwei Punkten auf einer Karte, auch als Routenplanung bekannt.
 }{%Abgrenzung
-Webanwendungen, die irgendwelche Daten speichert, die man als Graph interpretieren kann, sind nicht zwangsläufig als graphbasierte Webanwendungen zu bezeichnen. Die Daten und deren Interpretation als Graph müssen Kernaspekte der angebotenen Dienste sein, damit die Webanwendung als graphbasiert bezeichnet werden kann.
+Webanwendungen, die beliebige Daten speichern, die man als Graph interpretieren kann, sind nicht zwangsläufig als graphbasierte Webanwendungen zu bezeichnen. Die Daten und deren Interpretation als Graph müssen Kernaspekte der angebotenen Dienste sein, damit die Webanwendung als graphbasiert bezeichnet werden kann.
 }{%Gültigkeit
 -
 }{%Bezeichnung
 -
 }{%Unklarheiten
--
+Es ist unklar, welche Arten von Graphen (z.B. nur Kartengraphen) gemeint sind.
 }{%Querverweise
 Webanwendung
 }
@@ -732,17 +763,17 @@ Webanwendung
 {%Begriff
 Webanwendung
 }{%Bedeutung
-Eine Anwendung, die mit einem Internetbrowser über das Internet zugänglich ist und mit einem Server kommuniziert.
+Eine Anwendung, die mit einem Internetbrowser zugänglich ist und mit einem Server kommuniziert.
 }{%Abgrenzung
-Sonstige Anwendungen, die über das Internet mit einem Server kommunizieren, wie zum Beispiel Apps, zählen nicht als Webanwendungen.
+Sonstige Anwendungen, die mittels Internet-Protokollen (z.B. HTTP) mit einem Server kommunizieren, wie zum Beispiel Apps, sind keine Webanwendungen.
 }{%Gültigkeit
 -
 }{%Bezeichnung
 -
 }{%Unklarheiten
--
+Sind Flash/Java-Applets etc. Webanwendungen?
 }{%Querverweise
--
+App
 }
 
 
@@ -756,7 +787,7 @@ Eine Route, bei Start- und Endpunkt unterschiedlich sind, ist keine Tour.
 }{%Gültigkeit
 -
 }{%Bezeichnung
--
+Eine Tour ist durch eine geordnete Liste von Koordinaten definiert.
 }{%Unklarheiten
 -
 }{%Querverweise
@@ -799,11 +830,11 @@ Die grafische Darstellung eines Graphen hat nichts mit der Graphrepräsentation 
 
 \begriff
 {%Begriff
-Framework
+Webbasierter Client
 }{%Bedeutung
--
+Ein Client im Sinne des ToureNPlaner Projekts, welcher als Webanwendung realisiert ist.
 }{%Abgrenzung
--
+Ein Client, der nicht im Browser läuft, ist kein Webclient.
 }{%Gültigkeit
 -
 }{%Bezeichnung
@@ -811,56 +842,22 @@ Framework
 }{%Unklarheiten
 -
 }{%Querverweise
--
-}
-
-\begriff
-{%Begriff
-Webbasierte Clients
-}{%Bedeutung
--
-}{%Abgrenzung
--
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
--
-}{%Querverweise
--
-}
-
-\begriff
-{%Begriff
-OpenStreetMap
-}{%Bedeutung
--
-}{%Abgrenzung
--
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
--
-}{%Querverweise
--
+Webanwendung, Client
 }
 
 \begriff
 {%Begriff
 textbasiertes Graphformat
 }{%Bedeutung
--
+Rerpäsentation eines allgemeinen Graphen mit Knoten, Kanten und Zusatzinformationen (wie z.B. Kantengewichten) als Textdatei (siehe auch Graph-Format-Dokument).
 }{%Abgrenzung
--
+Hier ist das von ToureNPlaner verwendete Format und nicht etwa eine XML-Repräsentation gemeint.
 }{%Gültigkeit
 -
 }{%Bezeichnung
 -
 }{%Unklarheiten
--
+Sind durch das Graph-Format-Dokument zu klären.
 }{%Querverweise
 -
 }
@@ -869,9 +866,9 @@ textbasiertes Graphformat
 {%Begriff
 Client
 }{%Bedeutung
--
+Eine Anwendung, die auf die Funktionen des ToureNPlaner Servers mittels des ToureNPlaner Protokolls (siehe Protokollspezifikation) zugreift.
 }{%Abgrenzung
--
+Innerhalb dieser Spezifikation bezeichnet Client ausschließlich Clients für den ToureNPlaner Server.
 }{%Gültigkeit
 -
 }{%Bezeichnung
@@ -879,7 +876,7 @@ Client
 }{%Unklarheiten
 -
 }{%Querverweise
--
+Webbasierter Client
 }
 
 \begriff
