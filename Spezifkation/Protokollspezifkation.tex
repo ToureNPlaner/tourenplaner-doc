@@ -98,7 +98,7 @@
 	
 	\subsection*{Response}
 	
-	Die Antwort des Servers sollte einen 200er Code haben und etwa den untenstehenden Aufbau besitzen.
+	Die Antwort des Servers sollte einen 200 OK Code haben und etwa den untenstehenden Aufbau besitzen.
 	
 	\begin{lstlisting}
 {
@@ -107,14 +107,14 @@
     "algorithms": [
         {
             "version": 2,
-            "name": "Shortest Path"
-            "urlsuffix": "sp",
+            "name": "Travelling Salesperson"
+            "urlsuffix": "tsp",
             "pointconstraints": [                    
                 {
-                    "name": "height",
-                    "type": "meter",
+                    "name": "price",
+                    "type": "euro",
                     "min": 0.0,
-                    "max": 2000.0
+                    "max": 2000000.0
                 }
             ],
             "constraints": {
@@ -122,7 +122,7 @@
                    "sourceIsTarget": true/false 
             }
         }, { ... }
-    ],
+    ]
 }
     \end{lstlisting}
     
@@ -194,6 +194,8 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 	
 	Bei der Registrierung werden Email, Passwort, Vor- und Nachname sowie die Rechnungsadresse (falls benötigt) abgefragt. 
 	Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Client statt.
+	Auf Serversweite muss ein neuer Nutzer zunächst durch einen Admin freigeschaltet werden
+	bevor er Berechnungen anstoßen kann.
 	
 		\subsubsection*{Request}
 		
@@ -230,11 +232,10 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 		
 	\subsection{Anzeigen}
 	
-	Da die Daten des Nutzers zuerst nicht lokal gespeichert sind, müssen diese zuerst vom Server geholt werden. Nach dem erstmaligen Anzeigen bzw. Bearbeiten der Daten könnten diese vom Client für diese Session gecached werden.
-	
+	Um die Nutzerdaten zu bearbeiten müssen zunächst die aktuellen Daten vom Server geladen werden so das diese angezeigt und bearbeitet werden können.
 		\subsubsection*{Request}
 		
-		Ein GET-Request an \textit{/retrieve}.
+		Ein GET-Request an \textit{/userinfo}.
 		
 		\subsubsection*{Response}
 		
@@ -244,7 +245,7 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 
 	Um an die Daten des Benutzers zu kommen, müssen diese vor dem Start des Bearbeitens erst einmal vom Server geholt werden. Siehe dazu "Anzeigen".
 	
-	Nach dem Bearbeiten werden die Daten im Format der Registrierung wieder an den Server zurückgeschickt. Dieser antwortet mit einem Status 200 OK oder einer Fehlermeldung und dem entsprechenden Fehlercode.
+	Nach dem Bearbeiten werden die Daten im gleichen Format wieder an den Server zurückgeschickt. Dieser antwortet mit einem Status 200 OK oder einer Fehlermeldung und dem entsprechenden Fehlercode.
 	
 	\subsection{Billing}
 	
