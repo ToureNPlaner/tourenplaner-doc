@@ -349,70 +349,137 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
   	}
 }
 
-\usecase{Nutzer registrieren}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+\usecase{Nutzer registrieren}{Client, Nutzerdaten DB}%Name und Akteure
+{Ein Nutzer soll in der Datenbank registriert}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen Request über \textit{/register} vom Client
 }
 {%Nachbedingungen
-  \item
+  \item Nutzer ist in Datenbank eingetragen aber noch nicht als aktiv gekennzeichnet.
+  \item Client wurde benachrichtigt, dass der Nutzer aufgenommen wurde.
 }
 {%Normalablauf
-  \item
+  \item  Der Wert des Schlüssels "`email"' wird in die Nutzerdaten DB eingetragen.
+  \item  Der Wert des Schlüssels "`password"' wird in die Nutzerdaten DB eingetragen.
+  \item  Der Wert des Schlüssels "`firstname"' wird in die Nutzerdaten DB eingetragen.
+  \item  Der Wert des Schlüssels "`lastname"' wird in die Nutzerdaten DB eingetragen.
+  \item  Der Wert des Schlüssels "`adress"' wird in die Nutzerdaten DB eingetragen.
+  \item  Der Server sendet dem Client die Antwort 200 OK.
+
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Nutzer wurde nicht in die Datenbank aufgenommen.
+	\item Fehler wurde ins Log geschrieben.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
+
+  \kurzersonderfall[5a]{1a}%Letzte Zeile und Nummer
+	  {Wert ist leer}%Bezeichnung
+  
+  \sonderfall[Fehler]{1b}%Letzte Zeile und Nummer
+	  {Wert existiert schon (Nutzername)}%Bezeichnung
 	  {
-	  \item .
+	  \item Der Fehler wird ins Log geschrieben.
+	  \item Dem Client wird ein entsprechender Fehler übermittelt.
+	  } 
+
+  
+  \kurzersonderfall[5a]{2a}%Letzte Zeile und Nummer
+	  {Wert ist leer}%Bezeichnung
+  
+  \kurzersonderfall[5a]{3a}%Letzte Zeile und Nummer
+	  {Wert ist leer}%Bezeichnung
+	  
+  \kurzersonderfall[5a]{4a}%Letzte Zeile und Nummer
+	  {Wert ist leer}%Bezeichnung
+	  
+  \sonderfall[Fehler]{5a}%Letzte Zeile und Nummer
+	  {Wert ist leer}%Bezeichnung
+	  {
+	  \item Der Fehler wird ins Log geschrieben.
+	  \item Dem Client wird ein entsprechender Fehler übermittelt.
+	  }
+  \sonderfall[Fehler]{5a.2}%Letzte Zeile und Nummer
+	  {Wert ist leer}%Bezeichnung
+	  {
+	  \item Der Fehler wird ins Log geschrieben.
+	  }
+	
+
+  \sonderfall[Fehler, weiter mit Normalablauf]{6a}%Letzte Zeile und Nummer
+	  {Wert ist leer}%Bezeichnung
+	  {
+	  \item Der Fehler wird ins Log geschrieben.
 	  }
 }
 
-\usecase{Nutzer Anmelden}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+\usecase{Nutzer Anmelden}{Client, Nutzerdaten DB}%Name und Akteure
+{Nutzer wurde authentifiziert}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen Request über \textit{/login} vom Client
 }
 {%Nachbedingungen
-  \item
+  \item Der Client hat ein 200 OK erhalten.
 }
 {%Normalablauf
-  \item
+  \item Suche nach der übermittelten E-Mailadresse in der Datenbank.
+  \item Überprüft ob das übermittelte Passwort zur übermittelten E-Mailadresse passt.
+  \item Schickt an Client einen 200 OK.
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
+	
+  \kurzersonderfall[2a.1]{1a}%Letzte Zeile und Nummer
+	  {Benutzername nicht in der Datenbank}%Bezeichnung	
+	
+  \sonderfall[Fehler]{2a}%Letzte Zeile und Nummer
+	  {Passwort passt nicht zu Benutzername}%Bezeichnung
 	  {
-	  \item .
+	  \item Der Fehler wird ins Log geschrieben.
+	  \item An den Client wird ein 403 Access Denied gesendet.
 	  }
 }
 
-\usecase{Nutzerdaten abfragen}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+\usecase{Nutzerdaten abfragen}{Client, Nutzerdaten DB}%Name und Akteure
+{Client bekommt Nutzerdaten}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen Request über \textit{/retrieve} vom Client
 }
 {%Nachbedingungen
-  \item
+  \item Client hat die Nutzerdaten erhalten.
 }
 {%Normalablauf
-  \item
+  \item Suche nach der übermittelten E-Mailadresse in der Datenbank.
+  \item Überprüft ob das übermittelte Passwort zur übermittelten E-Mailadresse passt.
+  \item Nutzerdaten an Client schicken. 
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
+	
+  \kurzersonderfall[2a.1]{1a}%Letzte Zeile und Nummer
+	  {Benutzername nicht in der Datenbank}%Bezeichnung	
+	
+  \sonderfall[Fehler]{2a}%Letzte Zeile und Nummer
+	  {Passwort passt nicht zu Benutzername}%Bezeichnung
 	  {
-	  \item .
+	  \item Der Fehler wird ins Log geschrieben.
+	  \item An den Client wird ein 403 Access Denied gesendet.
 	  }
+  \sonderfall[Fehler]{3a}%Letzte Zeile und Nummer
+	  {TCP}%Bezeichnung
+	  {
+	  \item Der Fehler wird ins Log geschrieben.
+	  \item An den Client wird ein 403 Access Denied gesendet.
+	  } 
 }
 
 
