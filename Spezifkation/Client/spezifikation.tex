@@ -139,9 +139,7 @@ Die Übersetzungen werden mit Hilfe von GNU gettext implementiert.
 \section{Funktionale Anforderungen}
 
 \subsection{Anmeldung und Registrierung}
-Kostenpflichtige als auch kostenlose Berechnungen sollen nur nach Anmeldung am Client möglich sein.
-%TODO: O Rly? Kostenlos ohne Anmeldung?
-Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung durchgeführt hat.
+Wenn der Server eine Anmeldung verlangt so sind kostenpflichtige als auch kostenlose Berechnungen nur nach Anmeldung möglich. Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung durchgeführt hat.
 
 \subsection{Angaben zur Berechnung}
 Am Client soll der User zunächst einen Algorithmus auswählen, mit dem er eine Berechnung durchführen möchte.
@@ -313,6 +311,55 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
 
 \usecase{Route anzeigen}{Benutzer}{Die Route nachverfolgen können}{Eine Route muss berechnet worden sein}{Es wurde eine Route auf die Kartenansicht gezeichnet}{Es wird eine Fehlermeldung ausgegeben}{1. Der Benutzer wählt Route anzeigen aus}{Bei der Berechnung der Route traten Fehler auf}
 
+\subsection*{Administrationsfunktionen}
+\usecase{Benutzer anlegen}
+{Administrator}{Der Administrator will ein Benutzerkonto anlegen.}{Der Administrator ist als solcher eingeloggt.}{Das Konto wurde erfolgreich im System angelegt.}{Der Administrator sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Administrator navigiert zum Formular zum Anlegen eines Nutzers.
+\item Der Administrator gibt die Daten ein.
+\item Der Administrator bestätigt die Angaben.
+\end{enumerate}
+}{Es gab einen Fehler beim Erstellen des Kontos.}
+
+\usecase{Benutzer bearbeiten}
+{Administrator}{Der Administrator will die Daten eines Benutzers bearbeiten.}{Der Administrator ist als solcher eingeloggt.}{Die Daten des Benutzers sind geändert.}{Der Administrator sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Administrator wählt einen Benutzer aus.
+\item Der Administrator ändert die Daten.
+\item Der Administrator bestätigt die Angaben.
+\end{enumerate}
+}{Es gibt einen Fehler.}
+
+\usecase{Benutzer löschen}
+{Administrator}{Der Administrator will einen Benutzer löschen.}{Der Administrator ist als solcher eingeloggt.}{Die Daten des Benutzers und seine alten Abfragen sind gelöscht.}{Der Administrator sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Administrator wählt einen Benutzer aus.
+\item Der Administrator bestätigt das Löschen.
+\end{enumerate}
+}{Es gibt einen Fehler.}
+
+\usecase{Benutzer auflisten}
+{Administrator}{Der Administrator will eine Lister aller Benutzer sehen.}{Der Administrator ist als solcher eingeloggt.}{Der Administrator kann die Benutzer auswählen.}{Der Administrator sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Administrator navigiert zur Benutzerliste.
+\end{enumerate}
+}{Es gibt einen Fehler.}
+
+\usecase{Benutzer anzeigen}
+{Administrator}{Der Administrator will die Daten eines Benutzer sehen.}{Der Administrator ist als solcher eingeloggt.}{Der Administrator sieht die Daten eines Benutzers.}{Der Administrator sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Administrator navigiert zur Benutzerliste.
+\item Der Administrator wählt einen Benutzer aus.
+\end{enumerate}
+}{Es gibt einen Fehler.}
+
+\usecase{Abfragen auflisten}
+{Administrator}{Der Administrator will eine Liste aller Abfragen sehen.}{Der Administrator ist als solcher eingeloggt.}{Der Administrator sieht alle Abfragen.}{Der Administrator sieht eine Fehlermeldung.}{
+\begin{enumerate}
+\item Der Administrator navigiert zur Liste aller Abfragen.
+\end{enumerate}
+}{Es gibt einen Fehler.}
+
 \subsection*{Benutzerverwaltungsfunktionen}
 \usecase{Benutzer registrieren}
 {Benutzer}{Der Benutzer will sich ein Benutzerkonto anlegen.}{Keine}{Das Konto wurde erfolgreich im System angelegt.}{Der Benutzer sieht eine Fehlermeldung.}{
@@ -357,7 +404,7 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
 \end{enumerate}
 }{Es gibt einen Fehler.}
 
-\usecase{Alte Abfrage anzeigen}
+\usecase{Abfrage anzeigen}
 {Benutzer}{Der Benutzer will eine alte Route sehen.}{Der Benutzer hat sich eingeloggt.}{Der Benutzer sieht seine alte Route.}{Der Benutzer sieht eine Fehlermeldung.}{
 \begin{enumerate}
 \item Der Benutzer navigiert zur Abrechnungsansicht.
