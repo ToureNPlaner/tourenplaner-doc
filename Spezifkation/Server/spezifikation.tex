@@ -426,26 +426,52 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 
 
 \usecase{Billinginformationen Abfragen}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+{Die bisherigen und ausstehenden Zahlungen für die bisherigen Berechnungen sollen angezeigt werden, Benutzerübersicht}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server hat einen Get-Request von einem als angemeldeten Benutzer (ungleich Administrator) an /billing erhalten
 }
 {%Nachbedingungen
-  \item
+  \item 
 }
 {%Normalablauf
-  \item
+  \item Der Server liest aus der Datenbank alle vom Benutzer berechnet Jobs aus
+  \item Der Server liest aus der Datenbank die Zahlungsinformationen zu den Jobs aus (evtl. beides in einem Schritt)
+  \item Der Server schickt dem Server eine Liste seiner bisher berechneten Jobs und den fälligen und bisherigen Zahlungen
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item 
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+  \sonderfall[]{}%Letzte Zeile und Nummer
 	  {}%Bezeichnung
 	  {
-	  \item .
+	  \item
 	  }
 }
+
+%TODO: Protokollspezifikation sagt hier noch gar nichts, also gibt's auch keinen Use Case
+%\usecase{Billinginformationen Abfragen}{Client, Abrechnungs DB}%Name und Akteure
+%{Die bisherigen und ausstehenden Zahlungen für die bisherigen Berechnungen sollen angezeigt werden, Administratorübersicht}%Ziel
+%{%Vorbedingungen
+%  \item Der Server hat einen Get-Request von einem als Administrator angemeldeten Benutzer an /billing erhalten
+%}
+%{%Nachbedingungen
+%  \item
+%}
+%{%Normalablauf
+%  \item
+%}
+%{%Sondernachbedingungen und Sonderfälle
+%  \sondernachbedingung{
+%	\item
+%	}
+%  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+%	  {}%Bezeichnung
+%	  {
+%	  \item .
+%	  }
+%}
+
 
 \usecase{Nutzerliste Abfragen}{Client, Abrechnungs DB}%Name und Akteure
 {}%Ziel
@@ -472,24 +498,26 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 
 
 \usecase{Benutzer löschen}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+{Das Benutzerkonto eines Kunden soll von allen Servern gelöscht werden}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server hat einen Get-Request von einem als Administrator angemeldeten Benutzer an /delete erhalten
 }
 {%Nachbedingungen
-  \item
+  \item Der gelöschte Benutzer ist tatsächlich gelöscht
 }
 {%Normalablauf
-  \item
+  \item Der Server, der den Request erhält, löscht den Benutzer aus der Benutzer-Datenbank.
+  %TODO: rechtliche implikationen, nachvollziehbarkeit?
+  %\item Die laufenden Jobs des gelöschten Benutzers werden abgebrochen/doch noch ausgeführt
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Nichts ist passiert.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
+  \sonderfall[Weiter mit normalem Betrieb]{1a}%Letzte Zeile und Nummer
+	  {zu löschender Benutzer existiert nicht}%Bezeichnung
 	  {
-	  \item .
+	  \item Der Server schickt eine entsprechende Fehlermeldung an den Client, der die Lösch-Anfrage verursacht hat
 	  }
 }
 \clearpage
