@@ -884,19 +884,36 @@ Client
 
 \begriff
 {%Begriff
-Request-Log, Abrechnungs-DB
+Abrechnungs-DB, synonym Request-Log
 }{%Bedeutung
--
+Die Abrechnungs-DB (Abrechnungs-Datenbank) speichert alle empfangenen relevanten Requests (Anfragen) von Clients und alle relevanten Responds (Antworten) des Servers, die für die Abrechnung benötigt werden.
 }{%Abgrenzung
--
+Die Abrechnungs-DB ist keine eigenständige Datenbank, sondern ist eine Teilmenge an Tabellen einer Datenbank mit weiteren Tabellen.
 }{%Gültigkeit
 -
 }{%Bezeichnung
--
+Die Abrechnungs-DB und die Benutzer-DB befinden sich im selben Datenbanksystem, beides sind aber verschiedene Datenbank-Tabellen und für die Use-Cases sind es konzeptionell verschiedene Akteure. 
 }{%Unklarheiten
 -
 }{%Querverweise
+Benutzer-DB
+}
+
+\begriff
+{%Begriff
+Benutzer-DB
+}{%Bedeutung
+Die Benutzer-DB (Benutzer-Datenbank) speichert alle nötigen Informationen über die Benutzer des Systems, dabei werden sowohl Admins wie auch Kunden in der Benutzer-DB gespeichert.
+}{%Abgrenzung
+Die Benutzer-DB ist keine eigenständige Datenbank, sondern ist eine Teilmenge an Tabellen einer Datenbank mit weiteren Tabellen.
+}{%Gültigkeit
 -
+}{%Bezeichnung
+Die Abrechnungs-DB und die Benutzer-DB befinden sich im selben Datenbanksystem, beides sind aber verschiedene Datenbank-Tabellen und für die Use-Cases sind es konzeptionell verschiedene Akteure.
+}{%Unklarheiten
+-
+}{%Querverweise
+Abrechnungs-DB
 }
 
 
