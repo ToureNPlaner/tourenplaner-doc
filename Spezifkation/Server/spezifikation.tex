@@ -250,99 +250,85 @@ Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Clien
 {%Bezeichnung
 }
 
-\usecase{Server Informationen abfragen}{Client}%Name und Akteure
+\usecase{Server-Informationen abfragen}{Client}%Name und Akteure
 {%Ziel
-Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten.
+Der Client möchte die Server-Informationen über die Protokollversion und die verfügbaren Algorithmen erhalten
 }{%Vorbedingungen
-\item Der Server ist in Betrieb.
-\item Der Server hat einen Request über \textit{/info} vom Client erhalten.
+\item Der Server ist in Betrieb
+\item Der Server hat einen Request über \textit{/info} vom Client erhalten
 }{%Nachbedingungen
-\item Die Server-Informationen wurden dem Client gesendet.
+\item Die Server-Informationen wurden dem Client gesendet
 }{%Normalablauf
-\item Der Server holt sich die aktuellsten Server-Informationen.
-\item Der Server sendet die aktuellsten Server-Informationen als Response.
+\item Der Server holt sich die aktuellsten Server-Informationen
+\item Der Server sendet die aktuellsten Server-Informationen als Response
 }{%Sondernachbedingungen und Sonderfälle
 \sondernachbedingung{
-	\item Der Server führt seine Arbeit wie gewohnt fort.
-	\item Fehlermeldungen wurden soweit möglich und nötig verschickt und ins Log gespeichert.}
+	\item Der Server führt seine Arbeit wie gewohnt fort
+	\item Die Fehlermeldungen wurden ins Log geschrieben}
 
-\sonderfall{1a}%Letzte Zeile und Nummer
+\sonderfall{2a}%Letzte Zeile und Nummer
 	{%Bezeichnung
-	Zugriff auf Server-Informationen nicht möglich
+	TCP/IP Verbindung abgebrochen
 	}{%Sonderfallablauf
-	\item Fehlermeldung "`Zugriff auf Server-Informationen nicht möglich"' ins Log schreiben
-  	\item Fehlermeldung "`Zugriff auf Server-Informationen nicht möglich"' an Admins verschicken
-  	\item Fehlermeldung an Client schicken}
-
-\sonderfall{1a.3a}%Letzte Zeile und Nummer
-	{%Bezeichnung
-	TCP/IP Verbindung abgebrochen, serverseitge Ursache
-	}{%Sonderfallablauf
-	\item Fehlermeldung "`Serverseitiger Internetausfall"' ins Log schreiben
-  	\item Fehlermeldung "`Serverseitiger Internetausfall"' an Admins verschicken}
-
-\sonderfall{1a.3b}%Letzte Zeile und Nummer
-	{%Bezeichnung
-	TCP/IP Verbindung abgebrochen, clientseitge Ursache
-	}{%Sonderfallablauf
-	\item Der Fehler "Clientseitiger Verbindungsabbruch" wird ins Log geschrieben.}
-  	
-\kurzersonderfall[1a.3.1]{2a}%Letzte Zeile und Nummer
-	{%Bezeichnung
-	TCP/IP Verbindung abgebrochen, serverseitge Ursache}
-	
-\sonderfall{2b}%Letzte Zeile und Nummer
-	{%Bezeichnung
-	TCP/IP Verbindung abgebrochen, clientseitge Ursache
-	}{%Sonderfallablauf	
-	\item Der Fehler "Clientseitiger Verbindungsabbruch" wird ins Log geschrieben.}
+	\item Fehlermeldung "`TCP/IP Verbindung abgebrochen"' ins Log schreiben}
 }
 
 
 
-\usecase{Probleminstanz bearbeiten}{Client, Abrechnungs DB}%Name und Akteure
+\usecase{Probleminstanz bearbeiten}{Client, Abrechnungs-DB}%Name und Akteure
 {Der Client möchte eine Probleminstanz berechnet haben}%Ziel
 {%Vorbedingungen
-  \item Der Server ist in Betrieb.
-  \item Der Server hat einen Request über \textit{/algsuffix} vom Client erhalten.
+  \item Der Server ist in Betrieb
+  \item Der Server hat einen Request über \textit{/algsuffix} vom Client erhalten
 }
 {%Nachbedingungen
   \item Der Client hat das Berechnungsergebnis erhalten
-  \item Der Server hat die Berechnung in der Abrechnungs DB gelogged
+  \item Der Server hat die Berechnung in der Abrechnungs-DB gelogged
 }
 {%Normalablauf
-  \item Der Server schreibt den zu berechnenden Request als \textit{pending} in die Abrechnungs DB
+  \item Der Server schreibt den zu berechnenden Request als \textit{pending} in die Abrechnungs-DB
   \item Der Server wählt die passende Algorithmusinstanz aus den vorhandenen Algorithmen
   \item Der Server berechnet mit der Algorithmusinstanz die Lösung der Probleminstanz
-  \item Der Server trägt die Lösung in die Abrechnungs DB ein (nun nicht mehr \textit{pending})
+  \item Der Server trägt die Lösung in die Abrechnungs-DB ein (nun nicht mehr \textit{pending})
   \item Der Server sendet die Lösung an den Client
   }
 {%Sondernachbedingungen und Sonderfälle
 \sondernachbedingung{
-  \item Der Server führt seine Arbeit wie gewohnt fort
-}
-\sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	{Verbindung zu Abrechnungs DB verloren}%Bezeichnung
+	\item Der Server führt seine Arbeit wie gewohnt fort, solange kein kritischer Fehler aufgetreten ist
+	\item Die Fehlermeldungen wurden ins Log geschrieben
+	}
+\sonderfall[Kritischer Fehler, Server ist beendet]{1a}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB verloren}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Fehler "`Verbindung zu Abrechnungs-DB verloren"' wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
 	\item Der Server wird beendet
   	}
-\sonderfall[Panic]{4a}%Letzte Zeile und Nummer
-	{Verbindung zu Abrechnungs DB verloren}%Bezeichnung
-	{\item \textit{siehe 2a}}
+
+\kurzersonderfall[Weiter mit Schritt 5a.1]{1a.2a}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+
 \sonderfall[Weiter mit normalem Betrieb]{2a}%Letzte Zeile und Nummer
 	{Keine Passende Algorithmusinstanz}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben
+	\item Der Fehler "`Keine Passende Algorithmusinstanz"' wird ins Log geschrieben
 	\item Der Client erhält eine entsprechende Fehlermeldung
   	}
+
+\kurzersonderfall[Weiter mit Schritt 5a.1]{2a.2a}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+
 \sonderfall[Weiter mit normalem Betrieb]{3a}%Letzte Zeile und Nummer
 	{Die Berechnung bricht mit einem Fehler ab}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben
-	\item Der Request wird in der Abrechnungs DB auf failed gesetzt und der genaue Fehler eingetragen
+	\item Der Fehler "`Berechnung wegen Fehler abgebrochen"' wird ins Log geschrieben
+	\item Der Request wird in der Abrechnungs-DB auf \textit{failed} gesetzt und der genaue Fehler eingetragen
 	\item Der Client erhält eine entsprechende Fehlermeldung
   	}
+
+\kurzersonderfall[Weiter mit Schritt 1a.1]{4a}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB verloren}%Bezeichnung
+
 \sonderfall[Weiter mit normalem Betrieb]{5a}%Letzte Zeile und Nummer
 	{TCP/IP Verbindung abgebrochen}%Bezeichnung
   	{\item Der Fehler wird ins Log geschrieben
