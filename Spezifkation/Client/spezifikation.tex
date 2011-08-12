@@ -60,7 +60,7 @@
 
 \section{Einleitung}
 \subsection{Zweck der Spezifikation}
-Die Spezifikation beschreibt die Anforderungen und Funktionalitäten von Tourenplaner. Sie ist die Grundlage für alle folgenden Dokumente; insbesondere muss sie ständig mit dem Entwurf verglichen und bei Bedarf angepasst werden.
+Die Spezifikation beschreibt die Anforderungen und Funktionalitäten von ToureNPlaner. Sie ist die Grundlage für alle folgenden Dokumente; insbesondere muss sie ständig mit dem Entwurf verglichen und bei Bedarf angepasst werden.
 
 Bei der Erstellung der Spezifikation wurde bewusst auf die Festlegung von Implementierungsdetails verzichtet, um gewisse Freiheiten in der Umsetzung der Anforderungen zu erhalten.
 
@@ -75,7 +75,7 @@ Der Leserkreis dieses Dokuments besteht aus folgenden Personengruppen:
 
 \subsection{Einsatzbereich und Ziele}
 
-In diesem Project sollen die Clients für das ToureNPlaner-Projekt realisiert werden.
+In diesem Projekt sollen die Clients für das ToureNPlaner-Projekt realisiert werden.
 Diese dienen der einfachen Nutzung der Funktionalitäten, die der ToureNPlaner-Server zur Verfügung steht.
 Dazu soll es möglich sein, einfach Strecken und Touren zu definieren und vom Server berechnen zu lassen.
 
@@ -88,66 +88,71 @@ Alle in dieser Spezifikation verwendeten Fachbegriffe werden im sich im Anhang b
 \subsection{Aufbau dieses Dokuments}
 
 Neben einer allgemeinen Beschreibung des Systems sollen die Anforderungen an die Funktionen des Systems und die geforderten Qualitäten hinsichtlich der Software dokumentiert werden. 
-Im Anschluß hierzu wird auf die Benutzeroberfläche und im nächsten Schritt auf die Anwendungsfälle des Systems näher eingegangen. 
+Im Anschluss hierzu wird auf die Benutzeroberfläche und im nächsten Schritt auf die Anwendungsfälle des Systems näher eingegangen. 
 Das Dokument endet schließlich mit einem angehängten Begriffslexikon.
 
 \section{Nichtfunktionale Anforderungen}
-\subsection{Mengengerüst}
-\label{Mengengeruest}
-Die mindest Punktanzahl um einen sinnvollen Weg zu berechnen beträgt 2.
-Nach obenhin soll ToureNPlaner mit bis zu 100 Punkten zurecht kommen.\\
-Der Client wird immer nur von einem Benutzer gleichzeitig verwendet.
+
+\subsection{Mengengerüst} \label{Mengengeruest}
+
+Folgende Kenngrößen sind für das System relevant:
+\begin{itemize}
+\item Es werden mindestens 2 Punkte benötigt, um einen sinnvollen Weg berechnen zu können.
+\item Als obere Grenze soll ToureNPlaner bis zu 100 Punkte anzeigen bzw. verwalten können.
+\item Der Client wird immer nur von einem Benutzer gleichzeitig verwendet.
+\end{itemize}
 
 \subsection{Entwurfseinschränkungen}
+
 \subsubsection{Systemumgebung}
-Der Webclient wir auf der aktuellen Version von Firefox - Version 5 - und Chromium - Version 13 - lauffähig sein.\\
-Für Android setzten wir Version 2.1 oder neuer voraus.
+Der Webclient soll mindestens auf den aktuellen Versionen von Firefox (Version 5) und Chromium/Google Chrome (Version 13) lauffähig sein.\\
+Für Android wird Version 2.1 oder höher vorausgesetzt.
 
 \subsubsection{Layout und Gestaltung}
-Die Oberfläche wir beim Webclient mit Hilfe von HTML 5 und CSS 3, die des Androidclient mit XML und den Android Developer Tools umgesetzt.
+Die Oberfläche wird beim Webclient mit Hilfe von HTML 5 und CSS 3, die des Androidclient mit XML und den Android Developer Tools umgesetzt.
 
-\subsubsection{Datenhaltung}
-\label{datenhaltung}
+\subsubsection{Datenhaltung} \label{datenhaltung}
 Im Webclient werden die benötigten Daten in Cookies abgelegt.\\
-Der Androidclient benutz hierzu eine Konfigurations-API.
+Der Androidclient benutzt hierzu die vom Android SDK bereitgestellte Konfigurations-API.
 
 \subsection{Robustheit}
-Der Webclient verfügt über keine besondere Robustheit.\\
-Auf Android können Daten wiederhergestellt werden.
+Der Webclient verfügt über keine besondere Robustheit, da wichtige Daten auf dem Server vorgehalten werden.\\
+Auf Android können Daten beim Wechseln der Aktivitäten wiederhergestellt werden, solange sie sich noch im Speicher befinden.
 
 \subsection{Portabilität}
 Der Webclient ist gut auf andere Browser adaptierbar.\\
-Android ist wegen des ADTs nur auf Android-Geräten lauffähig.
+Der Androidclient ist wegen der ADTs und der verwendeten Programmiersprache (Java) nur auf Android-Geräten lauffähig.
 
 \subsection{Erweiterbarkeit}
-Alle Informationen über Algorithem kommt vom Server, deshalb können einfach neue Algorithem hinzugefügt werden.
-Daher werden nur Algorithem unterstützt, welche mit Pfaden auf einem Graphen arbeiten.
+Alle Informationen über Algorithmen kommen vom Server, weshalb einfach neue Algorithmen hinzugefügt werden können.
+Dabei werden nur Algorithmen unterstützt, die mit Pfaden auf einem Graphen arbeiten. Diese Pfade müssen auf einer Karte darstellbar sein.
 
 \subsection{Distributionsform und Installation}
-Zur Installation müssen die Daten für die Webclienten auf den Webserver kopiert werden.\\
-Für den Androidclient werden Android Packages (APKs) verfügbar sein.
+Verteilt wird der Webclient in Form einer Zipdatei (oder einem ähnlichen Kompressionsformat). Zur Installation müssen die enthaltenen Dateien in den Pfad eines Webservers kopiert werden.\\
+Für den Androidclient werden Android Packages (APKs) zur Verfügung gestellt.
 
 \subsection{Sprachunterstützung}
-Beide Client haben dieselbe Übersetztungsdateien als Grundlange, somit soll Konsitenz gewährleistet werden.
+Beide Clients haben dieselben Übersetzungsdateien als Grundlage, um eine sprachliche Konsistenz gewährleisten zu können.
 Die Übersetzungen werden mit Hilfe von GNU gettext implementiert.
 
 \clearpage
 \section{Funktionale Anforderungen}
+
 \subsection{Anmeldung und Registrierung}
 Kostenpflichtige als auch kostenlose Berechnungen sollen nur nach Anmeldung am Client möglich sein.
-Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung am WebClient durchgeführt hat.
+%TODO: O Rly? Kostenlos ohne Anmeldung?
+Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung durchgeführt hat.
 
 \subsection{Angaben zur Berechnung}
 Am Client soll der User zunächst einen Algorithmus auswählen, mit dem er eine Berechnung durchführen möchte.
-Anschließend soll er mithilfe der Karte folgende Operationen durchführen können, 
-bevor er seine Berechnung an den Server abschickt:
+Anschließend soll er mithilfe der Karte folgende Operationen durchführen können, bevor er seine Berechnung an den Server abschickt:
 \begin{itemize}
  \item Start- und Zielpunkt setzen
  \item ggfs. weitere Punkte hinzufügen
  \item bereits gesetzte Punkte editieren
  \item bereits gesetzte Punkte löschen.
 \end{itemize}
-Hat der User seine Angaben zum Algorithmus getätigt, so kann er diese letzendlich zum Server abschicken.
+Hat der User seine Angaben zum Algorithmus getätigt, so kann er diese letztendlich zum Server abschicken.
 
 \subsection{Betrachten des Ergebnis}
 Nachdem das Ergebnis vom Server zurückgesendet wurde, soll dieses in Form einer Route auf der Karte angezeigt werden.
@@ -161,8 +166,7 @@ Dem User sollen dabei folgende Funktionen zur Verfügung stehen:
 Der User soll seine Benutzerdaten anzeigen und bearbeiten können.
 
 \subsection{Billing}
-Der User soll über den WebClient Zugriff auf seine Billing-Informationen haben.
-
+Der User soll über den Webclient Zugriff auf seine Billing-Informationen haben.
 
 \subsection{Administration}
 Der Administrator soll auf eine Übersicht aller Benutzer zugreifen können, auf der folgende Funktionalitäten verfügbar sind:
@@ -176,9 +180,11 @@ Zudem soll er eine Übersicht aller getätigten Requests erhalten.
 
 \clearpage
 \section{Benutzeroberfläche}
-\subsection{Web-Client}
+
+\subsection{Webclient}
+
 \subsubsection{Überblick}
-Die Benutzeroberfläche des Web-Clients ermöglicht folgende Funktionen
+Die Benutzeroberfläche des Webclients ermöglicht folgende Funktionen
 \begin{itemize}
 \item Anmeldung mit Benutzernamen und Kennwort
 \item Funktion: ’Passwort vergessen?’
@@ -191,7 +197,8 @@ Die Benutzeroberfläche des Web-Clients ermöglicht folgende Funktionen
 \item Berechnung der Route
 \item Anzeigen der Route auf der Kartenasicht
 \end{itemize}
-\subsubsection{Darstellung des Web-Clients}
+
+\subsubsection{Darstellung des Webclients}
 Folgende Abbildung dient als Vorlage zur genauen Realisierung der Benutzeroberfläche.
 
 \includegraphics[scale=0.30]{media/web/Index.png} 
@@ -203,7 +210,7 @@ Operationsmöglichkeiten des Benutzers auf der eingeblendeten Kartenansicht.
 \item kurzer Rechtsklick blendet ein Kontextmenü ein
 \item kurzer Linksklick auf einen Marker ermöglicht das Verändern seiner Eigenschaften
 \item gedrückter Linksklick ändert den Fokus auf der Karte durch ziehen
-\item das Mausscrollrad ermöglicht die Änderung des Zoomfaktors
+\item das Mausrad ermöglicht die Änderung des Zoomfaktors
 \end {itemize}
 Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pfades, auf der Karte nachvollzogen werden.
 
@@ -224,9 +231,10 @@ In diesem Pop-up kann sich der Benutzer die Kosten für seine bisherigen Berechn
 \end {center}
 
 \newpage
-\subsection{Android-Client}
+\subsection{Androidclient}
+
 \subsubsection{Überblick}
-Die Benutzeroberfläche des Android-Clients ermöglicht folgende Funktionen
+Die Benutzeroberfläche des Androidclients ermöglicht folgende Funktionen
 \begin{itemize}
 \item Auswahl eines Servers
 \item Anmeldung mit Benutzernamen und Kennwort
@@ -239,7 +247,8 @@ Die Benutzeroberfläche des Android-Clients ermöglicht folgende Funktionen
 \item Berechnung der Route
 \item Anzeigen der Route auf der Kartenasicht
 \end{itemize}
-\subsubsection{Darstellung des Android-Clients}
+
+\subsubsection{Darstellung des Androidclients}
 Es folgen nun Layouts aller 'Activities', die als Vorlage zur genauen Realisierung dienen.
 
 \subsubsection{Auswahl des Servers}
