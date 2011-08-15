@@ -36,22 +36,24 @@
 
 \newcommand{\requestURL}[1]{\textit{#1}}
 
-\newcommand{\request}[8]
+\newcommand{\request}[9]
 {\subsection{#1}
 \begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
 \hline
   URL & \requestURL{#2}\\\hline
     Beschreibung & #3\\\hline
   HTTP-Method & #4\\\hline
-  Auth & #5\\\hline
-  SSL & #6\\\hline
-  Parameter & #7\\\hline
-  Erwarteter Status-Code & #8\\\hline
+  Server-Typ & #5\\\hline
+  Authentifizierung & #6\\\hline
+  SSL & #7\\\hline
+  Parameter & #8\\\hline
+  Status-Code Sonderfall & #9\\\hline
  \end{tabular}\vspace*{1em}}
 %\request{}%Name
 {}%URL
 {}%Beschreibung
 {}%HTTP-Method
+{}%Server-Typ
 {}%Auth
 {}%SSL
 {}%Parameter
@@ -107,6 +109,38 @@
 	\subsection{World Geodetic System 1984}
 	
 	Zur Kodierung der Längen- und Breitengrade einer Position auf der Karte wird das WGS 84 verwendet.
+	
+	\subsection{Standardablauf einer Abfrage}
+	Bei erfolgreicher Bearbeitung einer Abfrage antwortet der Server mit dem HTTP-Status-Code 200 OK und gibt eine evtl. Antwort im HTTP-Body als JSON Objekt zurück. Bei einem Fehler gibt der Server einen entsprechenden Status-Code $>$= 400 und weitere Informationen zum Fehler im HTTP-Body als JSON Objekt zurück. siehe Fehlerliste %TODO
+
+
+	\subsection{Benutzerobjekt}
+	%TODO 
+	Für jeden Benutzer müssen in einer Datenbanktabelle die Informationen gespeichert werden, die zum Login sowie zur Rechnungserstellung benötigt werden. 
+	Das sind:
+	
+	\begin{itemize}
+		\item Email
+		\item Passwort
+		\item Vorname
+		\item Nachname
+		\item Rechnungsadresse
+		\item Adminflag
+	\end{itemize}
+	
+	Das Passwort sollte dabei durch einen sicheren Hash repräsentiert werden.
+	
+	Zudem wird für die Rechnungserstellung und das Debugging in einer Tabelle alle eingehenden Anfragen, sowie die Ausführungsdauer und die Kosten abgespeichert.
+	Diese Tabelle enthält folgende Daten:
+	
+	\begin{itemize}
+		\item UserId
+		\item Zeitpunkt der Anfrage
+		\item die Anfrage
+		\item das Ergebnis
+		\item Berechnungsdauer (in CPU-Zeit)
+		\item Kosten (evtl. berrechnet statt gespeichert)
+	\end{itemize}	
 
 \clearpage
 \section{Server}
@@ -115,6 +149,7 @@
 {/info}
 {Dient zur Abfrage der vorhandenen Algorithmen und anderer Eigenschaften.}
 {GET}
+{Öffentlich und privat}
 {Nie}
 {Nie}
 {Keine}
@@ -165,8 +200,6 @@
     
     \subsubsection*{Algorithmen}
     
-    Pro Algorithmus können noch die folgenden Optionen angegeben werden.
-    
     \noindent \begin{tabular}{|c|p{11.5cm}|}
     	\hline
     	\textbf{Feld} & \textbf{Beschreibung} \\ 
@@ -210,15 +243,18 @@
 Auf den meisten Servern wird ein Benutzer einen Account benötigen und muss eingeloggt sein, um einen Algorithmus auf dem Server laufen lassen zu können.
 Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeiten seines Accounts gegeben, sowie eine Auflistung der durchgeführten Requests sowie ihrer Kosten.
 
-	\subsection{Registrierung}
-	
-	Bei der Registrierung werden Email, Passwort, Vor- und Nachname sowie die Rechnungsadresse (falls benötigt) abgefragt. 
-	Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Client statt.
-	
-		\subsubsection*{Request}
+\request{Registrierung}%Name
+{/registeruser}%URL
+{Dient zur Erstellung eines Benutzerkontos.\par Dazu werden E-Mail, Passwort, Vor- und Nachname sowie die Rechnungsadresse übermittelt. 
+	Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Client statt.}%Beschreibung
+{POST}%HTTP-Method
+{Privat}
+{Notwendig für direktes Freischalten (Admin)}%Auth
+{Immer}%SSL
+{Keine}%Parameter
+{401 Unauthorized: Admin Authentifizierung fehlgeschlagen \par 403 Forbidden: Benutzer schon vorhanden}%Status-Code
 		
-		Ein POST-Request an \textit{/register} mit folgender Datenstruktur:
-		
+		\subsubsection{Beispiel}
 		\begin{lstlisting}
 {
 	"email": "max.mustermann@online.de",
@@ -226,74 +262,72 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 	"firstname": "Max",
 	"lastname": "Mustermann",
 	"adress": "Musterstrasse 10, 12345 Musterstadt"
-	
 }
 		\end{lstlisting}
 		
-		\subsubsection*{Response}
-		
-		Der Server liefert bei erfolgreicher Registrierung ein 200 OK zurück, im Fehlerfall den entsprechenden Fehlercode und zusätzlich eine Fehlermeldung.
-		
-	\subsection{Login}
-	
-	Zum Einloggen muss der Benutzer nur seine Emailadresse und sein Passwort angeben.
-	Diese werden bei jedem weiteren Request per HTTP Basic Authentication mitgeschickt.
-	Der Loginrequest dient deshalb nur der einmaligen Überprüfung auf Korrektheit.
-	
-		\subsubsection*{Request}
-		
-		Ein GET-Request an \textit{/login} mit den Daten im HTTP Basic Authentication Header.
-		
-		\subsubsection*{Response}
-		
-		Der Server antwortet entweder mit einem 200 OK Status oder gibt ein 403 Access Denied zurück.
-		
-	\subsection{Anzeigen}
-	
-	Da die Daten des Nutzers zuerst nicht lokal gespeichert sind, müssen diese zuerst vom Server geholt werden. Nach dem erstmaligen Anzeigen bzw. Bearbeiten der Daten könnten diese vom Client für diese Session gecached werden.
-	
-		\subsubsection*{Request}
-		
-		Ein GET-Request an \textit{/retrieve}. Optional mit GET-Parameter Benutzer-ID.
-		
-		\subsubsection*{Response}
-		
-		Falls keine ID mitgegeben wurden, wird die ID des Benutzers mit Hilfe der HTTP Basic Authentication Daten gesucht. Anschließend werden die Daten im Format der Registrierung zurückgeliefert.
-		
-	\subsection{Bearbeiten}
+\request{Authentifizierung}%Name
+{/authuser}%URL
+{Überprüfung von Benutzername und Passwort.}%Beschreibung
+{GET}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{Keine}%Parameter
+{401 Unauthorized: Benutzername/Passwort falsch}%Status-Code		
+\clearpage
 
-	Um an die Daten des Benutzers zu kommen, müssen diese vor dem Start des Bearbeitens erst einmal vom Server geholt werden. Siehe dazu "Anzeigen". Nach dem Bearbeiten werden die Daten im Format der Registrierung wieder an den Server zurückgeschickt.
+\request{Benutzerdaten abfragen}%Name
+{/getuser}%URL
+{Holt die eigenen Benutzerdaten. Falls der Parameter ID angegeben ist, werden die Daten eines anderen Benutzers geliefert (Admin).}%Beschreibung
+{GET}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{ID}%Parameter
+{401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code
+\subsubsection{Beispiel}
+%TODO
+\clearpage
+
+
+\request{Benutzerdaten ändern}%Name
+{/updateuser}%URL
+{Ändert die eigenen Benutzerdaten. Falls der Parameter ID angegeben ist, werden die Daten eines anderen Benutzers geändert (Admin)}%Beschreibung
+{POST}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{ID}%Parameter
+{401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code		
+\subsubsection{Beispiel}
+%TODO
+\clearpage
+
+\request{Abfragenverlauf abrufen}%Name
+{/listrequests}%URL
+{Ruft die eigenen Abfragen ab. Falls der Parameter ID angegeben ist, werden die Daten eines anderen Benutzers abgerufen. Limit limitiert die Anzahl der zurückgelieferten Datensätze. Offset gibt den Offset zum ersten Datensatz an. (Admin)}%Beschreibung
+{POST}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{ID, Limit, Offset}%Parameter
+{401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code		
 	
-	\subsubsection*{Request}
-		
-		Ein POST-Request an \textit{/update}.
-	
-	\subsubsection*{Response}
-	Dieser antwortet mit einem Status 200 OK oder einer Fehlermeldung und dem entsprechenden Fehlercode.
-	
-	\subsection{Billing}
-	
-	Hierbei werden alle bisherigen Anfragen an den Dienst zurückgeliefert, inklusive der dabei entstandenen Kosten.
-	
-		\subsubsection*{Request}
-		
-		Ein GET-Request an \textit{/billing}.
-		
-		\subsubsection*{Response}
-		
-		Da keine Daten mitgegeben wurden, wird die ID des Benutzers mit Hilfe der HTTP Basic Authentication Daten gesucht und alle Billinginformationen in folgender Form zurückgeliefert:
-		
+\subsubsection{Beispiel}		
 		\begin{lstlisting}
-[
-	{
-		"timestamp": 20000000,
-		"request": { ... },
-		"result":{ ... },
-		"duration": 12.5,
-		"costs": 2.45
-	},
-	{...}
-]
+{
+	"number": 100
+	"requests": [
+		{
+			"timestamp": 20000000,
+			"request": { ... },
+			"result":{ ... },
+			"duration": 12.5,
+			"costs": 2.45
+		},
+		...
+	]
+}
 		\end{lstlisting}
 		
 		Ein solcher Datensatz besteht also aus einem Zeitstempel (timestamp), der Anfrage (request), das Ergebnis (result), der Dauer (duration) und den Kosten (costs).
@@ -307,54 +341,48 @@ Es wird nur noch ein weiterer Parameter (id) übergeben, um den Benutzer auszuw�
 
 Zusätzlich gibt es für Administratoren die Möglichkeit Benutzer zu löschen und Benutzer ohne Registrierungsformular anzulegen.
 
-	\subsection{Benutzerübersicht}
-	
-		\subsubsection*{Request}
-		
-		Ein GET-Request an \textit{/users}.
-		
-		Es besteht die Möglichkeit die Anzahl der zurückgegebenen Benutzer über die GET-parameter "limit" und "offset" zu ändern. Dabei gibt "limit" die maximale Anzahl zurückgegebener Benutzer an und "offset" die Verschiebung vom ersten Benutzer.
-		
-		\subsubsection*{Response}
-		
-		Zurückgegeben wird ein Array aller Benutzer bzw., bei Angabe entsprechender Parameter, nur ein Teil der Benutzer, oder ein Status 403 Access denied, wenn der Benutzer nicht über genügend Rechte verfügt.
-		
-		Das Array enthält dabei alle Daten des jeweiligen Benutzers in Form eines Objektes.
-	
-	\subsection{Benutzer anlegen}
-	
-		Im Prinzip funktioniert das Ganze genau wie bei der Registrierung, nur dass diese für bereits registrierte Nutzer nicht zur Verfügung steht.
-	
-		\subsubsection*{Request}
-		
-		Ein POST-Request an \textit{/register}. Siehe Registrierung.
-		
-		\subsubsection*{Response}
-		
-		Der Server liefert bei erfolgreicher Registrierung ein 200 OK zurück, im Fehlerfall den entsprechenden Fehlercode und zusätzlich eine Fehlermeldung.
-	
-	\subsection{Benutzer löschen}
-	
-		\subsubsection*{Request}
-		
-		Ein GET-Request an \textit{/delete} mit dem Parameter 		"`id"'.
-		Dieser sollte auf einen vorhandenen Benutzer zeigen.
-		
-		\subsubsection*{Response}
-		
-		War das Löschen erfolgreich, so gibt der Server einen Status 200 OK.
-		Sollte der Benutzer kein Admin sein, so gibt der Server einen Status 403 Access denied zurück.
-		Kam es zu einem anderen Fehler, so gibt der Server den entsprechenden Fehlerstatus zurück und liefert eine Fehlermeldung mit.
-		
+\request{Benutzerliste abrufen}%Name
+{/listusers}%URL
+{Limit limitiert die Anzahl der zurückgelieferten Datensätze. Offset gibt den Offset zum ersten Datensatz an.}%Beschreibung
+{GET}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{Limit, Offset}%Parameter
+{401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code
+\subsubsection{Beispiel}
+\clearpage
+
+\request{Benutzer löschen}%Name
+{/listusers}%URL
+{Löscht den Benutzer mit der angegeben ID.}%Beschreibung
+{GET}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{ID}%Parameter
+{401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code
+\clearpage
    	
 \section{Algorithmen}
 
 Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur ein generelles Format vorgegeben. Die korrekten Parameter können der Dokumentation des jeweiligen Algorithmus bzw. den Serverinformationen entnommen werden.
 
-	\subsection*{Request}
-	
-	Der Request wird als POST-Request an den URL-Suffix des Algorithmuses geschickt. Dieser kann den Serverinformationen entnommen werden.
-	
+\request{Abfrage starten}%Name
+{/alg\texttt{\$\{shortname\}}}%URL
+{Startet einen Berechnungsvorgang für Algorithmus \texttt{\$\{shortname\}} mit der mitgegebenen Probleminstanz.}%Beschreibung
+{POST}%HTTP-Method
+{Privat und öffentlich}%Server-Typ
+{Nötig wenn privat}%Auth
+{Nötig wenn privat}%SSL
+{Keine}%Parameter
+{Gemeinsam:\par
+400 Bad Request: Die Probleminstanz ist fehlerhaft\par
+503 Service Unavailable: Server ausgelastet\par
+Privat:\par
+ 401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code
+
+\subsubsection{Beispiel}
 	\begin{lstlisting}
 {
     "version": 1,
@@ -395,12 +423,7 @@ Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur
 	    	\hline
 	    \end{tabular}
     
-	\subsection*{Response}
-	
-	Der Server antwortet mit einem Status 200 OK oder einer Fehlermeldung mit entsprechendem Code.
-	
-	Bei erfolgreichem Request wird zudem die folgende Struktur mitgesendet.
-	
+    \subsubsection{Antwort}	
 	\begin{lstlisting}
 {
 	"points": [
@@ -436,36 +459,5 @@ Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur
 	    	misc.distance & Ein Beispielergebnis, in diesem Fall die Distanz zwischen Start und Ziel.\\
 	    	\hline
 		\end{tabular}
-	
-
-\section{Anhang}
-
-	\subsection{Gespeicherte Daten}
-	
-	Für jeden Benutzer müssen in einer Datenbanktabelle die Informationen gespeichert werden, die zum Login sowie zur Rechnungserstellung benötigt werden. 
-	Das sind:
-	
-	\begin{itemize}
-		\item Email
-		\item Passwort
-		\item Vorname
-		\item Nachname
-		\item Rechnungsadresse
-		\item Adminflag
-	\end{itemize}
-	
-	Das Passwort sollte dabei durch einen sicheren Hash repräsentiert werden.
-	
-	Zudem wird für die Rechnungserstellung und das Debugging in einer Tabelle alle eingehenden Anfragen, sowie die Ausführungsdauer und die Kosten abgespeichert.
-	Diese Tabelle enthält folgende Daten:
-	
-	\begin{itemize}
-		\item UserId
-		\item Zeitpunkt der Anfrage
-		\item die Anfrage
-		\item das Ergebnis
-		\item Berechnungsdauer (in CPU-Zeit)
-		\item Kosten (evtl. berrechnet statt gespeichert)
-	\end{itemize}	
 
 \end{document}
