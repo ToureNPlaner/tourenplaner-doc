@@ -16,7 +16,7 @@
 
 \graphicspath{{./grafiken/}}
 
-\author{Christoph Haag, Peter Vollmer, Sascha Meusel, Niklas Schnelle}
+\author{Christoph Haag, Sascha Meusel, Niklas Schnell, ePeter Vollmer}
 \title{Spezifikation ToureNPlaner Server\\ Stupro 2011/2012}
 
 \newcommand{\shortcut}[1]
@@ -259,14 +259,13 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 }{%Nachbedingungen
 \item Die Server-Informationen wurden dem Client gesendet
 }{%Normalablauf
-\item Der Server holt sich die aktuellsten Server-Informationen
 \item Der Server sendet die aktuellsten Server-Informationen als Response
 }{%Sondernachbedingungen und Sonderfälle
 \sondernachbedingung{
 	\item Der Server führt seine Arbeit wie gewohnt fort
 	\item Die Fehlermeldungen wurden ins Log geschrieben}
 
-\sonderfall{2a}%Letzte Zeile und Nummer
+\sonderfall[Weiter mit normalem Betrieb]{1a}%Letzte Zeile und Nummer
 	{%Bezeichnung
 	TCP/IP Verbindung abgebrochen
 	}{%Sonderfallablauf
@@ -275,7 +274,7 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 
 
 
-\usecase{Probleminstanz bearbeiten}{Client, Abrechnungs-DB}%Name und Akteure
+\usecase{Probleminstanz verarbeiten}{Client, Abrechnungs-DB, Benutzer-DB}%Name und Akteure
 {Der Client möchte eine Probleminstanz berechnet haben}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb
@@ -286,10 +285,11 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
   \item Der Server hat die Berechnung in der Abrechnungs-DB gelogged
 }
 {%Normalablauf
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
   \item Der Server schreibt den zu berechnenden Request als \textit{pending} in die Abrechnungs-DB
   \item Der Server wählt die passende Algorithmusinstanz aus den vorhandenen Algorithmen
   \item Der Server berechnet mit der Algorithmusinstanz die Lösung der Probleminstanz
-  \item Der Server trägt die Lösung in die Abrechnungs-DB ein (nun nicht mehr \textit{pending})
+  \item Der Server trägt die Lösung in die Abrechnungs-DB ein und entfernt die \textit{pending}-Markierung
   \item Der Server sendet die Lösung an den Client
   }
 {%Sondernachbedingungen und Sonderfälle
@@ -297,205 +297,638 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	\item Der Server führt seine Arbeit wie gewohnt fort, solange kein kritischer Fehler aufgetreten ist
 	\item Die Fehlermeldungen wurden ins Log geschrieben
 	}
-\sonderfall[Kritischer Fehler, Server ist beendet]{1a}%Letzte Zeile und Nummer
-	{Verbindung zu Abrechnungs-DB verloren}%Bezeichnung
-  	{
-	\item Der Fehler "`Verbindung zu Abrechnungs-DB verloren"' wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
-  	}
-
-\kurzersonderfall[Weiter mit Schritt 5a.1]{1a.2a}%Letzte Zeile und Nummer
-	{TCP/IP Verbindung abgebrochen}%Bezeichnung
-
-\sonderfall[Weiter mit normalem Betrieb]{2a}%Letzte Zeile und Nummer
+\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+    
+\sonderfall[Weiter mit normalem Betrieb]{3a}%Letzte Zeile und Nummer
 	{Keine Passende Algorithmusinstanz}%Bezeichnung
   	{
-	\item Der Fehler "`Keine Passende Algorithmusinstanz"' wird ins Log geschrieben
+	\item Der Fehler wird ins Log geschrieben
 	\item Der Client erhält eine entsprechende Fehlermeldung
   	}
 
-\kurzersonderfall[Weiter mit Schritt 5a.1]{2a.2a}%Letzte Zeile und Nummer
-	{TCP/IP Verbindung abgebrochen}%Bezeichnung
-
-\sonderfall[Weiter mit normalem Betrieb]{3a}%Letzte Zeile und Nummer
+\sonderfall[Weiter mit normalem Betrieb]{4a}%Letzte Zeile und Nummer
 	{Die Berechnung bricht mit einem Fehler ab}%Bezeichnung
   	{
-	\item Der Fehler "`Berechnung wegen Fehler abgebrochen"' wird ins Log geschrieben
+	\item Der Fehler wird ins Log geschrieben
 	\item Der Request wird in der Abrechnungs-DB auf \textit{failed} gesetzt und der genaue Fehler eingetragen
 	\item Der Client erhält eine entsprechende Fehlermeldung
   	}
 
-\kurzersonderfall[Weiter mit Schritt 1a.1]{4a}%Letzte Zeile und Nummer
-	{Verbindung zu Abrechnungs-DB verloren}%Bezeichnung
-
-\sonderfall[Weiter mit normalem Betrieb]{5a}%Letzte Zeile und Nummer
-	{TCP/IP Verbindung abgebrochen}%Bezeichnung
-  	{\item Der Fehler wird ins Log geschrieben
+\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
   	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
+
 }
 
-\usecase{Nutzer registrieren}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+\usecase{Nutzer registrieren}{Client, Benutzer-DB}%Name und Akteure
+{Ein Nutzer soll in der Benutzer-DB registriert werden}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen Request über \textit{/register} vom Client erhalten
 }
 {%Nachbedingungen
-  \item
+  \item Nutzer ist in Datenbank eingetragen, aber noch nicht als aktiv gekennzeichnet.
+  \item Client wurde benachrichtigt, dass der Nutzer aufgenommen wurde.
 }
 {%Normalablauf
-  \item
+  \item  Die Werte werden in die Benutzer-DB eingetragen.
+  \item  Der Server sendet dem Client die Antwort 200 OK.
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Nutzer wurde nicht in die Datenbank aufgenommen.
+	\item Fehler wurde ins Log geschrieben.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
+  
+  \sonderfall[Fehler]{1a}%Letzte Zeile und Nummer
+	  {Wert existiert schon (Nutzername)}%Bezeichnung
 	  {
-	  \item .
+	  \item Der Fehler wird ins Log geschrieben.
+	  \item Dem Client wird ein entsprechender Fehler übermittelt.
+	  } 
+
+  \sonderfall[Fehler]{1b}%Letzte Zeile und Nummer
+	  {Wert ist leer}%Bezeichnung
+	  {
+	  \item Der Fehler wird ins Log geschrieben.
+	  \item Dem Client wird ein entsprechender Fehler übermittelt.
 	  }
+
+	  \sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
 }
 
-\usecase{Nutzer Anmelden}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+\usecase{Nutzer Anmelden}{Client, Benutzer-DB}%Name und Akteure
+{Benutzer wurde authentifiziert}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen Request über \textit{/login} vom Client
 }
 {%Nachbedingungen
-  \item
+  \item Der Client hat ein 200 OK erhalten.
 }
 {%Normalablauf
-  \item
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Schickt an Client einen 200 OK.
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
-	  {
-	  \item .
-	  }
+	\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+	
+  
+	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
 }
 
-\usecase{Nutzerdaten abfragen}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+%TODO: ggfs mit überarbeiteter Protokollspezi abgleichen
+\usecase{Nutzerdaten abfragen}{Client, Benutzer-DB}%Name und Akteure
+{Client erhält seine Nutzerdaten}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen Request über \textit{/retrieve} vom Client empfangen
 }
 {%Nachbedingungen
-  \item
+  \item Client hat die Nutzerdaten erhalten.
 }
 {%Normalablauf
-  \item
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Nutzerdaten werden an Client geschickt.
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
-	  {
-	  \item .
-	  }
+	
+	\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+
+	 \sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
 }
 
-
-\usecase{Nutzerdaten verändern}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+\usecase{Nutzerdaten verändern}{Client, Benutzer-DB}%Name und Akteure
+{Client verändert seine Nutzerdaten}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server ist in Betrieb.
+  \item Der Server hat einen POST-Request mit optionalem id-Parameter über \textit{/update} vom Client empfangen
 }
 {%Nachbedingungen
-  \item
+  \item Nutzerdaten wurden geändert.
 }
 {%Normalablauf
-  \item
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Nutzerdaten werden anhand des id-Parameters bzw. aus Basic-Auth-Informationen aus der Datenbank gelesen.
+  \item Nutzerdaten werden an Client geschickt.
+  \item Geänderte Nutzerdaten werden in die Datenbank geschrieben
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
-	  {
-	  \item .
-	  }
+	
+	\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+    
+   	\sonderfall[Weiter mit normalem Betrieb]{2a}
+    {Ungültige id}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung
+    }
+
+	 \sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
 }
 
-
-\usecase{Billinginformationen Abfragen}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+%TODO: Billing vs History
+\usecase{Billinginformationen Abfragen}{Client, Abrechnungs-DB, Benutzer-DB}%Name und Akteure
+{Die in der Benutzer-DB gespeicherten Requests des Benutzers sowie deren Ergebnisse (bzw. Status) und Kosten sollen angezeigt werden}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server hat einen Get-Request an /billing erhalten
 }
 {%Nachbedingungen
-  \item
+  \item Die entsprechenden Informationen wurden gesendet
 }
 {%Normalablauf
-  \item
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Der Server liest aus der Abrechnungs-DB alle vom Benutzer berechneten Requests sowie Zahlungsinformationen zu diesen Requests aus
+  \item Der Server schickt dem Client eine Liste seiner bisher berechneten und \textit{pending} Requests sowie Zahlungsinformationen
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
-	  {
-	  \item .
-	  }
+		\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
 }
 
-\usecase{Nutzerliste Abfragen}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+%TODO: Protokollspezifikation sagt hier noch gar nichts, also gibt's auch keinen Use Case
+%\usecase{Billinginformationen Abfragen}{Client, Abrechnungs DB}%Name und Akteure
+%{Die bisherigen und ausstehenden Zahlungen für die bisherigen Berechnungen sollen angezeigt werden, Administratorübersicht}%Ziel
+%{%Vorbedingungen
+%  \item Der Server hat einen Get-Request von einem als Administrator angemeldeten Benutzer an /billing erhalten
+%}
+%{%Nachbedingungen
+%  \item
+%}
+%{%Normalablauf
+%  \item
+%}
+%{%Sondernachbedingungen und Sonderfälle
+%  \sondernachbedingung{
+%	\item
+%	}
+%  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
+%	  {}%Bezeichnung
+%	  {
+%	  \item .
+%	  }
+%}
+
+%TODO Protokollspezifikation??
+\usecase{Nutzerliste Abfragen}{Client, Benutzer-DB}%Name und Akteure
+{Eine Liste der Benutzer wird abgefragt}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server hat einen Get-Request an /users erhalten
 }
 {%Nachbedingungen
-  \item
+  \item Die entsprechenden Informationen wurden gesendet
 }
 {%Normalablauf
-  \item
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Der Server liest aus der Benutzer-DB alle durch die offset- und limit-Parameter ausgewählten Benutzer-Informationen aus
+  \item Der Server schickt dem Client die ausgelesenen Informationen
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
-	  {
-	  \item .
-	  }
+		\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+
+	\sonderfall[Weiter mit normalem Betrieb]{2a}%Letzte Zeile und Nummer
+	{Ungültiges Offset/Limit}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält eine entsprechende Fehlermeldung
+  	}
+  	    
+	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
 }
 
 
 
-\usecase{Benutzer löschen}{Client, Abrechnungs DB}%Name und Akteure
-{}%Ziel
+\usecase{Benutzer löschen}{Client, Benutzer-DB}%Name und Akteure
+{Das Benutzerkonto eines Kunden soll aus der Benutzer-DB gelöscht werden}%Ziel
 {%Vorbedingungen
-  \item
+  \item Der Server hat einen Get-Request an /delete erhalten
 }
 {%Nachbedingungen
-  \item
+  \item Der gelöschte Benutzer ist tatsächlich gelöscht
 }
 {%Normalablauf
-  \item
+  \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Der Server, der den Request erhält, löscht den Benutzer aus der Benutzer-DB.
+  %TODO: rechtliche implikationen, nachvollziehbarkeit?
+  %\item Die laufenden Jobs des gelöschten Benutzers werden abgebrochen/doch noch ausgeführt
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item
+	\item Client hat 403 Access Denied erhalten.
+	\item Fehler steht im Log.
 	}
-  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-	  {}%Bezeichnung
+  \sonderfall[Weiter mit normalem Betrieb]{1a}%Letzte Zeile und Nummer
+  	%TODO: Vielleicht doch nicht
+	  {Zu löschender Benutzer existiert nicht in der Datenbank}%Bezeichnung
 	  {
-	  \item .
+	  \item Der Server schickt eine entsprechende Fehlermeldung an den Client, der die Lösch-Anfrage verursacht hat
 	  }
+	  		\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Ungültige Authentifizerung}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+    }
+	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
+	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Server wird beendet
+  	}
+
+\sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
+	{TCP/IP Verbindung abgebrochen}%Bezeichnung
+	{
+	\item Fehlermeldung wird ins Log geschrieben
+	}
 }
 \clearpage
 \appendix
 \section{Begriffslexikon}
 
 %\begriff{Begriff}{Bedeutung}{Abgrenzung}{Gültigkeit}{Bezeichnung}{Unklarheiten}{Querverweise}
+
+%\begriff
+{%Begriff
+}{%Bedeutung
+}{%Abgrenzung
+}{%Gültigkeit
+}{%Bezeichnung
+}{%Unklarheiten
+}{%Querverweise
+}
+
+\begriff
+{%Begriff
+ToureNPlaner
+}{%Bedeutung
+ToureNPlaner ist die Bezeichnung für das Studienprojekt ToureNPlaner und für die Software ToureNPlaner.
+}{%Abgrenzung
+Es ist kein allgemeiner Tourenplaner gemeint.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+Es muss aus dem Kontext erschlossen werden, ob mit dem Begriff ToureNPlaner das Studienprojekt oder die Software ToureNPlaner gemeint ist. Wenn im Kontext von der Funktionalität vom ToureNPlaner die Rede ist, ist damit zum Beispiel die Software ToureNPlaner gemeint.
+}{%Unklarheiten
+-
+}{%Querverweise
+Software ToureNPlaner, Studienprojekt ToureNPlaner
+}
+
+\begriff
+{%Begriff
+Studienprojekt ToureNPlaner, synonym Stupro
+}{%Bedeutung
+Das Studienprojekt ToureNPlaner ist ein Studienprojekt im Rahmen des Studienganges Softwaretechnik an der Universität Stuttgart. Im Rahmen von diesem Projekt muss die Software ToureNPlaner entwickelt werden.
+}{%Abgrenzung
+Es ist nicht die Software ToureNPlaner gemeint.
+}{%Gültigkeit
+Das Studienprojekt ToureNPlaner hat am Anfang des Sommersemesters 2011 begonnen und wird voraussichtlich am Anfang des Sommersemesters 2012 beendet sein.
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Software ToureNPlaner, ToureNPlaner
+}
+
+\begriff
+{%Begriff
+Software ToureNPlaner
+}{%Bedeutung
+Die Software ToureNPlaner ist die Bezeichnung für die Gesamtheit aller im Rahmen des Projektes entwickelten und verwendeten Systeme, auch die zu entwickelnde Software genannt. Dazu gehören der Server und die Clients sowie ihre verwendeten Komponenten.
+}{%Abgrenzung
+Es ist nicht das Projekt ToureNPlaner gemeint.
+}{%Gültigkeit
+Die Software ToureNPlaner hat mit dem Beginn des Studienprojektes angefangen zu existieren, unabhängig von der Funktionalität der Software. Im Rahmen des Studienprojektes entstehende Dokumente und Systeme sind Teil der Software, auch wenn diese letztendlich nicht mit ausgeliefert oder gelöscht werden. Die Software ToureNPlaner wird nach dem Ende des Studienprojektes ToureNPlaner noch weiter bestehen.
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Studienprojekt ToureNPlaner, ToureNPlaner
+}
+
+\begriff
+{%Begriff
+graphbasierte Webanwendung
+}{%Bedeutung
+Eine Webanwendung, die Dienste für bestimmte Graphprobleme anbietet. Ein bekanntes Beispiel ist die Berechnung des kürzesten Weges zwischen zwei Punkten auf einer Karte, auch als Routenplanung bekannt.
+}{%Abgrenzung
+Webanwendungen, die beliebige Daten speichern, die man als Graph interpretieren kann, sind nicht zwangsläufig als graphbasierte Webanwendungen zu bezeichnen. Die Daten und deren Interpretation als Graph müssen Kernaspekte der angebotenen Dienste sein, damit die Webanwendung als graphbasiert bezeichnet werden kann.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+Es ist unklar, welche Arten von Graphen (z.B. nur Kartengraphen) gemeint sind.
+}{%Querverweise
+Webanwendung
+}
+
+\begriff
+{%Begriff
+Webanwendung
+}{%Bedeutung
+Eine Anwendung, die mit einem Internetbrowser zugänglich ist und mit einem Server kommuniziert.
+}{%Abgrenzung
+Sonstige Anwendungen, die mittels Internet-Protokollen (z.B. HTTP) mit einem Server kommunizieren, wie zum Beispiel Apps, sind keine Webanwendungen.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+Sind Flash/Java-Applets etc. Webanwendungen?
+}{%Querverweise
+App
+}
+
+
+\begriff
+{%Begriff
+Tour, synonym Rundtour, Rundreise
+}{%Bedeutung
+Eine Tour beschreibt einen mit bestimmten Fortbewegungsmitteln oder auch zu Fuß begehbaren Weg, wobei dieser Weg einen festgelegten oder bliebigen Startpunkt hat. Die Begehung dieses Weges führt am Ende wieder zum Startpunkt, somit entspricht eine Tour einer Route, bei der End- und Startpunkt identisch sind.
+}{%Abgrenzung
+Eine Route, bei Start- und Endpunkt unterschiedlich sind, ist keine Tour.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+Eine Tour ist durch eine geordnete Liste von Koordinaten definiert.
+}{%Unklarheiten
+-
+}{%Querverweise
+-
+}
+
+\begriff
+{%Begriff
+Backend-Daten
+}{%Bedeutung
+Alle Daten, die der Server für seinen Betrieb in Datenbanken oder auf andere Weise speichert, werden als Backend-Daten bezeichnet. Zu den Backend-Daten gehört auch die Graphrepräsentation.
+}{%Abgrenzung
+Daten auf Client-Systemen, die der Server nicht kennt, gehören nicht zu den Backend-Daten.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Graphrepräsentation
+}
+
+\begriff
+{%Begriff
+Graphrepräsentation
+}{%Bedeutung
+Einen Graphen, wie zum Beispiel die Straßennetzkarte von Deutschland, kann man auf verschiedene Weise speichern, es gibt also verschiedene Möglichkeiten der Graphrepräsentation. Eine Graphrepräsentation hat eine bestimmte Art, wie Kanten und Knoten sowie zugehörige Daten eines Graphen gespeichert werden. Auf der Graphrepräsentation werden die von Kunden gewünschten Algorithmen ausgeführt.
+}{%Abgrenzung
+Die grafische Darstellung eines Graphen hat nichts mit der Graphrepräsentation im Sinne der Server-Spezifikation zu tun.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+-
+}
+
+\begriff
+{%Begriff
+Webbasierter Client
+}{%Bedeutung
+Ein Client im Sinne des ToureNPlaner Projekts, welcher als Webanwendung realisiert ist.
+}{%Abgrenzung
+Ein Client, der nicht im Browser läuft, ist kein Webclient.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Webanwendung, Client
+}
+
+\begriff
+{%Begriff
+textbasiertes Graphformat
+}{%Bedeutung
+Rerpäsentation eines allgemeinen Graphen mit Knoten, Kanten und Zusatzinformationen (wie z.B. Kantengewichten) als Textdatei (siehe auch Graph-Format-Dokument).
+}{%Abgrenzung
+Hier ist das von ToureNPlaner verwendete Format und nicht etwa eine XML-Repräsentation gemeint.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+Sind durch das Graph-Format-Dokument zu klären.
+}{%Querverweise
+-
+}
+
+\begriff
+{%Begriff
+Client
+}{%Bedeutung
+Eine Anwendung, die auf die Funktionen des ToureNPlaner Servers mittels des ToureNPlaner Protokolls (siehe Protokollspezifikation) zugreift.
+}{%Abgrenzung
+Innerhalb dieser Spezifikation bezeichnet Client ausschließlich Clients für den ToureNPlaner Server.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Webbasierter Client
+}
+
+\begriff
+{%Begriff
+Abrechnungs-DB, synonym Request-Log
+}{%Bedeutung
+Die Abrechnungs-DB (Abrechnungs-Datenbank) speichert alle empfangenen Algorithmus-Requests (Anfragen) von Clients und deren Berechnungsergebnisse des Servers, die für die Abrechnung benötigt werden. Außerdem kann der Status einer Berechnung hier gespeichert werden.
+}{%Abgrenzung
+Die Abrechnungs-DB ist keine eigenständige Datenbank, sondern ist eine Teilmenge an Tabellen einer Datenbank mit weiteren Tabellen.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+Die Abrechnungs-DB und die Benutzer-DB befinden sich im selben Datenbanksystem, beides sind aber verschiedene Datenbank-Tabellen und für die Use-Cases sind es konzeptionell verschiedene Akteure. 
+}{%Unklarheiten
+-
+}{%Querverweise
+Benutzer-DB
+}
+
+\begriff
+{%Begriff
+Benutzer-DB
+}{%Bedeutung
+Die Benutzer-DB (Benutzer-Datenbank) speichert alle nötigen Informationen über die Benutzer des Systems, dabei werden sowohl Admins wie auch Kunden in der Benutzer-DB gespeichert.
+}{%Abgrenzung
+Die Benutzer-DB ist keine eigenständige Datenbank, sondern ist eine Teilmenge an Tabellen einer Datenbank mit weiteren Tabellen.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+Die Abrechnungs-DB und die Benutzer-DB befinden sich im selben Datenbanksystem, beides sind aber verschiedene Datenbank-Tabellen und für die Use-Cases sind es konzeptionell verschiedene Akteure.
+}{%Unklarheiten
+-
+}{%Querverweise
+Abrechnungs-DB
+}
+
+
+%\begriff
+{%Begriff
+
+}{%Bedeutung
+%-
+}{%Abgrenzung
+%-
+}{%Gültigkeit
+%-
+}{%Bezeichnung
+%-
+}{%Unklarheiten
+%-
+}{%Querverweise
+%-
+}
 
 \end{document}
