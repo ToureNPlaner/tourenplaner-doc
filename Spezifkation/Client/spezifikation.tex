@@ -139,7 +139,9 @@ Die Übersetzungen werden mit Hilfe von GNU gettext implementiert.
 \section{Funktionale Anforderungen}
 
 \subsection{Anmeldung und Registrierung}
-Wenn der Server eine Anmeldung verlangt so sind kostenpflichtige als auch kostenlose Berechnungen nur nach Anmeldung möglich. Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung durchgeführt hat.
+Wenn der Server eine Anmeldung verlangt so sind kostenpflichtige als auch kostenlose Berechnungen nur nach Anmeldung möglich. 
+Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung durchgeführt hat.
+Bietet der Server seine Berechnungen kostenlos an, so ist eine Anmeldung beim Client nicht erforderlich.
 
 \subsection{Angaben zur Berechnung}
 Am Client soll der User zunächst einen Algorithmus auswählen, mit dem er eine Berechnung durchführen möchte.
@@ -149,6 +151,8 @@ Anschließend soll er mithilfe der Karte folgende Operationen durchführen könn
  \item ggfs. weitere Punkte hinzufügen
  \item bereits gesetzte Punkte editieren
  \item bereits gesetzte Punkte löschen.
+ \item Globale- oder Punkt Constraints hinzufügen
+ \item Globale- oder Punkt Constraints löschen
 \end{itemize}
 Hat der User seine Angaben zum Algorithmus getätigt, so kann er diese letztendlich zum Server abschicken.
 
@@ -158,18 +162,22 @@ Dem User sollen dabei folgende Funktionen zur Verfügung stehen:
 \begin{itemize}
  \item hinein- und hinauszoomen
  \item auf der Karte navigieren (Karte mit der Maus verschieben)
+ \item Informationen zur Route (bis jetzt: Länge der Route)
+ \item Information zum einzelnen Punkt, der beim Klicken des jeweiligen Punktes erscheint. (bis jetzt: Koordinaten)
 \end{itemize}
 
 \subsection{Benutzerverwaltung}
-Der User soll seine Benutzerdaten anzeigen und bearbeiten können.
+Der User soll seine Nutzerdaten anzeigen und bearbeiten können.
 
 \subsection{Billing}
-Der User soll über den Webclient Zugriff auf seine Billing-Informationen haben.
+Der User soll über die Clients Zugriff auf seine Billing-Informationen haben.
+Zudem soll er über die Billing-Informationen auf alle seine versendeten Requests und deren Ergebnisse zugreifen können.
 
 \subsection{Administration}
 Der Administrator soll auf eine Übersicht aller Benutzer zugreifen können, auf der folgende Funktionalitäten verfügbar sind:
 \begin{itemize}
  \item Benutzer anlegen
+ \item Benutzer freischalten
  \item Benutzer bearbeiten
  \item Benutzer löschen
 \end{itemize}
