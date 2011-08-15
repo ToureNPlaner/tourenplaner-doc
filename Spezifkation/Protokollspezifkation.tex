@@ -1,5 +1,4 @@
-\documentclass[ngerman,titlepage]{scrartcl}
-%\usepackage[T1]{fontenc}
+\documentclass[ngerman,titlepage,parskip=true]{scrartcl}
 \usepackage[utf8]{inputenc}
 \usepackage{array}
 \usepackage{babel}
@@ -34,6 +33,29 @@
 
 % adjust table padding
 \setlength{\tabcolsep}{8pt} \renewcommand{\arraystretch}{1.5}
+
+\newcommand{\requestURL}[1]{\textit{#1}}
+
+\newcommand{\request}[8]
+{\subsection{#1}
+\begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
+\hline
+  URL & \requestURL{#2}\\\hline
+    Beschreibung & #3\\\hline
+  HTTP-Method & #4\\\hline
+  Auth & #5\\\hline
+  SSL & #6\\\hline
+  Parameter & #7\\\hline
+  Erwarteter Status-Code & #8\\\hline
+ \end{tabular}\vspace*{1em}}
+%\request{}%Name
+{}%URL
+{}%Beschreibung
+{}%HTTP-Method
+{}%Auth
+{}%SSL
+{}%Parameter
+{}%Status-Code
  
 \title{Protokollspezifikation}
 \author{ToureNPlaner Team}
@@ -86,17 +108,18 @@
 	
 	Zur Kodierung der Längen- und Breitengrade einer Position auf der Karte wird das WGS 84 verwendet.
 
-\section{Serverinformation}
+\clearpage
+\section{Server}
 
-	Die Serverinformationen geben Aufschluss über die Eigenschaften des Servers und die Algorithmen, die er bereit stellt.
-
-	\subsection*{Request}
-	
-	Als Request wird ein GET-Request für \textit{/info} an den Server gesendet.
-	
-	\subsection*{Response}
-	
-	Die Antwort des Servers sollte einen 200er Code haben und etwa den untenstehenden Aufbau besitzen.
+\request{Serverinformation}
+{/info}
+{Dient zur Abfrage der vorhandenen Algorithmen und anderer Eigenschaften.}
+{GET}
+{Nie}
+{Nie}
+{Keine}
+{200 OK}
+\subsubsection{Beispiel}
 	
 	\begin{lstlisting}
 {
@@ -123,7 +146,6 @@
     ],
 }
     \end{lstlisting}
-    
     \subsubsection*{Erklärung}
     
     \begin{tabular}{|c|p{14cm}|}
@@ -182,7 +204,7 @@
 		
 		constraints.sourceIsTarget & Gibt an, ob Start und Ziel der gleiche Punkt sind.\\    		\hline    		
    	\end{tabular}
-   	
+   	\clearpage
 \section{Benutzer}
 
 Auf den meisten Servern wird ein Benutzer einen Account benötigen und muss eingeloggt sein, um einen Algorithmus auf dem Server laufen lassen zu können.
