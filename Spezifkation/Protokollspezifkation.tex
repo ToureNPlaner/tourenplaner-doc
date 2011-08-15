@@ -70,10 +70,8 @@
 
 	\subsection{HTTP 1.1}
 
-	Die Kommunikation zwischen Client und Server baut auf HTTP (Hyper Text Transport Protocol) in der Version 1.1 auf. 
-	Falls Passwörter übertragen werden müssen, wird zudem SSL (Secure Socket Layer) verwendet um die Verbindung zu verschlüsseln.\\ 
-	
-	Zur Authentifizierung des Nutzers das HTTP Basic Authentication Verfahren, ein Feature von HTTP 1.1 verwendet.\\
+	Die Kommunikation zwischen Client und Server baut auf HTTP (Hyper Text Transport Protocol) in der Version 1.1 auf. Alle Abfragen eines nicht anonymen Servers, bis auf die /info Abfrage gehen über HTTPS.
+	Zur Authentifizierung des Nutzers wird das HTTP Basic Authentication Verfahren, ein Feature von HTTP 1.1 verwendet.\\
 	Dabei werden Benutzername und Passwort (bzw. in unserem Fall Email und Passwort) mit einer Base64-Kodierung als Teil des HTTP-Headers an den Server gesendet.
 	
 	\subsection{JSON}
