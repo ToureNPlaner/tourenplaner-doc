@@ -1,0 +1,347 @@
+%begriffslexikon
+\documentclass[a4paper,10pt,titlepage]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{a4wide}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{paralist}
+\usepackage{array}
+\usepackage{ifthen}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+
+\author{ToureNPlaner Team}
+\title{ToureNPlaner Begriffslexikon\\ Stupro 2011/2012 \\ Version 1.0}
+
+\makeatletter
+\newcommand\novspace{\@minipagetrue}
+
+\newenvironment{owncompactitem}{%
+\compactitem
+}{%
+\@finalstrut\@arstrutbox
+\@nameuse{endcompactitem}%
+\aftergroup\let\aftergroup\@finalstrut\aftergroup\@gobble
+}
+\newenvironment{owncompactenum}{%
+\compactenum
+}{%
+\@finalstrut\@arstrutbox
+\@nameuse{endcompactenum}%
+\aftergroup\let\aftergroup\@finalstrut\aftergroup\@gobble
+}
+\makeatother
+
+\newcommand{\begriff}[7]
+{\paragraph{#1}$~$ \\
+\begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
+\hline
+  Bedeutung & #2\\\hline
+  Abgrenzung & #3\\\hline
+  Gültigkeit & #4\\\hline
+  Bezeichnung & #5\\\hline
+  Unklarheiten & #6\\\hline
+  Querverweise & #7\\\hline
+ \end{tabular}
+}
+
+\newcommand{\verweis}[2]
+{\paragraph{#1}$\rightarrow$ #2
+}
+
+\begin{document}
+
+\pagenumbering{alph}
+\maketitle
+\pagenumbering{roman}
+\setcounter{page}{1}
+%\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+%\section{Begriffslexikon}
+
+%\begriff{Begriff}{Bedeutung}{Abgrenzung}{Gültigkeit}{Bezeichnung}{Unklarheiten}{Querverweise}
+
+%\begriff
+{%Begriff
+}{%Bedeutung
+}{%Abgrenzung
+}{%Gültigkeit
+}{%Bezeichnung
+}{%Unklarheiten
+}{%Querverweise
+}
+
+\verweis
+{Abrechnungs-DB}
+{Abrechnungs-Datenbank}
+
+\begriff
+{%Begriff
+Abrechnungs-Datenbank
+}{%Bedeutung
+Die Abrechnungs-Datenbank speichert alle empfangenen Algorithmus-Requests (Anfragen) von Clients und deren Berechnungsergebnisse des Servers, die für die Abrechnung benötigt werden. Außerdem kann der Status einer Berechnung hier gespeichert werden.
+}{%Abgrenzung
+Die Abrechnungs-Datenbank ist keine eigenständige Datenbank, sondern ist eine Teilmenge an Tabellen einer Datenbank mit weiteren Tabellen.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+Die Abrechnungs-Datenbank und die Benutzer-DB befinden sich im selben Datenbanksystem, beides sind aber verschiedene Datenbank-Tabellen und für die Use-Cases sind es konzeptionell verschiedene Akteure. 
+}{%Unklarheiten
+-
+}{%Querverweise
+Benutzer-DB
+}
+
+\begriff
+{%Begriff
+Backend-Daten
+}{%Bedeutung
+Alle Daten, die der Server für seinen Betrieb in Datenbanken oder auf andere Weise speichert, werden als Backend-Daten bezeichnet. Zu den Backend-Daten gehört auch die Graphrepräsentation.
+}{%Abgrenzung
+Daten auf Client-Systemen, die der Server nicht kennt, gehören nicht zu den Backend-Daten.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Graphrepräsentation
+}
+
+\begriff
+{%Begriff
+Benutzer-DB
+}{%Bedeutung
+Die Benutzer-DB (Benutzer-Datenbank) speichert alle nötigen Informationen über die Benutzer des Systems, dabei werden sowohl Admins wie auch Kunden in der Benutzer-DB gespeichert.
+}{%Abgrenzung
+Die Benutzer-DB ist keine eigenständige Datenbank, sondern ist eine Teilmenge an Tabellen einer Datenbank mit weiteren Tabellen.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+Die Abrechnungs-Datenbank und die Benutzer-DB befinden sich im selben Datenbanksystem, beides sind aber verschiedene Datenbank-Tabellen und für die Use-Cases sind es konzeptionell verschiedene Akteure.
+}{%Unklarheiten
+-
+}{%Querverweise
+Abrechnungs-Datenbank
+}
+
+\begriff
+{%Begriff
+Client
+}{%Bedeutung
+Eine Anwendung, die auf die Funktionen des ToureNPlaner Servers mittels des ToureNPlaner Protokolls (siehe Protokollspezifikation) zugreift.
+}{%Abgrenzung
+Innerhalb dieser Spezifikation bezeichnet Client ausschließlich Clients für den ToureNPlaner Server.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Webbasierter Client
+}
+
+\begriff
+{%Begriff
+Graphbasierte Webanwendung
+}{%Bedeutung
+Eine Webanwendung, die Dienste für bestimmte Graphprobleme anbietet. Ein bekanntes Beispiel ist die Berechnung des kürzesten Weges zwischen zwei Punkten auf einer Karte, auch als Routenplanung bekannt.
+}{%Abgrenzung
+Webanwendungen, die beliebige Daten speichern, die man als Graph interpretieren kann, sind nicht zwangsläufig als graphbasierte Webanwendungen zu bezeichnen. Die Daten und deren Interpretation als Graph müssen Kernaspekte der angebotenen Dienste sein, damit die Webanwendung als graphbasiert bezeichnet werden kann.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+Es ist unklar, welche Arten von Graphen (z.B. nur Kartengraphen) gemeint sind.
+}{%Querverweise
+Webanwendung
+}
+
+\begriff
+{%Begriff
+Graphrepräsentation
+}{%Bedeutung
+Einen Graphen, wie zum Beispiel die Straßennetzkarte von Deutschland, kann man auf verschiedene Weise speichern, es gibt also verschiedene Möglichkeiten der Graphrepräsentation. Eine Graphrepräsentation hat eine bestimmte Art, wie Kanten und Knoten sowie zugehörige Daten eines Graphen gespeichert werden. Auf der Graphrepräsentation werden die von Kunden gewünschten Algorithmen ausgeführt.
+}{%Abgrenzung
+Die grafische Darstellung eines Graphen hat nichts mit der Graphrepräsentation im Sinne der Server-Spezifikation zu tun.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+-
+}
+
+\verweis
+{Request-Log}
+{Abrechnungs-Datenbank}
+
+\verweis
+{%Begriff
+Rundreise
+}{%Verweis
+Tour
+}
+
+\verweis
+{%Begriff
+Rundtour
+}{%Verweis
+Tour
+}
+
+\begriff
+{%Begriff
+Software
+}{%Bedeutung
+Die Software ToureNPlaner ist die Bezeichnung für die Gesamtheit aller im Rahmen des Projektes entwickelten und verwendeten Systeme, auch die zu entwickelnde Software genannt. Dazu gehören der Server und die Clients sowie ihre verwendeten Komponenten.
+}{%Abgrenzung
+Es ist nicht das Projekt ToureNPlaner gemeint.
+}{%Gültigkeit
+Die Software ToureNPlaner hat mit dem Beginn des Studienprojektes angefangen zu existieren, unabhängig von der Funktionalität der Software. Im Rahmen des Studienprojektes entstehende Dokumente und Systeme sind Teil der Software, auch wenn diese letztendlich nicht mit ausgeliefert oder gelöscht werden. Die Software ToureNPlaner wird nach dem Ende des Studienprojektes ToureNPlaner noch weiter bestehen.
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Studienprojekt ToureNPlaner, ToureNPlaner
+}
+
+\begriff
+{%Begriff
+Studienprojekt
+}{%Bedeutung
+Das Studienprojekt ToureNPlaner ist ein Studienprojekt im Rahmen des Studienganges Softwaretechnik an der Universität Stuttgart. Im Rahmen von diesem Projekt muss die Software ToureNPlaner entwickelt werden.
+}{%Abgrenzung
+Es geht ausschließlich um das Studienprojekt ToureNPlaner des Instituts für Formale Methoden der Informatik an der Universität Stuttgart.
+}{%Gültigkeit
+Das Studienprojekt ToureNPlaner hat am Anfang des Sommersemesters 2011 begonnen und wird voraussichtlich am Anfang des Sommersemesters 2012 beendet sein.
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+-
+}
+
+\verweis
+{%Begriff
+Stupro
+}{%Verweis
+Studienprojekt
+}
+
+\begriff
+{%Begriff
+textbasiertes Graphformat
+}{%Bedeutung
+Rerpäsentation eines allgemeinen Graphen mit Knoten, Kanten und Zusatzinformationen (wie z.B. Kantengewichten) als Textdatei (siehe auch Graph-Format-Dokument).
+}{%Abgrenzung
+Hier ist das von ToureNPlaner verwendete Format und nicht etwa eine XML-Repräsentation gemeint.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+Sind durch das Graph-Format-Dokument zu klären.
+}{%Querverweise
+-
+}
+
+\begriff
+{%Begriff
+Tour
+}{%Bedeutung
+Eine Tour beschreibt einen mit bestimmten Fortbewegungsmitteln oder auch zu Fuß begehbaren Weg, wobei dieser Weg einen festgelegten oder bliebigen Startpunkt hat. Die Begehung dieses Weges führt am Ende wieder zum Startpunkt, somit entspricht eine Tour einer Route, bei der End- und Startpunkt identisch sind.
+}{%Abgrenzung
+Eine Route, bei Start- und Endpunkt unterschiedlich sind, ist keine Tour.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+Eine Tour ist durch eine geordnete Liste von Koordinaten definiert.
+}{%Unklarheiten
+-
+}{%Querverweise
+-
+}
+
+\begriff
+{%Begriff
+ToureNPlaner
+}{%Bedeutung
+ToureNPlaner ist die Bezeichnung für das Studienprojekt ToureNPlaner und für die Software ToureNPlaner.
+}{%Abgrenzung
+Es ist kein allgemeiner Tourenplaner gemeint.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+Es muss aus dem Kontext erschlossen werden, ob mit dem Begriff ToureNPlaner das Studienprojekt oder die Software ToureNPlaner gemeint ist. Wenn im Kontext von der Funktionalität vom ToureNPlaner die Rede ist, ist damit zum Beispiel die Software ToureNPlaner gemeint.
+}{%Unklarheiten
+-
+}{%Querverweise
+Studienprojekt, Software
+}
+
+\begriff
+{%Begriff
+Webanwendung
+}{%Bedeutung
+Eine Anwendung, die mit einem Internetbrowser zugänglich ist und mit einem Server kommuniziert.
+}{%Abgrenzung
+Sonstige Anwendungen, die mittels Internet-Protokollen (z.B. HTTP) mit einem Server kommunizieren, wie zum Beispiel Apps, sind keine Webanwendungen.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+Sind Flash/Java-Applets etc. Webanwendungen?
+}{%Querverweise
+App
+}
+
+\begriff
+{%Begriff
+Webbasierter Client
+}{%Bedeutung
+Ein Client im Sinne des ToureNPlaner Projekts, welcher als Webanwendung realisiert ist.
+}{%Abgrenzung
+Ein Client, der nicht im Browser läuft, ist kein Webclient.
+}{%Gültigkeit
+-
+}{%Bezeichnung
+-
+}{%Unklarheiten
+-
+}{%Querverweise
+Webanwendung, Client
+}
+
+
+
+%\begriff
+{%Begriff
+
+}{%Bedeutung
+%-
+}{%Abgrenzung
+%-
+}{%Gültigkeit
+%-
+}{%Bezeichnung
+%-
+}{%Unklarheiten
+%-
+}{%Querverweise
+%-
+}
+
+\end{document}
