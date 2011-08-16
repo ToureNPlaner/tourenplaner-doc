@@ -110,6 +110,9 @@
 	
 	Zur Kodierung der Längen- und Breitengrade einer Position auf der Karte wird das WGS 84 verwendet.
 	
+	\subsection*{Serverart}
+	Der Server kann in zwei verschiedenen Modi laufen: Privat/Öffentlich. Im öffentlichen Modus kann jeder Probleminstanzen bearbeiten lassen. Im privaten ist ein Benutzerkonto nötig, um Probleminstanzen bearbeiten zu lassen.
+	
 	\subsection{Standardablauf einer Abfrage}
 	Bei erfolgreicher Bearbeitung einer Abfrage antwortet der Server mit dem HTTP-Status-Code 200 OK und gibt eine evtl. Antwort im HTTP-Body als JSON Objekt zurück. Bei einem Fehler gibt der Server einen entsprechenden Status-Code $>$= 400 und weitere Informationen zum Fehler im HTTP-Body als JSON Objekt zurück. siehe Fehlerliste %TODO
 
@@ -162,7 +165,7 @@
 	\begin{lstlisting}
 {
     "version": 1.0,
-    "anonymous": true/false,
+    "servertype": public/private,
     "sslport": 443,
     "algorithms": [
         {
@@ -195,9 +198,9 @@
     	version & Die Version des Protokolls, die der Server spricht. \\ 
     	\hline
     	
-    	anonymous & Gibt an, ob der Server anonyme Anfragen erlaubt. Sollte er anonyme Anfragen erlauben, so wird die Verbindung nicht verschlüsselt und ein Login ist nicht möglich. \\
+    	servertype & Gibt an, ob der Server im öffentlich oder privaten Modus läuft. \\
     	\hline
-    	sslport & Gibt im Fall eines privaten Servers den SSL-Port an.\\
+    	sslport & Falls angegeben antwortet der Server dort auf SSL-Anfragen.\\
     	\hline
     	
     	algorithms & Ein Array aller Algorithmen, die der Server unterstützt. \\
