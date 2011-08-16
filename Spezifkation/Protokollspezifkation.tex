@@ -301,7 +301,8 @@ Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 {Immer}%Auth
 {Immer}%SSL
 {ID}%Parameter
-{401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code		
+{401 Unauthorized: Benutzername/Passwort falsch.\par
+ 403 Forbidden: Keine Admin Rechte}%Status-Code		
 \subsubsection{Request}
 Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benutzerobjekt. Wenn er es nicht setzen will darf er das Feld nicht angeben.
@@ -315,7 +316,8 @@ Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benut
 {Immer}%Auth
 {Immer}%SSL
 {ID, Limit, Offset}%Parameter
-{401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code		
+{401 Unauthorized: Benutzername/Passwort falsch.\par
+ 403 Forbidden: Keine Admin Rechte}%Status-Code		
 	
 \subsubsection{Response}		
 		\begin{lstlisting}
@@ -370,7 +372,8 @@ Siehe \nameref{benutzerobjekt}.
 {Immer}%Auth
 {Immer}%SSL
 {ID}%Parameter
-{401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code
+{401 Unauthorized: Benutzername/Passwort falsch.\par
+ 403 Forbidden: Keine Admin Rechte}%Status-Code
 \clearpage
    	
 \section{Algorithmen}
@@ -389,7 +392,8 @@ Da die benötigten Daten je nach Algorithmus unterschiedlich sind, wird hier nur
 400 Bad Request: Die Probleminstanz ist fehlerhaft\par
 503 Service Unavailable: Server ausgelastet\par
 Privat:\par
- 401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code
+ 401 Unauthorized: Benutzername/Passwort falsch\par
+ 403 Forbidden: Keine Admin Rechte}%Status-Code
 
 \subsubsection{Beispiel}
 	\begin{lstlisting}
