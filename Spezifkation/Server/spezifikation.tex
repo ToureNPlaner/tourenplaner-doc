@@ -143,20 +143,28 @@ bereitstellen und bündeln. Hierbei scheint es uns sinnvoll, eine Client-Server 
 \subsection{Grundfunktionen}
 Der Server stellt den implementierten Algorithmen folgende Supportfunktionen bereit:
 \begin{itemize}
- \item Geteilte Graphrepräsentation
-  \begin{itemize}
-   \item 
-    Basiert auf OpenStreetMap und einem textbasierten Graphformat, welches 
-    bereits erfolgreich in der Abteilung Algorithmik der Universität Stuttgart eingesetzt wird
-   \item
-    Threadsicheres abstrahierendes Interface zum Zugriff auf die Graphdaten
-  \end{itemize}
-  \item Bereitstellung eines allgemeinen Interfaces für Algorithmen welches diese implementieren
-  \begin{itemize}
-   \item Ermöglicht es mit dem in der Protokollspezifikation definierten Protokoll, Proleminstanzen für die implementierten Algorithmen auf dem Server berechnen zu lassen.
-   \item Mehrere Probleminstanzen auch verschiedener Algorithmen können gleichzeitig bearbeitet werden (Multithreading)
 
+	\item Implementierung des ToureNPlaner Protokolls mit HTTP und HTTPS. Siehe Protokollspezifikation.
+
+	\item Geteilte Graphrepräsentation
+	\begin{itemize}
+		\item Basiert auf OpenStreetMap und einem textbasierten Graphformat, welches bereits erfolgreich in der Abteilung Algorithmik der Universität Stuttgart eingesetzt wird
+		\item Threadsicheres abstrahierendes Interface zum Zugriff auf die Graphdaten
+	\end{itemize}
+
+  \item Implementierung eines Frameworks für Graphalgorithmen
+  \begin{itemize}
+	\item Ermöglicht es mit dem in der Protokollspezifikation definierten Protokoll, Probleminstanzen für die implementierten Algorithmen auf dem Server berechnen zu lassen.
+	\item Mehrere Probleminstanzen auch verschiedener Algorithmen können gleichzeitig bearbeitet werden (Multithreading)
   \end{itemize}
+
+ \item Breitstellen eines Fehlerlogs
+
+ \item Implementieren einer optionalen Benutzerverwaltung dabei unterscheiden wir öffentliche Server ohne Benutzerverwaltung und private Server mit Benutzerverwaltung.
+ \begin{itemize}
+	\item Der Server verwaltet eine Verlauf von bearbeiteten Berechnungen, ihre Rechenzeit und Kosten. Für weitere Informationen siehe Protokollspezifikation.
+	\item Die Verwaltung von Benutzern erfolgt wie in der Protokollspezifikation beschrieben. Der Server bietet Funktionen zum Anlegen, Ändern, Auflisten und Löschen von Benutzern.
+ \end{itemize}
 \end{itemize}
 \subsection{Algorithmen}
 Der Server unterstützt in erster Ausbaustufe mindestens folgende Algorithmen:
@@ -184,8 +192,9 @@ Der Server fungiert hierbei als generisches Framework zur Implementierung versch
 \label{Mengengeruest}
 
 \begin{itemize}
- \item Die Algorithmen sollen mindestens auf dem gesamten Deutschlandgraph operieren können
- \item Anzahl gleichzeitig laufender Berechnungen sowie die Warteschlangenlänge ist frei konfigurierbar
+ \item Die Algorithmen sollen mindestens auf dem gesamten Deutschlandgraph operieren können (23 Mio Knoten und 48 Mio Kanten)
+ \item Anzahl gleichzeitig laufender Berechnungen (Threads)sowie die Warteschlangenlänge ist frei konfigurierbar (mindestens 20)
+ \item Unterstützte Benutzerzahl ist mindestens 100 
 \end{itemize}
 
 \subsection{Entwurfseinschränkungen}
@@ -204,7 +213,7 @@ Benutzerkonten sowie Request-Log Daten werden in einer MySQL-Datenbank gehalten.
 Die Graphdaten werden zur Laufzeit im RAM gespeichert. Sie werden aus einer Graphdatei geladen siehe Dokument Graphformat.
 
 \subsection{Robustheit}
-Durch softwaretechnische Maßnahmen, wie Unit-Tests und einem ausgiebigen Systemtest wird die Robustheit der Serverkomponente sichergestellt.
+Durch softwaretechnische Maßnahmen, wie Unit-Tests und einem ausgiebigen Systemtest wird die Robustheit (IEEE Std 610.12(1990)) der Serverkomponente sichergestellt. Der Server soll auch bei falschen Eingaben korrekt funktionieren und passende Fehler ausgeben.
 \subsection{Portabilität}
 siehe \ref{Systemumgebung}
 \subsection{Distributionsform und Installation}
@@ -214,6 +223,7 @@ Als Sprache wird Englisch verwendet. Weiter Sprachen werden nicht unterstützt.
 
 \clearpage
 \section{Anwendungsfälle (Use-Cases)}
+Genauere Informationen zu Requests und ausgeschriebene Fehler finden sich in der Protokollspezifikation. Alle Anwendungsfälle beginnen im normalen Betrieb, dass heißt der Server nimmt Anfragen über das Netz entgegen.
 %\begin{figure}[H]
 %  \centering
   %TODO
@@ -272,7 +282,7 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 {Der Client möchte eine Probleminstanz berechnet haben}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb
-  \item Der Server hat einen Request über \textit{/algsuffix} vom Client erhalten
+  \item Der Server hat einen Request über \textit{/alg\$\{suffix\}} vom Client erhalten
 }
 {%Nachbedingungen
   \item Der Client hat das Berechnungsergebnis erhalten
@@ -288,21 +298,32 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
   }
 {%Sondernachbedingungen und Sonderfälle
 \sondernachbedingung{
-	\item Der Server führt seine Arbeit wie gewohnt fort, solange kein kritischer Fehler aufgetreten ist
 	\item Die Fehlermeldungen wurden ins Log geschrieben
 	}
-\sonderfall[Weiter mit normalem Betrieb]{1a}
+	\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Request nicht parsebar}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen EBADJSON Fehler mit HTTP-Status 400 Bad Request
+    }
+\sonderfall[Weiter mit normalem Betrieb]{1b}
     {Ungültige Authentifizerung}
     {
     \item Fehler wird ins Log geschrieben
-  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+  	\item Der Client erhält einen EAUTH Fehler mit HTTP-Status 401 Unauthorized
+    }
+\sonderfall[Weiter mit normalem Betrieb]{1c}
+    {Server ausgelastet}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen EBUSY Fehler mit HTTP-Status 503 Service Unavailable
     }
     
 \sonderfall[Weiter mit normalem Betrieb]{3a}%Letzte Zeile und Nummer
 	{Keine Passende Algorithmusinstanz}%Bezeichnung
   	{
 	\item Der Fehler wird ins Log geschrieben
-	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Client erhält einen EUNKNOWNALG Fehler
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{4a}%Letzte Zeile und Nummer
@@ -310,15 +331,14 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
   	{
 	\item Der Fehler wird ins Log geschrieben
 	\item Der Request wird in der Abrechnungs-DB auf \textit{failed} gesetzt und der genaue Fehler eingetragen
-	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Client erhält einen ECOMPUTE Fehler
   	}
 
-\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
+\sonderfall[Der Server nimmt keine weiteren Anfragen an bis Verbindung zur Datenbank wieder hergestellt.]{*}%Letzte Zeile und Nummer
 	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EDATABASE Fehler mit HTTP-Status 503 Service Unavailable
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
@@ -349,26 +369,32 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	\item Fehler wurde ins Log geschrieben.
 	}
   
-  \sonderfall[Fehler]{1a}%Letzte Zeile und Nummer
-	  {Wert existiert schon (Benutzername)}%Bezeichnung
+	\sonderfall[Weiter mit normalem Betrieb]{1a}
+    {Request nicht parsebar}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen EBADJSON Fehler mit HTTP-Status 400 Bad Request
+    }  
+  
+  \sonderfall[Weiter mit normalen Betrieb]{1b}%Letzte Zeile und Nummer
+	  {Benutzer existiert schon}%Bezeichnung
 	  {
 	  \item Der Fehler wird ins Log geschrieben.
-	  \item Dem Client wird ein entsprechender Fehler übermittelt.
+	  \item Dem Client erhält einen EREGISTERED Fehler HTTP-Status 403 forbidden.
 	  } 
 
-  \sonderfall[Fehler]{1b}%Letzte Zeile und Nummer
-	  {Wert ist leer}%Bezeichnung
+  \sonderfall[Fehler]{1c}%Letzte Zeile und Nummer
+	  {Ungültige Nutzerdaten}%Bezeichnung
 	  {
 	  \item Der Fehler wird ins Log geschrieben.
 	  \item Dem Client wird ein entsprechender Fehler übermittelt.
 	  }
 
-	  \sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
-	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  \sonderfall[Der Server nimmt keine weiteren Anfragen an bis Verbindung zur Datenbank wieder hergestellt.]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EDATABASE Fehler mit HTTP-Status 503 Service Unavailable
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
@@ -378,11 +404,11 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	}
 }
 
-\usecase{Benutzer anmelden}{Client, Benutzer-DB}%Name und Akteure
+\usecase{Benutzer authentifizieren}{Client, Benutzer-DB}%Name und Akteure
 {Benutzer wurde authentifiziert}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb.
-  \item Der Server hat einen Request über \textit{/login} vom Client
+  \item Der Server hat einen Request über \textit{/authuser} vom Client
 }
 {%Nachbedingungen
   \item Der Client hat ein 200 OK erhalten.
@@ -393,23 +419,22 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item Client hat 403 Access Denied erhalten.
+	\item Client hat den entsprechenden Fehler erhalten.
 	\item Fehler steht im Log.
 	}
 	\sonderfall[Weiter mit normalem Betrieb]{1a}
-    {Ungültige Authentifizerung}
+    {Ungültige Authentifizierung}
     {
     \item Fehler wird ins Log geschrieben
-  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+  	\item Der Client erhält einen EAUTH Fehler mit HTTP-Status 401 Unauthorized
     }
 	
   
-	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
-	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+	 \sonderfall[Der Server nimmt keine weiteren Anfragen an bis Verbindung zur Datenbank wieder hergestellt.]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EDATABASE Fehler mit HTTP-Status 503 Service Unavailable
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
@@ -419,23 +444,23 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	}
 }
 
-%TODO: ggfs mit überarbeiteter Protokollspezi abgleichen
 \usecase{Benutzerdaten abfragen}{Client, Benutzer-DB}%Name und Akteure
 {Client erhält seine Benutzerdaten}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb.
-  \item Der Server hat einen Request über \textit{/retrieve} vom Client empfangen
+  \item Der Server hat einen Request über \textit{/getuser} vom Client empfangen
 }
 {%Nachbedingungen
   \item Client hat die Benutzerdaten erhalten.
 }
 {%Normalablauf
   \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
+  \item Der Server ruft Benutzerdaten aus der Benutzer-DB ab
   \item Benutzerdaten werden an Client geschickt.
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item Client hat 403 Access Denied erhalten.
+	\item Client hat den entsprechenden Fehler erhalten.
 	\item Fehler steht im Log.
 	}
 	
@@ -443,15 +468,25 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
     {Ungültige Authentifizerung}
     {
     \item Fehler wird ins Log geschrieben
-  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+  	\item Der Client erhält einen EAUTH Fehler mit HTTP-Status 401 Unauthorized
     }
-
-	 \sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
-	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+    	\sonderfall[Weiter mit normalem Betrieb]{1b}
+    {Keine Adminrechte aber ID angegeben}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen ENOTADMIN Fehler mit HTTP-Status 403 Forbidden
+    }
+    	\sonderfall[Weiter mit normalem Betrieb]{2a}
+    {Benutzer ID nicht vorhanden}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen ENOID Fehler mit HTTP-Status 404 Not Found
+    }
+  \sonderfall[Der Server nimmt keine weiteren Anfragen an bis Verbindung zur Datenbank wieder hergestellt.]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EDATABASE Fehler mit HTTP-Status 503 Service Unavailable
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
@@ -465,19 +500,18 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 {Client verändert seine Benutzerdaten}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb.
-  \item Der Server hat einen POST-Request mit optionalem id-Parameter über \textit{/update} vom Client empfangen
+  \item Der Server hat einen Request mit optionalem id-Parameter über \textit{/updateuser} vom Client empfangen
 }
 {%Nachbedingungen
   \item Benutzerdaten wurden geändert.
 }
 {%Normalablauf
   \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
-  \item Benutzerdaten werden anhand des id-Parameters bzw. aus Basic-Auth-Informationen aus der Datenbank gelesen.
-  \item Geänderte Benutzerdaten werden in die Datenbank geschrieben
+  \item Geänderte Benutzerdaten werden in der Datenbank verändert
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item Client hat 403 Access Denied erhalten.
+	\item Client hat den entsprechenden Fehler erhalten.
 	\item Fehler steht im Log.
 	}
 	
@@ -485,22 +519,26 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
     {Ungültige Authentifizerung}
     {
     \item Fehler wird ins Log geschrieben
-  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+  	\item Der Client erhält einen EAUTH Fehler mit HTTP-Status 401 Unauthorized
     }
-    
-   	\sonderfall[Weiter mit normalem Betrieb]{2a}
-    {Ungültige id}
+     	\sonderfall[Weiter mit normalem Betrieb]{1b}
+    {Keine Adminrechte aber ID angegeben}
     {
     \item Fehler wird ins Log geschrieben
-  	\item Der Client erhält eine entsprechende Fehlermeldung
+  	\item Der Client erhält einen ENOTADMIN Fehler mit HTTP-Status 403 Forbidden
     }
-
-	 \sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
-	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+    	\sonderfall[Weiter mit normalem Betrieb]{2a}
+    {Benutzer ID nicht vorhanden}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen ENOID Fehler mit HTTP-Status 404 Not Found
+    }
+   	
+  \sonderfall[Der Server nimmt keine weiteren Anfragen an bis Verbindung zur Datenbank wieder hergestellt.]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EDATABASE Fehler mit HTTP-Status 503 Service Unavailable
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
@@ -510,37 +548,60 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	}
 }
 
-%TODO: Billing vs History
-\usecase{Billinginformationen abfragen}{Client, Abrechnungs-DB, Benutzer-DB}%Name und Akteure
-{Die in der Benutzer-DB gespeicherten Requests des Benutzers sowie deren Ergebnisse (bzw. Status) und Kosten sollen angezeigt werden}%Ziel
+
+\usecase{Abfragenverlauf abrufen}{Client, Abrechnungs-DB, Benutzer-DB}%Name und Akteure
+{Die in der Benutzer-DB gespeicherten Abfragen des Benutzers sowie deren Ergebnisse (bzw. Status) und Kosten sollen angezeigt werden}%Ziel
 {%Vorbedingungen
-  \item Der Server hat einen Get-Request an /billing erhalten
+  \item Der Server hat einen Request an /listrequests erhalten
 }
 {%Nachbedingungen
   \item Die entsprechenden Informationen wurden gesendet
 }
 {%Normalablauf
   \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
-  \item Der Server liest aus der Abrechnungs-DB alle vom Benutzer berechneten Requests sowie Zahlungsinformationen zu diesen Requests aus
+  \item Der Server liest aus der Abrechnungs-DB alle durch die offset- und limit-Parameter vom Benutzer berechneten Requests sowie Zahlungsinformationen zu diesen Requests aus 
   \item Der Server schickt dem Client eine Liste seiner bisher berechneten und \textit{pending} Requests sowie Zahlungsinformationen
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item Client hat 403 Access Denied erhalten.
+	\item Client hat den entsprechenden Fehler erhalten.
 	\item Fehler steht im Log.
 	}
 		\sonderfall[Weiter mit normalem Betrieb]{1a}
     {Ungültige Authentifizerung}
     {
     \item Fehler wird ins Log geschrieben
-  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+  	\item Der Client erhält einen EAUTH Fehler mit HTTP-Status 401 Unauthorized
     }
-	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
-	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+         	\sonderfall[Weiter mit normalem Betrieb]{1b}
+    {Keine Adminrechte aber ID angegeben}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen ENOTADMIN Fehler mit HTTP-Status 403 Forbidden
+    }
+    	\sonderfall[Weiter mit normalem Betrieb]{2a}
+    {Benutzer ID nicht vorhanden}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen ENOID Fehler mit HTTP-Status 404 Not Found
+    }
+    	\sonderfall[Weiter mit normalem Betrieb]{2b}%Letzte Zeile und Nummer
+	{Ungültiges Offset}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EOFFSET Fehler mit HTTP-Status 403 Forbidden
+  	}
+	\sonderfall[Weiter mit normalem Betrieb]{2c}%Letzte Zeile und Nummer
+	{Ungültiges Limit}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen ELIMIT Fehler mit HTTP-Status 403 Forbidden
+  	}
+  \sonderfall[Der Server nimmt keine weiteren Anfragen an bis Verbindung zur Datenbank wieder hergestellt.]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EDATABASE Fehler mit HTTP-Status 503 Service Unavailable
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
@@ -550,34 +611,10 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	}
 }
 
-%TODO: Protokollspezifikation sagt hier noch gar nichts, also gibt's auch keinen Use Case
-%\usecase{Billinginformationen Abfragen}{Client, Abrechnungs DB}%Name und Akteure
-%{Die bisherigen und ausstehenden Zahlungen für die bisherigen Berechnungen sollen angezeigt werden, Administratorübersicht}%Ziel
-%{%Vorbedingungen
-%  \item Der Server hat einen Get-Request von einem als Administrator angemeldeten Benutzer an /billing erhalten
-%}
-%{%Nachbedingungen
-%  \item
-%}
-%{%Normalablauf
-%  \item
-%}
-%{%Sondernachbedingungen und Sonderfälle
-%  \sondernachbedingung{
-%	\item
-%	}
-%  \sonderfall[Panic]{2a}%Letzte Zeile und Nummer
-%	  {}%Bezeichnung
-%	  {
-%	  \item .
-%	  }
-%}
-
-%TODO Protokollspezifikation??
 \usecase{Benutzerliste abfragen}{Client, Benutzer-DB}%Name und Akteure
 {Eine Liste der Benutzer wird abgefragt}%Ziel
 {%Vorbedingungen
-  \item Der Server hat einen Get-Request an /users erhalten
+  \item Der Server hat einen Get-Request an /listusers erhalten
 }
 {%Nachbedingungen
   \item Die entsprechenden Informationen wurden gesendet
@@ -589,29 +626,39 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item Client hat 403 Access Denied erhalten.
+	\item Client hat den entsprechenden Fehler erhalten.
 	\item Fehler steht im Log.
 	}
 		\sonderfall[Weiter mit normalem Betrieb]{1a}
     {Ungültige Authentifizerung}
     {
     \item Fehler wird ins Log geschrieben
-  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+  	\item Der Client erhält einen EAUTH Fehler mit HTTP-Status 401 Unauthorized
     }
-
+     	\sonderfall[Weiter mit normalem Betrieb]{1b}
+    {Keine Adminrechte}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen ENOTADMIN Fehler mit HTTP-Status 403 Forbidden
+    }
 	\sonderfall[Weiter mit normalem Betrieb]{2a}%Letzte Zeile und Nummer
-	{Ungültiges Offset/Limit}%Bezeichnung
+	{Ungültiges Offset}%Bezeichnung
   	{
 	\item Der Fehler wird ins Log geschrieben
-	\item Der Client erhält eine entsprechende Fehlermeldung
+	\item Der Client erhält einen EOFFSET Fehler mit HTTP-Status 403 Forbidden
+  	}
+	\sonderfall[Weiter mit normalem Betrieb]{2b}%Letzte Zeile und Nummer
+	{Ungültiges Limit}%Bezeichnung
+  	{
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen ELIMIT Fehler mit HTTP-Status 403 Forbidden
   	}
   	    
-	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
-	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+  \sonderfall[Der Server nimmt keine weiteren Anfragen an bis Verbindung zur Datenbank wieder hergestellt.]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EDATABASE Fehler mit HTTP-Status 503 Service Unavailable
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
@@ -639,27 +686,35 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item Client hat 403 Access Denied erhalten.
+	\item Client hat den entsprechenden Fehler erhalten.
 	\item Fehler steht im Log.
 	}
-  \sonderfall[Weiter mit normalem Betrieb]{1a}%Letzte Zeile und Nummer
-  	%TODO: Vielleicht doch nicht
-	  {Zu löschender Benutzer existiert nicht in der Datenbank}%Bezeichnung
-	  {
-	  \item Der Server schickt eine entsprechende Fehlermeldung an den Client, der die Lösch-Anfrage verursacht hat
-	  }
-	  		\sonderfall[Weiter mit normalem Betrieb]{1a}
+		\sonderfall[Weiter mit normalem Betrieb]{1a}
     {Ungültige Authentifizerung}
     {
     \item Fehler wird ins Log geschrieben
-  	\item Der Client erhält eine entsprechende Fehlermeldung mit HTTP-Status 403 Access Denied
+  	\item Der Client erhält einen EAUTH Fehler mit HTTP-Status 401 Unauthorized
     }
-	\sonderfall[Kritischer Fehler, Server ist beendet]{*}%Letzte Zeile und Nummer
-	{Verbindung zu Benutzer-DB verloren}%Bezeichnung
+    
+  	\sonderfall[Weiter mit normalem Betrieb]{1b}
+    {Keine Adminrechte}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen ENOTADMIN Fehler mit HTTP-Status 403 Forbidden
+    }
+    
+  	\sonderfall[Weiter mit normalem Betrieb]{1c}
+    {Benutzer ID nicht vorhanden}
+    {
+    \item Fehler wird ins Log geschrieben
+  	\item Der Client erhält einen ENOID Fehler mit HTTP-Status 404 Not Found
+    }
+
+  \sonderfall[Der Server nimmt keine weiteren Anfragen an bis Verbindung zur Datenbank wieder hergestellt.]{*}%Letzte Zeile und Nummer
+	{Verbindung zu Abrechnungs-DB oder Benutzer-DB verloren}%Bezeichnung
   	{
-	\item Der Fehler wird ins Log geschrieben (als schwerwiegender Fehler)
-	\item Der Client erhält eine entsprechende Fehlermeldung
-	\item Der Server wird beendet
+	\item Der Fehler wird ins Log geschrieben
+	\item Der Client erhält einen EDATABASE Fehler mit HTTP-Status 503 Service Unavailable
   	}
 
 \sonderfall[Weiter mit normalem Betrieb]{**}%Letzte Zeile und Nummer
@@ -667,261 +722,6 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	{
 	\item Fehlermeldung wird ins Log geschrieben
 	}
-}
-\clearpage
-\appendix
-\section{Begriffslexikon}
-
-%\begriff{Begriff}{Bedeutung}{Abgrenzung}{Gültigkeit}{Bezeichnung}{Unklarheiten}{Querverweise}
-
-%\begriff
-{%Begriff
-}{%Bedeutung
-}{%Abgrenzung
-}{%Gültigkeit
-}{%Bezeichnung
-}{%Unklarheiten
-}{%Querverweise
-}
-
-\begriff
-{%Begriff
-ToureNPlaner
-}{%Bedeutung
-ToureNPlaner ist die Bezeichnung für das Studienprojekt ToureNPlaner und für die Software ToureNPlaner.
-}{%Abgrenzung
-Es ist kein allgemeiner Tourenplaner gemeint.
-}{%Gültigkeit
--
-}{%Bezeichnung
-Es muss aus dem Kontext erschlossen werden, ob mit dem Begriff ToureNPlaner das Studienprojekt oder die Software ToureNPlaner gemeint ist. Wenn im Kontext von der Funktionalität vom ToureNPlaner die Rede ist, ist damit zum Beispiel die Software ToureNPlaner gemeint.
-}{%Unklarheiten
--
-}{%Querverweise
-Software ToureNPlaner, Studienprojekt ToureNPlaner
-}
-
-\begriff
-{%Begriff
-Studienprojekt ToureNPlaner, synonym Stupro
-}{%Bedeutung
-Das Studienprojekt ToureNPlaner ist ein Studienprojekt im Rahmen des Studienganges Softwaretechnik an der Universität Stuttgart. Im Rahmen von diesem Projekt muss die Software ToureNPlaner entwickelt werden.
-}{%Abgrenzung
-Es ist nicht die Software ToureNPlaner gemeint.
-}{%Gültigkeit
-Das Studienprojekt ToureNPlaner hat am Anfang des Sommersemesters 2011 begonnen und wird voraussichtlich am Anfang des Sommersemesters 2012 beendet sein.
-}{%Bezeichnung
--
-}{%Unklarheiten
--
-}{%Querverweise
-Software ToureNPlaner, ToureNPlaner
-}
-
-\begriff
-{%Begriff
-Software ToureNPlaner
-}{%Bedeutung
-Die Software ToureNPlaner ist die Bezeichnung für die Gesamtheit aller im Rahmen des Projektes entwickelten und verwendeten Systeme, auch die zu entwickelnde Software genannt. Dazu gehören der Server und die Clients sowie ihre verwendeten Komponenten.
-}{%Abgrenzung
-Es ist nicht das Projekt ToureNPlaner gemeint.
-}{%Gültigkeit
-Die Software ToureNPlaner hat mit dem Beginn des Studienprojektes angefangen zu existieren, unabhängig von der Funktionalität der Software. Im Rahmen des Studienprojektes entstehende Dokumente und Systeme sind Teil der Software, auch wenn diese letztendlich nicht mit ausgeliefert oder gelöscht werden. Die Software ToureNPlaner wird nach dem Ende des Studienprojektes ToureNPlaner noch weiter bestehen.
-}{%Bezeichnung
--
-}{%Unklarheiten
--
-}{%Querverweise
-Studienprojekt ToureNPlaner, ToureNPlaner
-}
-
-\begriff
-{%Begriff
-graphbasierte Webanwendung
-}{%Bedeutung
-Eine Webanwendung, die Dienste für bestimmte Graphprobleme anbietet. Ein bekanntes Beispiel ist die Berechnung des kürzesten Weges zwischen zwei Punkten auf einer Karte, auch als Routenplanung bekannt.
-}{%Abgrenzung
-Webanwendungen, die beliebige Daten speichern, die man als Graph interpretieren kann, sind nicht zwangsläufig als graphbasierte Webanwendungen zu bezeichnen. Die Daten und deren Interpretation als Graph müssen Kernaspekte der angebotenen Dienste sein, damit die Webanwendung als graphbasiert bezeichnet werden kann.
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
-Es ist unklar, welche Arten von Graphen (z.B. nur Kartengraphen) gemeint sind.
-}{%Querverweise
-Webanwendung
-}
-
-\begriff
-{%Begriff
-Webanwendung
-}{%Bedeutung
-Eine Anwendung, die mit einem Internetbrowser zugänglich ist und mit einem Server kommuniziert.
-}{%Abgrenzung
-Sonstige Anwendungen, die mittels Internet-Protokollen (z.B. HTTP) mit einem Server kommunizieren, wie zum Beispiel Apps, sind keine Webanwendungen.
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
-Sind Flash/Java-Applets etc. Webanwendungen?
-}{%Querverweise
-App
-}
-
-
-\begriff
-{%Begriff
-Tour, synonym Rundtour, Rundreise
-}{%Bedeutung
-Eine Tour beschreibt einen mit bestimmten Fortbewegungsmitteln oder auch zu Fuß begehbaren Weg, wobei dieser Weg einen festgelegten oder bliebigen Startpunkt hat. Die Begehung dieses Weges führt am Ende wieder zum Startpunkt, somit entspricht eine Tour einer Route, bei der End- und Startpunkt identisch sind.
-}{%Abgrenzung
-Eine Route, bei Start- und Endpunkt unterschiedlich sind, ist keine Tour.
-}{%Gültigkeit
--
-}{%Bezeichnung
-Eine Tour ist durch eine geordnete Liste von Koordinaten definiert.
-}{%Unklarheiten
--
-}{%Querverweise
--
-}
-
-\begriff
-{%Begriff
-Backend-Daten
-}{%Bedeutung
-Alle Daten, die der Server für seinen Betrieb in Datenbanken oder auf andere Weise speichert, werden als Backend-Daten bezeichnet. Zu den Backend-Daten gehört auch die Graphrepräsentation.
-}{%Abgrenzung
-Daten auf Client-Systemen, die der Server nicht kennt, gehören nicht zu den Backend-Daten.
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
--
-}{%Querverweise
-Graphrepräsentation
-}
-
-\begriff
-{%Begriff
-Graphrepräsentation
-}{%Bedeutung
-Einen Graphen, wie zum Beispiel die Straßennetzkarte von Deutschland, kann man auf verschiedene Weise speichern, es gibt also verschiedene Möglichkeiten der Graphrepräsentation. Eine Graphrepräsentation hat eine bestimmte Art, wie Kanten und Knoten sowie zugehörige Daten eines Graphen gespeichert werden. Auf der Graphrepräsentation werden die von Kunden gewünschten Algorithmen ausgeführt.
-}{%Abgrenzung
-Die grafische Darstellung eines Graphen hat nichts mit der Graphrepräsentation im Sinne der Server-Spezifikation zu tun.
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
--
-}{%Querverweise
--
-}
-
-\begriff
-{%Begriff
-Webbasierter Client
-}{%Bedeutung
-Ein Client im Sinne des ToureNPlaner Projekts, welcher als Webanwendung realisiert ist.
-}{%Abgrenzung
-Ein Client, der nicht im Browser läuft, ist kein Webclient.
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
--
-}{%Querverweise
-Webanwendung, Client
-}
-
-\begriff
-{%Begriff
-textbasiertes Graphformat
-}{%Bedeutung
-Rerpäsentation eines allgemeinen Graphen mit Knoten, Kanten und Zusatzinformationen (wie z.B. Kantengewichten) als Textdatei (siehe auch Graph-Format-Dokument).
-}{%Abgrenzung
-Hier ist das von ToureNPlaner verwendete Format und nicht etwa eine XML-Repräsentation gemeint.
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
-Sind durch das Graph-Format-Dokument zu klären.
-}{%Querverweise
--
-}
-
-\begriff
-{%Begriff
-Client
-}{%Bedeutung
-Eine Anwendung, die auf die Funktionen des ToureNPlaner Servers mittels des ToureNPlaner Protokolls (siehe Protokollspezifikation) zugreift.
-}{%Abgrenzung
-Innerhalb dieser Spezifikation bezeichnet Client ausschließlich Clients für den ToureNPlaner Server.
-}{%Gültigkeit
--
-}{%Bezeichnung
--
-}{%Unklarheiten
--
-}{%Querverweise
-Webbasierter Client
-}
-
-\begriff
-{%Begriff
-Abrechnungs-DB, synonym Request-Log
-}{%Bedeutung
-Die Abrechnungs-DB (Abrechnungs-Datenbank) speichert alle empfangenen Algorithmus-Requests (Anfragen) von Clients und deren Berechnungsergebnisse des Servers, die für die Abrechnung benötigt werden. Außerdem kann der Status einer Berechnung hier gespeichert werden.
-}{%Abgrenzung
-Die Abrechnungs-DB ist keine eigenständige Datenbank, sondern ist eine Teilmenge an Tabellen einer Datenbank mit weiteren Tabellen.
-}{%Gültigkeit
--
-}{%Bezeichnung
-Die Abrechnungs-DB und die Benutzer-DB befinden sich im selben Datenbanksystem, beides sind aber verschiedene Datenbank-Tabellen und für die Use-Cases sind es konzeptionell verschiedene Akteure. 
-}{%Unklarheiten
--
-}{%Querverweise
-Benutzer-DB
-}
-
-\begriff
-{%Begriff
-Benutzer-DB
-}{%Bedeutung
-Die Benutzer-DB (Benutzer-Datenbank) speichert alle nötigen Informationen über die Benutzer des Systems, dabei werden sowohl Admins wie auch Kunden in der Benutzer-DB gespeichert.
-}{%Abgrenzung
-Die Benutzer-DB ist keine eigenständige Datenbank, sondern ist eine Teilmenge an Tabellen einer Datenbank mit weiteren Tabellen.
-}{%Gültigkeit
--
-}{%Bezeichnung
-Die Abrechnungs-DB und die Benutzer-DB befinden sich im selben Datenbanksystem, beides sind aber verschiedene Datenbank-Tabellen und für die Use-Cases sind es konzeptionell verschiedene Akteure.
-}{%Unklarheiten
--
-}{%Querverweise
-Abrechnungs-DB
-}
-
-
-%\begriff
-{%Begriff
-
-}{%Bedeutung
-%-
-}{%Abgrenzung
-%-
-}{%Gültigkeit
-%-
-}{%Bezeichnung
-%-
-}{%Unklarheiten
-%-
-}{%Querverweise
-%-
 }
 
 \end{document}
