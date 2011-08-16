@@ -1,3 +1,4 @@
+%client specification
 \documentclass[a4paper,10pt,titlepage]{article}
 
 \usepackage[utf8]{inputenc}
@@ -7,6 +8,9 @@
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{float}
+\usepackage{paralist}
+\usepackage{array}
+\usepackage{ifthen}
 
 \usepackage[pdfborder={0 0 0}]{hyperref}
 
@@ -18,19 +22,71 @@
 \newcommand{\shortcut}[1]
 {\texttt{#1}}
 
-\newcommand{\usecase}[8]
-{\subsection{#1}
-\begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
-\hline
-  Akteur & #2\\\hline
-  Ziel & #3\\\hline
-  Vorbedingung & #4\\\hline
-  Normalablauf & #7\\\hline
-  Nachbedingung & #5\\\hline
-  Sonderfall & #8\\\hline
-  Nachbedingung im Sonderfall& #6\\\hline
- \end{tabular}
+\makeatletter
+\newcommand\novspace{\@minipagetrue}
+
+\newenvironment{owncompactitem}{%
+\compactitem
+}{%
+\@finalstrut\@arstrutbox
+\@nameuse{endcompactitem}%
+\aftergroup\let\aftergroup\@finalstrut\aftergroup\@gobble
 }
+\newenvironment{owncompactenum}{%
+\compactenum
+}{%
+\@finalstrut\@arstrutbox
+\@nameuse{endcompactenum}%
+\aftergroup\let\aftergroup\@finalstrut\aftergroup\@gobble
+}
+\makeatother
+
+\newcommand{\usecase}[7]
+{\subsection{#1}
+\setlength{\extrarowheight}{2pt}
+\begin{tabular}{|p{0.2\textwidth}|p{0.9\textwidth}|}
+\hline
+  Akteure & #2\\\hline
+  Ziel & #3\\\hline
+  Vorbedingungen & \novspace
+  	\begin{owncompactitem}[-] #4 \end{owncompactitem} \\\hline
+  Normalablauf & \vspace{-7pt}
+  	\begin{owncompactenum}[1.] #6 \end{owncompactenum} \\\hline
+  Nachbedingungen & \novspace
+  	\begin{owncompactitem}[-] #5 \end{owncompactitem} \\\hline
+  #7
+\end{tabular}
+}
+
+\newcommand{\sonderfall}[4][\empty]
+{
+Sonderfall #2 & \vspace{-10pt}
+	\textit{#3}
+	\begin{owncompactenum}[{#2}.1] {#4} \end{owncompactenum}
+  	\ifthenelse{\equal{#1}{\empty}}
+    	{\\\hline} %no opt
+    	{\ensuremath{\rightarrow} #1 \\ [+1pt] \hline} %opt
+
+}
+
+\newcommand{\kurzersonderfall}[3][\empty]
+{
+Sonderfall #2 & \vspace{-10pt}
+	\textit{#3}
+  	\ifthenelse{\equal{#1}{\empty}}
+    	{\\\hline} %no opt
+    	{\\&\ensuremath{\rightarrow} #1 \\ [+1pt] \hline} %opt
+
+}
+
+\newcommand{\sondernachbedingung}[1]
+{
+Nachbedingungen im Sonderfall& \novspace
+	\begin{owncompactitem}[-]
+		#1
+	\end{owncompactitem} \\\hline
+}
+
 
 \newcommand{\begriff}[7]
 {\subsection{#1}
@@ -305,121 +361,382 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
   \caption{Usecase-Diagramm}
 \end{figure}
 
+
+%\usecase{Name}{Akteur}{Ziel}{Vorbedingungen}{Nachbedingungen}{Normalablauf}{Sonderfälle und dessen Nachbedingungen}
+
+%\sonderfall[optionale letzte Zeile für "-> Schritt ..."]{Nummer}{Bezeichnung}{Ablauf}
+
+%\sondernachbedingung{Bedingungen}
+
+%\usecase{}{}%Name und Akteure
+{%Ziel
+}{%Vorbedingungen
+}{%Nachbedingungen
+}{%Normalablauf
+}{%Sondernachbedingungen und Sonderfälle
+}
+
+%\sonderfall[]{}%Letzte Zeile und Nummer
+{%Bezeichnung
+}{%Sonderfallablauf
+}
+
+%\kurzersonderfall[]{}%Letzte Zeile und Nummer
+{%Bezeichnung
+}
+
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
 \subsection*{Benutzeroberflächenfunktionen}
-\usecase{Algorithmus auswählen}{Benutzer, Server}{Algorithmus auswählen}{Der Benutzer ist am Server angemeldet}{Der Benutzer hat einen Algorithmus ausgewählt}{Der Benutzer bekommt eine Fehlermeldung}{1. Der Benutzer wählt seinen Algorithmus \newline 2. Benutzer bestätigt seine Eingabe}{Die Verbindung zum Server wurde unterbrochen}
+\usecase{Algorithmus auswählen}{Benutzer, Server}%Name und Akteure
+{%Ziel
+Algorithmus auswählen
+}{%Vorbedingungen
+	\item Der Benutzer ist am Server angemeldet
+}{%Nachbedingungen
+	\item  Der Benutzer hat einen Algorithmus ausgewählt
+}{%Normalablauf
+	\item Der Benutzer wählt seinen Algorithmus
+	\item Benutzer bestätigt seine Eingabe
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{\item Der Benutzer bekommt eine Fehlermeldung}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Die Verbindung zum Server wurde unterbrochen
+	}
+}
 
-\usecase{Marker hinzufügen}{Benutzer}{Einen Marker auf der Karten hinzufügen}{Die Karte wird angezeigt}{Ein Marker wurde an die gewünschte Stelle plaziert}{Der Marker konnte nicht angelegt werden}{1. Der Benutzer wählt einen gewünschten Punkt auf der Karte \newline 2. Der Benutzer erstellt dort einen Marker}{es besteht bereits ein Marker an dieser Position}
+\usecase{Marker hinzufügen}{Benutzer}%Name und Akteure
+{%Ziel
+Einen Marker auf der Karten hinzufügen
+}{%Vorbedingungen
+	\item Die Karte wird angezeigt
+}{%Nachbedingungen
+	\item Ein Marker wurde an die gewünschte Stelle plaziert
+}{%Normalablauf
+	\item Der Benutzer wählt einen gewünschten Punkt auf der Karte
+	\item Der Benutzer erstellt dort einen Marker
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Marker konnte nicht angelegt werden
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es besteht bereits ein Marker an dieser Position
+	}
+}
 
-\usecase{Marker editieren}{Benutzer}{Einen vorhandenen Marker editieren}{Ein Marker muss existieren}{Der Marker wurde editiert}{Der Marker wurde auf seine vorherigen Werte zurückgesetzt}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer ändert die gewünschten Werte des Markers \newline 3. Der Benutzer bestätigt seine Eingaben}{ungültige Eingaben}
+\usecase{Marker editieren}{Benutzer}%Name und Akteure
+{%Ziel
+Einen vorhandenen Marker editieren
+}{%Vorbedingungen
+	\item Ein Marker muss existieren
+}{%Nachbedingungen
+	\item Der Marker wurde editiert
+}{%Normalablauf
+	\item Der Benutzer wählt einen Marker aus
+	\item Der Benutzer ändert die gewünschten Werte des Markers
+	\item Der Benutzer bestätigt seine Eingaben
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Marker wurde auf seine vorherigen Werte zurückgesetzt
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	ungültige Eingaben
+	}
+}
 
-\usecase{Marker löschen}{Benutzer}{Einen vorhandenen Marker löschen}{Ein Marker muss vorhanden sein}{Der Marker wurde gelöscht}{keine}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer bestätigt das Löschen}{keine}
+\usecase{Marker löschen}{Benutzer}%Name und Akteure
+{%Ziel
+Einen vorhandenen Marker löschen
+}{%Vorbedingungen
+	\item Ein Marker muss vorhanden sein
+}{%Nachbedingungen
+	\item Der Marker wurde gelöscht
+}{%Normalablauf
+	\item Der Benutzer wählt einen Marker aus
+	\item Der Benutzer bestätigt das Löschen
+}{%Sondernachbedingungen und Sonderfälle
+}
 
-\usecase{Start/Zielpunkt setzen}{Benutzer}{Einen Marker als Ziel/Startpunkt setzen}{Ein Marker muss vorhanden sein}{Ein Marker ist Start/Zielpunkt}{keine}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer setzt ihn als Start/Zielpunkt}{keine}
+\usecase{Start/Zielpunkt setzen}{Benutzer}%Name und Akteure
+{%Ziel
+Einen Marker als Ziel/Startpunkt setzen
+}{%Vorbedingungen
+	\item Ein Marker muss vorhanden sein
+}{%Nachbedingungen
+	\item Ein Marker ist Start/Zielpunkt
+}{%Normalablauf
+	\item Der Benutzer wählt einen Marker aus
+	\item Der Benutzer setzt ihn als Start/Zielpunkt
+}{%Sondernachbedingungen und Sonderfälle
+}
 
-\usecase{Route berechnen}{Benutzer, Server}{Eine Route berechnen}{Es müssen Marker auf der Karte plaziert worden sein}{Eine Route wurde berechnet}{Es wird eine Fehlermeldung ausgegeben}{1. Der Benutzer bestätigt seine Eingaben \newline 2. Der Benutzer berechnet seine Route}{Benötigte Angaben für die Berechnung fehlen}
+\usecase{Route berechnen}{Benutzer, Server}%Name und Akteure
+{%Ziel
+Eine Route berechnen
+}{%Vorbedingungen
+	\item Es müssen Marker auf der Karte plaziert worden sein
+}{%Nachbedingungen
+	\item Eine Route wurde berechnet
+}{%Normalablauf
+	\item Der Benutzer bestätigt seine Eingaben
+	\item Der Benutzer berechnet seine Route
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Es wird eine Fehlermeldung ausgegeben
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Benötigte Angaben für die Berechnung fehlen
+	}
+}
 
 \subsection*{Administrationsfunktionen}
-\usecase{Benutzer anlegen}
-{Administrator}{Der Administrator will ein Benutzerkonto anlegen.}{Der Administrator ist als solcher eingeloggt.}{Das Konto wurde erfolgreich im System angelegt.}{Der Administrator sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Administrator navigiert zum Formular zum Anlegen eines Nutzers.
-\item Der Administrator gibt die Daten ein.
-\item Der Administrator bestätigt die Angaben.
-\end{enumerate}
-}{Es gab einen Fehler beim Erstellen des Kontos.}
+\usecase{Benutzer anlegen}{Administrator}%Name und Akteure
+{%Ziel
+Der Administrator will ein Benutzerkonto anlegen.
+}{%Vorbedingungen
+	\item Der Administrator ist als solcher eingeloggt.
+}{%Nachbedingungen
+	\item Das Konto wurde erfolgreich im System angelegt.
+}{%Normalablauf
+	\item Der Administrator navigiert zum Formular zum Anlegen eines Nutzers.
+	\item Der Administrator gibt die Daten ein.
+	\item Der Administrator bestätigt die Angaben.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Administrator sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gab einen Fehler beim Erstellen des Kontos.
+	}
+}
 
-\usecase{Benutzer bearbeiten}
-{Administrator}{Der Administrator will die Daten eines Benutzers bearbeiten.}{Der Administrator ist als solcher eingeloggt.}{Die Daten des Benutzers sind geändert.}{Der Administrator sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Administrator wählt einen Benutzer aus.
-\item Der Administrator ändert die Daten.
-\item Der Administrator bestätigt die Angaben.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Benutzer bearbeiten}{Administrator}%Name und Akteure
+{%Ziel
+Der Administrator will die Daten eines Benutzers bearbeiten.
+}{%Vorbedingungen
+	\item Der Administrator ist als solcher eingeloggt.
+}{%Nachbedingungen
+	\item Die Daten des Benutzers sind geändert.
+}{%Normalablauf
+	\item Der Administrator wählt einen Benutzer aus.
+	\item Der Administrator ändert die Daten.
+	\item Der Administrator bestätigt die Angaben.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Administrator sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
-\usecase{Benutzer löschen}
-{Administrator}{Der Administrator will einen Benutzer löschen.}{Der Administrator ist als solcher eingeloggt.}{Die Daten des Benutzers und seine alten Abfragen sind gelöscht.}{Der Administrator sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Administrator wählt einen Benutzer aus.
-\item Der Administrator bestätigt das Löschen.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Benutzer löschen}{Administrator}%Name und Akteure
+{%Ziel
+Der Administrator will einen Benutzer löschen.
+}{%Vorbedingungen
+	\item Der Administrator ist als solcher eingeloggt.
+}{%Nachbedingungen
+	\item Die Daten des Benutzers und seine alten Abfragen sind gelöscht.
+}{%Normalablauf
+	\item Der Administrator wählt einen Benutzer aus.
+	\item Der Administrator bestätigt das Löschen.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Administrator sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
-\usecase{Benutzer auflisten}
-{Administrator}{Der Administrator will eine Lister aller Benutzer sehen.}{Der Administrator ist als solcher eingeloggt.}{Der Administrator kann die Benutzer auswählen.}{Der Administrator sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Administrator navigiert zur Benutzerliste.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Benutzer auflisten}{Administrator}%Name und Akteure
+{%Ziel
+Der Administrator will eine Lister aller Benutzer sehen.
+}{%Vorbedingungen
+	\item Der Administrator ist als solcher eingeloggt.
+}{%Nachbedingungen
+	\item Der Administrator kann die Benutzer auswählen.
+}{%Normalablauf
+	\item Der Administrator navigiert zur Benutzerliste.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Administrator sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
-\usecase{Benutzer anzeigen}
-{Administrator}{Der Administrator will die Daten eines Benutzer sehen.}{Der Administrator ist als solcher eingeloggt.}{Der Administrator sieht die Daten eines Benutzers.}{Der Administrator sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Administrator navigiert zur Benutzerliste.
-\item Der Administrator wählt einen Benutzer aus.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Benutzer anzeigen}{Administrator}%Name und Akteure
+{%Ziel
+Der Administrator will die Daten eines Benutzer sehen.
+}{%Vorbedingungen
+	\item Der Administrator ist als solcher eingeloggt.
+}{%Nachbedingungen
+	\item Der Administrator sieht die Daten eines Benutzers.
+}{%Normalablauf
+	\item Der Administrator navigiert zur Benutzerliste.
+	\item Der Administrator wählt einen Benutzer aus.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Administrator sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
-\usecase{Abfragen auflisten}
-{Administrator}{Der Administrator will eine Liste aller Abfragen sehen.}{Der Administrator ist als solcher eingeloggt.}{Der Administrator sieht alle Abfragen.}{Der Administrator sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Administrator navigiert zur Liste aller Abfragen.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Abfragen auflisten}{Administrator}%Name und Akteure
+{%Ziel
+Der Administrator will eine Liste aller Abfragen sehen.
+}{%Vorbedingungen
+	\item Der Administrator ist als solcher eingeloggt.
+}{%Nachbedingungen
+	\item Der Administrator sieht alle Abfragen.
+}{%Normalablauf
+	\item Der Administrator navigiert zur Liste aller Abfragen.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Administrator sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
 \subsection*{Benutzerverwaltungsfunktionen}
-\usecase{Benutzer registrieren}
-{Benutzer}{Der Benutzer will sich ein Benutzerkonto anlegen.}{Keine}{Das Konto wurde erfolgreich im System angelegt.}{Der Benutzer sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Benutzer navigiert zum Registrierungsformular.
-\item Der Benutzer gibt seine Daten ein.
-\item Der Benutzer bestätigt seine Angaben.
-\end{enumerate}
-}{Es gab einen Fehler beim Erstellen des Kontos.}
+\usecase{Benutzer registrieren}{Benutzer}%Name und Akteure
+{%Ziel
+Der Benutzer will sich ein Benutzerkonto anlegen.
+}{%Vorbedingungen
+	\item 
+}{%Nachbedingungen
+	\item Das Konto wurde erfolgreich im System angelegt.
+}{%Normalablauf
+	\item Der Benutzer navigiert zum Registrierungsformular.
+	\item Der Benutzer gibt seine Daten ein.
+	\item Der Benutzer bestätigt seine Angaben.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Benutzer sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gab einen Fehler beim Erstellen des Kontos.
+	}
+}
 
-\usecase{Anmelden}
-{Benutzer}{Der Benutzer will sich am System anmelden.}{Keine}{Der Benutzer ist am System angemeldet.}{Der Benutzer sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item (optional) Der Benutzer wählt den Server aus.
-\item Der Benutzer gibt seine Anmeldedaten ein.
-\item Der Benutzer bestätigt seine Angaben.
-\end{enumerate}
-}{Die Anmeldedaten sind falsch.}
+\usecase{Anmelden}{Benutzer}%Name und Akteure
+{%Ziel
+Der Benutzer will sich am System anmelden.
+}{%Vorbedingungen
+	\item 
+}{%Nachbedingungen
+	\item Der Benutzer ist am System angemeldet.
+}{%Normalablauf
+	\item (optional) Der Benutzer wählt den Server aus.
+	\item Der Benutzer gibt seine Anmeldedaten ein.
+	\item Der Benutzer bestätigt seine Angaben.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Benutzer sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Die Anmeldedaten sind falsch.
+	}
+}
 
-\usecase{Benutzerdaten anzeigen}
-{Benutzer}{Der Benutzer will seine Daten einsehen.}{Der Benutzer hat sich eingeloggt.}{Der Benutzer sieht seine Daten.}{Der Benutzer sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Benutzer navigiert zur Benutzerdatenansicht.
-\item Der Benutzer sieht seine Daten.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Benutzerdaten anzeigen}{Benutzer}%Name und Akteure
+{%Ziel
+Der Benutzer will seine Daten einsehen.
+}{%Vorbedingungen
+	\item Der Benutzer hat sich eingeloggt.
+}{%Nachbedingungen
+	\item Der Benutzer sieht seine Daten.
+}{%Normalablauf
+	\item Der Benutzer navigiert zur Benutzerdatenansicht.
+	\item Der Benutzer sieht seine Daten.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Benutzer sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
-\usecase{Benutzerdaten bearbeiten}
-{Benutzer}{Der Benutzer will seine Daten bearbeiten.}{Der Benutzer hat sich eingeloggt.}{Die Daten des Benutzers sind geändert.}{Der Benutzer sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Benutzer navigiert zur Benutzerdatenansicht.
-\item Der Benutzer ändert seine Daten.
-\item Der Benutzer bestätigt seine Angaben.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Benutzerdaten bearbeiten}{Benutzer}%Name und Akteure
+{%Ziel
+Der Benutzer will seine Daten bearbeiten.
+}{%Vorbedingungen
+	\item Der Benutzer hat sich eingeloggt.
+}{%Nachbedingungen
+	\item Die Daten des Benutzers sind geändert.
+}{%Normalablauf
+	\item Der Benutzer navigiert zur Benutzerdatenansicht.
+	\item Der Benutzer ändert seine Daten.
+	\item Der Benutzer bestätigt seine Angaben.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Benutzer sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
-\usecase{Abrechnung anzeigen}
-{Benutzer}{Der Benutzer will seine Abrechnung sehen.}{Der Benutzer hat sich eingeloggt.}{Der Benutzer sieht seine Abrechnung.}{Der Benutzer sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Benutzer navigiert zur Abrechnungsansicht.
-\item Der Benutzer sieht seine Abrechnung.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Abrechnung anzeigen}{Benutzer}%Name und Akteure
+{%Ziel
+Der Benutzer will seine Abrechnung sehen.
+}{%Vorbedingungen
+	\item Der Benutzer hat sich eingeloggt.
+}{%Nachbedingungen
+	\item Der Benutzer sieht seine Abrechnung.
+}{%Normalablauf
+	\item Der Benutzer navigiert zur Abrechnungsansicht.
+	\item Der Benutzer sieht seine Abrechnung.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Benutzer sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
-\usecase{Abfrage anzeigen}
-{Benutzer}{Der Benutzer will eine alte Route sehen.}{Der Benutzer hat sich eingeloggt.}{Der Benutzer sieht seine alte Route.}{Der Benutzer sieht eine Fehlermeldung.}{
-\begin{enumerate}
-\item Der Benutzer navigiert zur Abrechnungsansicht.
-\item Der Benutzer wählt eine alte Abfrage aus.
-\item Der Benutzer sieht seine alte Abfrage.
-\end{enumerate}
-}{Es gibt einen Fehler.}
+\usecase{Abfrage anzeigen}{Benutzer}%Name und Akteure
+{%Ziel
+Der Benutzer will eine alte Route sehen.
+}{%Vorbedingungen
+	\item Der Benutzer hat sich eingeloggt.
+}{%Nachbedingungen
+	\item Der Benutzer sieht seine alte Route.
+}{%Normalablauf
+	\item Der Benutzer navigiert zur Abrechnungsansicht.
+	\item Der Benutzer wählt eine alte Abfrage aus.
+	\item Der Benutzer sieht seine alte Abfrage.
+}{%Sondernachbedingungen und Sonderfälle
+\sondernachbedingung{
+	\item Der Benutzer sieht eine Fehlermeldung.
+	}
+\kurzersonderfall[]{}%Letzte Zeile und Nummer
+	{%Bezeichnung
+	Es gibt einen Fehler.
+	}
+}
 
 \clearpage
 \appendix
