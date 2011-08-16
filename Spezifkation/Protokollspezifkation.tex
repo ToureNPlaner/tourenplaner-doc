@@ -110,37 +110,43 @@
 	
 	Zur Kodierung der Längen- und Breitengrade einer Position auf der Karte wird das WGS 84 verwendet.
 	
+	\subsection*{Serverart}
+	Der Server kann in zwei verschiedenen Modi laufen: Privat/Öffentlich. Im öffentlichen Modus kann jeder Probleminstanzen bearbeiten lassen. Im privaten ist ein Benutzerkonto nötig, um Probleminstanzen bearbeiten zu lassen.
+	
 	\subsection{Standardablauf einer Abfrage}
 	Bei erfolgreicher Bearbeitung einer Abfrage antwortet der Server mit dem HTTP-Status-Code 200 OK und gibt eine evtl. Antwort im HTTP-Body als JSON Objekt zurück. Bei einem Fehler gibt der Server einen entsprechenden Status-Code $>$= 400 und weitere Informationen zum Fehler im HTTP-Body als JSON Objekt zurück. siehe Fehlerliste %TODO
 
 
 	\subsection{Benutzerobjekt}
-	%TODO 
+	\label{benutzerobjekt}
 	Für jeden Benutzer müssen in einer Datenbanktabelle die Informationen gespeichert werden, die zum Login sowie zur Rechnungserstellung benötigt werden. 
 	Das sind:
 	
-	\begin{itemize}
-		\item Email
-		\item Passwort
-		\item Vorname
-		\item Nachname
-		\item Rechnungsadresse
-		\item Adminflag
-	\end{itemize}
-	
-	Das Passwort sollte dabei durch einen sicheren Hash repräsentiert werden.
-	
-	Zudem wird für die Rechnungserstellung und das Debugging in einer Tabelle alle eingehenden Anfragen, sowie die Ausführungsdauer und die Kosten abgespeichert.
-	Diese Tabelle enthält folgende Daten:
-	
-	\begin{itemize}
-		\item UserId
-		\item Zeitpunkt der Anfrage
-		\item die Anfrage
-		\item das Ergebnis
-		\item Berechnungsdauer (in CPU-Zeit)
-		\item Kosten (evtl. berrechnet statt gespeichert)
-	\end{itemize}	
+\begin{lstlisting}
+{
+	"email": "max.mustermann@online.de",
+	"password": "1234",
+	"firstname": "Max",
+	"lastname": "Mustermann",
+	"address": "Musterstrasse 10, 12345 Musterstadt",
+	"admin": false,
+	"active": true
+}
+\end{lstlisting}	
+	Das Passwort sollte nur beim Registrieren oder beim ändern der Benutzerdaten verschickt werden.
+	\subsection{Requestlogobjekt}	
+	Dient der Speicherung alter Abfragen.
+	\label{requestlogobjekt}
+
+\begin{lstlisting}
+{
+	"timestamp": 1234567890,
+	"duration": 500,
+	"cost": 123.24,
+	"request": { ... },
+	"response": { ... }
+}
+\end{lstlisting}
 
 \clearpage
 \section{Server}
@@ -159,7 +165,8 @@
 	\begin{lstlisting}
 {
     "version": 1.0,
-    "anonymous": true/false,
+    "servertype": public/private,
+    "sslport": 443,
     "algorithms": [
         {
             "version": 2,
@@ -191,7 +198,9 @@
     	version & Die Version des Protokolls, die der Server spricht. \\ 
     	\hline
     	
-    	anonymous & Gibt an, ob der Server anonyme Anfragen erlaubt. Sollte er anonyme Anfragen erlauben, so wird die Verbindung nicht verschlüsselt und ein Login ist nicht möglich. \\
+    	servertype & Gibt an, ob der Server im öffentlich oder privaten Modus läuft. \\
+    	\hline
+    	sslport & Falls angegeben antwortet der Server dort auf SSL-Anfragen.\\
     	\hline
     	
     	algorithms & Ein Array aller Algorithmen, die der Server unterstützt. \\
@@ -240,7 +249,7 @@
    	\clearpage
 \section{Benutzer}
 
-Auf den meisten Servern wird ein Benutzer einen Account benötigen und muss eingeloggt sein, um einen Algorithmus auf dem Server laufen lassen zu können.
+Auf private Servern benötigt ein Benutzer ein Konto und muss sich authentifizieren, um einen Algorithmus auf dem Server laufen lassen zu können.
 Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeiten seines Accounts gegeben, sowie eine Auflistung der durchgeführten Requests sowie ihrer Kosten.
 
 \request{Registrierung}%Name
@@ -254,16 +263,8 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 {Keine}%Parameter
 {401 Unauthorized: Admin Authentifizierung fehlgeschlagen \par 403 Forbidden: Benutzer schon vorhanden}%Status-Code
 		
-		\subsubsection{Beispiel}
-		\begin{lstlisting}
-{
-	"email": "max.mustermann@online.de",
-	"password": "1234",
-	"firstname": "Max",
-	"lastname": "Mustermann",
-	"adress": "Musterstrasse 10, 12345 Musterstadt"
-}
-		\end{lstlisting}
+		\subsubsection{Request}
+Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 		
 \request{Authentifizierung}%Name
 {/authuser}%URL
@@ -278,34 +279,37 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 
 \request{Benutzerdaten abfragen}%Name
 {/getuser}%URL
-{Holt die eigenen Benutzerdaten. Falls der Parameter ID angegeben ist, werden die Daten eines anderen Benutzers geliefert (Admin).}%Beschreibung
+{Holt die eigenen Benutzerdaten. Falls der Parameter ID angegeben ist, werden die Daten des Benutzers mit dieser ID geliefert (Admin).}%Beschreibung
 {GET}%HTTP-Method
 {Privat}%Server-Typ
 {Immer}%Auth
 {Immer}%SSL
 {ID}%Parameter
 {401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code
-\subsubsection{Beispiel}
-%TODO
+\subsubsection{Request}
+Leer.
+\subsubsection{Response}
+Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 \clearpage
 
 
 \request{Benutzerdaten ändern}%Name
 {/updateuser}%URL
-{Ändert die eigenen Benutzerdaten. Falls der Parameter ID angegeben ist, werden die Daten eines anderen Benutzers geändert (Admin)}%Beschreibung
+{Ändert die eigenen Benutzerdaten. Falls der Parameter ID angegeben ist, werden die Daten des Benutzers mit dieser ID geändert (Admin)}%Beschreibung
 {POST}%HTTP-Method
 {Privat}%Server-Typ
 {Immer}%Auth
 {Immer}%SSL
 {ID}%Parameter
 {401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code		
-\subsubsection{Beispiel}
-%TODO
+\subsubsection{Request}
+Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
+Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benutzerobjekt. Wenn er es nicht setzen will darf er das Feld nicht angeben.
 \clearpage
 
 \request{Abfragenverlauf abrufen}%Name
 {/listrequests}%URL
-{Ruft die eigenen Abfragen ab. Falls der Parameter ID angegeben ist, werden die Daten eines anderen Benutzers abgerufen. Limit limitiert die Anzahl der zurückgelieferten Datensätze. Offset gibt den Offset zum ersten Datensatz an. (Admin)}%Beschreibung
+{Ruft die eigenen Abfragen ab. Falls der Parameter ID angegeben ist, werden die Daten des Benutzers mit dieser ID abgerufen. Limit limitiert die Anzahl der zurückgelieferten Datensätze. Offset gibt den Offset zum ersten Datensatz an. (Admin)}%Beschreibung
 {POST}%HTTP-Method
 {Privat}%Server-Typ
 {Immer}%Auth
@@ -313,24 +317,18 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 {ID, Limit, Offset}%Parameter
 {401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code		
 	
-\subsubsection{Beispiel}		
+\subsubsection{Response}		
 		\begin{lstlisting}
 {
 	"number": 100
 	"requests": [
-		{
-			"timestamp": 20000000,
-			"request": { ... },
-			"result":{ ... },
-			"duration": 12.5,
-			"costs": 2.45
-		},
+		REQUESTLOGOBJEKT,
 		...
 	]
 }
 		\end{lstlisting}
+Siehe \nameref{requestlogobjekt}.
 		
-		Ein solcher Datensatz besteht also aus einem Zeitstempel (timestamp), der Anfrage (request), das Ergebnis (result), der Dauer (duration) und den Kosten (costs).
 	
 
 \section{Administration}
@@ -350,7 +348,17 @@ Zusätzlich gibt es für Administratoren die Möglichkeit Benutzer zu löschen u
 {Immer}%SSL
 {Limit, Offset}%Parameter
 {401 Unauthorized: Benutzername/Passwort falsch. Keine Rechte}%Status-Code
-\subsubsection{Beispiel}
+\subsubsection{Response}		
+		\begin{lstlisting}
+{
+	"number": 100
+	"requests": [
+		BENUTZEROBJEKT,
+		...
+	]
+}
+		\end{lstlisting}
+Siehe \nameref{benutzerobjekt}.
 \clearpage
 
 \request{Benutzer löschen}%Name
@@ -453,7 +461,7 @@ Privat:\par
 	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. \\
 	    	\hline
 	    	
-	    	misc & Ein assoziatives Array mit algorithmus spezifischen Ergebnissen, welche nicht zum eigentlichen Pfad gehören \\
+	    	misc & Ein JSON-Objekt mit algorithmusspezifischen Ergebnissen, welche nicht zum eigentlichen Pfad gehören \\
 	    	\hline
 	    	
 	    	misc.distance & Ein Beispielergebnis, in diesem Fall die Distanz zwischen Start und Ziel.\\
