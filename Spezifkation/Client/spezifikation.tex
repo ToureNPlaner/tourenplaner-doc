@@ -139,7 +139,9 @@ Die Übersetzungen werden mit Hilfe von GNU gettext implementiert.
 \section{Funktionale Anforderungen}
 
 \subsection{Anmeldung und Registrierung}
-Wenn der Server eine Anmeldung verlangt so sind kostenpflichtige als auch kostenlose Berechnungen nur nach Anmeldung möglich. Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung durchgeführt hat.
+Wenn der Server eine Anmeldung verlangt so sind kostenpflichtige als auch kostenlose Berechnungen nur nach Anmeldung möglich. 
+Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung durchgeführt hat.
+Bietet der Server seine Berechnungen kostenlos an, so ist eine Anmeldung beim Client nicht erforderlich.
 
 \subsection{Angaben zur Berechnung}
 Am Client soll der User zunächst einen Algorithmus auswählen, mit dem er eine Berechnung durchführen möchte.
@@ -149,6 +151,8 @@ Anschließend soll er mithilfe der Karte folgende Operationen durchführen könn
  \item ggfs. weitere Punkte hinzufügen
  \item bereits gesetzte Punkte editieren
  \item bereits gesetzte Punkte löschen.
+ \item Globale- oder Punkt Constraints hinzufügen
+ \item Globale- oder Punkt Constraints löschen
 \end{itemize}
 Hat der User seine Angaben zum Algorithmus getätigt, so kann er diese letztendlich zum Server abschicken.
 
@@ -158,18 +162,22 @@ Dem User sollen dabei folgende Funktionen zur Verfügung stehen:
 \begin{itemize}
  \item hinein- und hinauszoomen
  \item auf der Karte navigieren (Karte mit der Maus verschieben)
+ \item Informationen zur Route (bis jetzt: Länge der Route)
+ \item Information zum einzelnen Punkt, der beim Klicken des jeweiligen Punktes erscheint. (bis jetzt: Koordinaten)
 \end{itemize}
 
 \subsection{Benutzerverwaltung}
-Der User soll seine Benutzerdaten anzeigen und bearbeiten können.
+Der User soll seine Nutzerdaten anzeigen und bearbeiten können.
 
 \subsection{Billing}
-Der User soll über den Webclient Zugriff auf seine Billing-Informationen haben.
+Der User soll über die Clients Zugriff auf seine Billing-Informationen haben.
+Zudem soll er über die Billing-Informationen auf alle seine versendeten Requests und deren Ergebnisse zugreifen können.
 
 \subsection{Administration}
 Der Administrator soll auf eine Übersicht aller Benutzer zugreifen können, auf der folgende Funktionalitäten verfügbar sind:
 \begin{itemize}
  \item Benutzer anlegen
+ \item Benutzer freischalten
  \item Benutzer bearbeiten
  \item Benutzer löschen
 \end{itemize}
@@ -185,15 +193,17 @@ Zudem soll er eine Übersicht aller getätigten Requests erhalten.
 Die Benutzeroberfläche des Webclients ermöglicht folgende Funktionen
 \begin{itemize}
 \item Anmeldung mit Benutzernamen und Kennwort
-\item Funktion: ’Passwort vergessen?’
 \item Benutzerverwaltung
 \item Auswahl des gewünschten Algorithmus
 \item Auswahl der Billing-Anzeige 
 \item Kartenansicht
 \item Anlegen eines Markers auf der Karte
 \item Zuweisung der Markereigenschaften
+\item Zuweisung der Start/Zielpunkte
 \item Berechnung der Route
-\item Anzeigen der Route auf der Kartenasicht
+\item Anzeigen der Routen auf der Kartenasicht
+\item Exportieren von erstellten Routen
+\item Importieren von vorhandenen Routen
 \end{itemize}
 
 \subsubsection{Darstellung des Webclients}
@@ -223,7 +233,7 @@ In diesem Pop-up kann der Benutzer die Registrierung durchführen.
 \includegraphics[scale=0.5]{media/web/Register.png}
 \end {center}
 \subsubsection{Die Billingmaske}
-In diesem Pop-up kann sich der Benutzer die Kosten für seine bisherigen Berechnungen anzeigen lassen.
+In diesem Pop-up kann sich der Benutzer die Kosten für seine bisherigen Berechnungen anzeigen lassen. Die Maske hinterlegt zusätzlich noch einen Link für jeden Request um diesen nachträglich nocheinmal anzusehen.
 \begin {center}
 \includegraphics[scale=0.5]{media/web/Billing.png}
 \end {center}
@@ -236,27 +246,27 @@ Die Benutzeroberfläche des Androidclients ermöglicht folgende Funktionen
 \begin{itemize}
 \item Auswahl eines Servers
 \item Anmeldung mit Benutzernamen und Kennwort
-\item Funktion 'Passwort vergessen?'
 \item Auswahl des gewünschten Algorithmus
 \item Auswahl der Billing-Anzeige 
 \item Kartenansicht
 \item Anlegen eines Markers auf der Karte
 \item Zuweisung der Markereigenschaften
+\item Zuweisung der Start/Zielpunkte
 \item Berechnung der Route
-\item Anzeigen der Route auf der Kartenasicht
+\item Anzeigen der Routen auf der Kartenasicht
 \end{itemize}
 
 \subsubsection{Darstellung des Androidclients}
 Es folgen nun Layouts aller 'Activities', die als Vorlage zur genauen Realisierung dienen.
 
 \subsubsection{Auswahl des Servers}
-Hier kann der Benutzer einen gewünschten Server auswählen.
+Hier kann der Benutzer einen gewünschten Server auswählen. Es wird eine Eingabemaske bereitgestellt um expliziet eine URL einzugeben.
 \begin {center}
 \includegraphics[scale=0.40]{media/android/server.jpg}
 \end {center}
 
 \subsection{Anmeldeinformationen}
-Hier kann der sich der Benutzer mit seiner E-mail Adresse und Passwort auf dem Server verbinden.
+Hier kann der sich der Benutzer mit seiner E-mail Adresse und Passwort auf dem Server anmelden.
 \begin {center}
 \includegraphics[scale=0.35]{media/android/login.jpg}
 \end {center}
@@ -275,7 +285,7 @@ Hier kann der Benutzer, auf der eingeblendeten Kartenansicht, folgende Operation
 \item langes Drücken erstellt einen Marker an dieser Position
 \item Drücken auf einen Marker ermöglicht das Verändern seiner Eigenschaften
 \item Ziehen auf der Karte ändert den Fokus der Kartenansicht
-\item Klicken auf einen der Zoom-Schaltflächen ermöglicht die Änderung des Zoomfaktors
+\item Drücken auf einen der Zoom-Schaltflächen ermöglicht die Änderung des Zoomfaktors
 \end {itemize}
 Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pfades, auf der Karte nachvollzogen werden.
 
@@ -297,9 +307,9 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
 \subsection*{Benutzeroberflächenfunktionen}
-\usecase{Algorithmus auswählen}{Benutzer}{Algorithmus auswählen}{Der Benutzer ist am Server angemeldet}{Der Benutzer hat einen Algorithmus ausgewählt}{Der Benutzer bekommt eine Fehlermeldung}{1. Der Benutzer wählt seinen Algorithmus \newline 2. Benutzer bestätigt seine Eingabe}{Die Verbindung zum Server wurde unterbrochen}
+\usecase{Algorithmus auswählen}{Benutzer, Server}{Algorithmus auswählen}{Der Benutzer ist am Server angemeldet}{Der Benutzer hat einen Algorithmus ausgewählt}{Der Benutzer bekommt eine Fehlermeldung}{1. Der Benutzer wählt seinen Algorithmus \newline 2. Benutzer bestätigt seine Eingabe}{Die Verbindung zum Server wurde unterbrochen}
 
-\usecase{Marker hinzufügen}{Benutzer}{Einen Marker auf der Karten hinzufügen}{Die Karte wird angezeigt}{Ein Marker wurde an die gewünschte Stelle plaziert}{Der Marker konnte nicht angelegt werden}{1. Der Benutzer wählt einen gewünschten Punkt auf der Karte \newline 2. Der Benutzer erstellt dort einen Marker}{ungültiger Bereich}
+\usecase{Marker hinzufügen}{Benutzer}{Einen Marker auf der Karten hinzufügen}{Die Karte wird angezeigt}{Ein Marker wurde an die gewünschte Stelle plaziert}{Der Marker konnte nicht angelegt werden}{1. Der Benutzer wählt einen gewünschten Punkt auf der Karte \newline 2. Der Benutzer erstellt dort einen Marker}{es besteht bereits ein Marker an dieser Position}
 
 \usecase{Marker editieren}{Benutzer}{Einen vorhandenen Marker editieren}{Ein Marker muss existieren}{Der Marker wurde editiert}{Der Marker wurde auf seine vorherigen Werte zurückgesetzt}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer ändert die gewünschten Werte des Markers \newline 3. Der Benutzer bestätigt seine Eingaben}{ungültige Eingaben}
 
@@ -307,9 +317,7 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
 
 \usecase{Start/Zielpunkt setzen}{Benutzer}{Einen Marker als Ziel/Startpunkt setzen}{Ein Marker muss vorhanden sein}{Ein Marker ist Start/Zielpunkt}{keine}{1. Der Benutzer wählt einen Marker aus \newline 2. Der Benutzer setzt ihn als Start/Zielpunkt}{keine}
 
-\usecase{Route berechnen}{Benutzer}{Eine Route berechnen}{Es müssen Marker auf der Karte plaziert worden sein}{Eine Route wurde berechnet}{Es wird eine Fehlermeldung ausgegeben}{1. Der Benutzer bestätigt seine Eingaben \newline 2. Der Benutzer berechnet seine Route}{Benötigte angaben für die Berechnung fehlen}
-
-\usecase{Route anzeigen}{Benutzer}{Die Route nachverfolgen können}{Eine Route muss berechnet worden sein}{Es wurde eine Route auf die Kartenansicht gezeichnet}{Es wird eine Fehlermeldung ausgegeben}{1. Der Benutzer wählt Route anzeigen aus}{Bei der Berechnung der Route traten Fehler auf}
+\usecase{Route berechnen}{Benutzer, Server}{Eine Route berechnen}{Es müssen Marker auf der Karte plaziert worden sein}{Eine Route wurde berechnet}{Es wird eine Fehlermeldung ausgegeben}{1. Der Benutzer bestätigt seine Eingaben \newline 2. Der Benutzer berechnet seine Route}{Benötigte Angaben für die Berechnung fehlen}
 
 \subsection*{Administrationsfunktionen}
 \usecase{Benutzer anlegen}

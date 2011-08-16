@@ -1,5 +1,5 @@
 %server specification
-\documentclass[a4paper,10pt,titlepage]{article}
+\documentclass[a4paper,10pt,titlepage,parskip=true]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel}
@@ -16,8 +16,8 @@
 
 \graphicspath{{./grafiken/}}
 
-\author{Christoph Haag, Sascha Meusel, Niklas Schnell, ePeter Vollmer}
-\title{Spezifikation ToureNPlaner Server\\ Stupro 2011/2012}
+\author{Christoph Haag, Sascha Meusel, Niklas Schnell, Peter Vollmer}
+\title{Spezifikation ToureNPlaner Server\\ Stupro 2011/2012\\ Version }
 
 \newcommand{\shortcut}[1]
 {\texttt{#1}}
@@ -116,7 +116,7 @@ Nachbedingungen im Sonderfall& \novspace
 
 \section{Einleitung}
 \subsection{Zweck der Spezifikation}
-Die Spezifikation beschreibt die Anforderungen und Funktionalität von Tourenplaner. Sie ist die Grundlage für alle weiteren Dokumente; insbesondere muss sie fortlaufend mit dem Entwurf verglichen und bei Bedarf angepasst werden.\\
+Die Spezifikation beschreibt die Anforderungen und Funktionalität vom ToureNPlaner Server. Sie ist die Grundlage für alle weiteren Dokumente; insbesondere muss sie fortlaufend mit dem Entwurf verglichen und bei Bedarf angepasst werden.\\
 Bei der Erstellung der Spezifikation wurde bewusst auf die Festlegung von Implementierungsdetails verzichtet, um gewisse Freiheiten in der Umsetzung der Anforderungen zu erhalten.
 
 \subsection{Leserkreis}
@@ -131,12 +131,12 @@ Der Leserkreis dieses Dokuments besteht aus folgenden Personengruppen:
 \subsection{Motivation}
 Betrachtet man das Angebot an Karten- oder Graphbasierten Webanwendungen wie OpenStreetMap und Google Maps, so fällt auf, dass
 es zahlreiche Angebote zum berechnen eines kürzesten Weges von A nach B gibt, jedoch kaum allgemeinere Funktionen zur
-Berechnung von (Rund-)Touren oder kürzesten Wegen unter bestimmten Bedingungen.\\
+Berechnung von (Rund-) Touren oder kürzesten Wegen unter bestimmten Bedingungen.\\
 Da viele der Problemstellungen im Bereich der Graphbasierten Rundtouren NP-schwer sind, braucht es hier desweiteren Approximationsalgorithmen und
 nicht zu vernachlässigenden Rechenaufwand.\\
 Auch fällt auf, dass viele dieser Algorithmen ähnliche Backend-Daten wie zum Beispiel eine Graphrepräsentation benötigen. Es ist also sinnvoll, ein flexibles Framework zu schaffen, um solcherlei Probleme zu lösen.\\
 Dieses sollte dabei sowohl eine Umgebung bieten, in der auch aufwendige Berechnungen durchgeführt werden können, als auch die den Algorithmen gemeinsamen Daten und Interfaces
-bereitstellen und bündeln. Hierbei scheint es uns sinnvoll, eine Client-Server Struktur einzuführen, bei der aufwendige Berechnungen auf einem potentiell leistungsstarken Server erfolgen, während die Darstellung und Eingabe der Daten auf Webbasierten und/oder Mobilen Clients erfolgt.
+bereitstellen und bündeln. Hierbei scheint es uns sinnvoll, eine Client-Server Struktur einzuführen, bei der aufwendige Berechnungen auf einem potentiell leistungsstarken Server erfolgen, während die Darstellung und Eingabe der Daten auf Webbasierten und/oder mobilen Clients erfolgt.
 %\subsection{Konventionen}
 
 \section{Funktionale Anforderungen}
@@ -153,20 +153,20 @@ Der Server stellt den implementierten Algorithmen folgende Supportfunktionen ber
   \end{itemize}
   \item Bereitstellung eines allgemeinen Interfaces für Algorithmen welches diese implementieren
   \begin{itemize}
-   \item Ermöglicht es, mehrere Algorithmeninstanzen auch verschiedener Algorithmen gleichzeitig zu bearbeiten (Multithreading)
-   \item Bietet Algorithmen die Möglichkeit, Probleminstanzen als JSON von Netzwerkclienten zu erhalten (siehe Protokollspezifikation)
+   \item Ermöglicht es mit dem in der Protokollspezifikation definierten Protokoll, Proleminstanzen für die implementierten Algorithmen auf dem Server berechnen zu lassen.
+   \item Mehrere Probleminstanzen auch verschiedener Algorithmen können gleichzeitig bearbeitet werden (Multithreading)
+
   \end{itemize}
- \item Implementierung eines HTTP-basierten Netzwerkservers, der JSON-Anfragen entgegennimmt und auf das Algorithmeninterface abbildet, sowie
- die Ergebnisse des jeweiligen Algorithmus an den Client zurück sendet.
 \end{itemize}
 \subsection{Algorithmen}
 Der Server unterstützt in erster Ausbaustufe mindestens folgende Algorithmen:
 \begin{itemize}
- \item Shortest Path (z.B. Dijkstra oder Dijkstra+Contraction Hiearchies)
+ \item Shortest Path (z.B. Dijkstra oder Dijkstra+Contraction Hierachies)
  \item Traveling-Salesmen
  \item Constrained Shortest Path
 \end{itemize}
 
+Weitergehende Informationen siehe Algorithmen-Dokumentation 
 
 \section{Nichtfunktionale Anforderungen}
 \subsection{Effizienz}
@@ -176,10 +176,10 @@ untergeordnet werden kann (wenn dies Aufgrund der eingesetzten Technologien nöt
 Geschwindigkeit besondere Priorität.\\
 Auch in den Algorithmen selbst, sowie in den von Ihnen verwendeten Datenstrukturen (z.B. Priority Queues) ist auf höchst mögliche Effizienz zu achten.
 \subsection{Erweiterbarkeit}
-Eine weitere wichtige Anforderung ist die gute Erweiterbarkeit des zu entwickelnden Systems, um neue Algorithmen, Graphdaten, aber auch um neue Clients.
-Bei den Algorithmen soll es hierbei möglichst einfach zu implementierende Interfaces geben, die neuen Algorithmen die gesammte Funktionalität des Servers,
+Eine weitere wichtige Anforderung ist die gute Erweiterbarkeit des zu entwickelnden Systems um neue Algorithmen, Graphdaten, aber auch um neue Klienten.
+Bei den Algorithmen soll es hierbei möglichst einfach zu implementierende Interfaces geben, die neuen Algorithmen die gesamte Funktionalität des Servers,
 also sowohl die Erreichbarkeit über das Netzwerk, als auch den Zugriff auf die Graphdaten zugänglich machen.\\
-Der Server fungiert hierbei als generisches Framework zur Implementierung verschiedener Graph- und Kartenbasierter Algorithmen.
+Der Server fungiert hierbei als generisches Framework zur Implementierung verschiedener Graph- und kartenbasierter Algorithmen.
 \subsection{Mengengerüst}
 \label{Mengengeruest}
 
@@ -190,11 +190,12 @@ Der Server fungiert hierbei als generisches Framework zur Implementierung versch
 
 \subsection{Entwurfseinschränkungen}
 \subsubsection{Systemumgebung}
+\label{Systemumgebung}
 Das System wird für Rechner entwickelt mit mindestens 4 GB RAM und 4 Kernen. Jedoch wird darauf geachtet, dass das System gut skaliert und auch auf größeren Rechnern die zusätzliche Leistung nutzen kann.
-Als Referenz kann das System ''Alge" dienen, das 24 Kerne sowie 96 Gigabyte Arbeitsspeicher besitzt.
+Als Referenz kann das vom Kunden genannte System „Alge“ dienen, das 24 Kerne sowie 96 GB RAM besitzt.
 
 \begin {itemize}
- \item Nutzt Java Runtime Environment 6 and up
+ \item Nutzt Java SE 6 und höher
  \item Soll auf allen von Java SE unterstützten Systemen laufen, primär auf Unix-basierten Systemen.
 \end {itemize}
 \subsubsection{Datenhaltung}
@@ -205,27 +206,20 @@ Die Graphdaten werden zur Laufzeit im RAM gespeichert. Sie werden aus einer Grap
 \subsection{Robustheit}
 Durch softwaretechnische Maßnahmen, wie Unit-Tests und einem ausgiebigen Systemtest wird die Robustheit der Serverkomponente sichergestellt.
 \subsection{Portabilität}
-siehe Systemumgebung
-\subsection{Erweiterbarkeit}
-Wie im Abschnitt Funktionale Anforderungen beschrieben, stellt der Server eine Schnittstelle für die Implementierung von Graphalgorithmen bereit.
+siehe \ref{Systemumgebung}
 \subsection{Distributionsform und Installation}
-Die Serverapplikation wird als ausführbares "`Jar"' ausgeliefert, außerdem werden für ausgewählte Linux Distributionen Pakete bereitgestellt. Zur Installation wird ein MySQL-Server benötigt die Einrichtung der Datenbank wird über mitgelieferte Skripte erleichtert.
+Die Serverapplikation wird als ausführbares „Jar“ ausgeliefert, außerdem werden für ausgewählte Linux Distributionen Pakete bereitgestellt. Zur Installation wird ein MySQL-Server benötigt die Einrichtung der Datenbank wird über mitgelieferte Skripte erleichtert.
 \subsection{Sprachunterstützung}
-Als Sprache wird Englisch unterstützt. 
-
-
-\clearpage
-\section{Benutzeroberfläche}
-Als Benutzeroberfläche dient eine spezielle Administrationsansicht im Web-Client.
+Als Sprache wird Englisch verwendet. Weiter Sprachen werden nicht unterstützt.
 
 \clearpage
 \section{Anwendungsfälle (Use-Cases)}
-\begin{figure}[H]
-  \centering
+%\begin{figure}[H]
+%  \centering
   %TODO
   %\includegraphics[width=\linewidth]{usecases.png}
-  \caption{Use Cases}
-\end{figure}
+%  \caption{Use Cases}
+%\end{figure}
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingungen}{Nachbedingungen}{Normalablauf}{Sonderfälle und dessen Nachbedingungen}
 
@@ -269,7 +263,7 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	{%Bezeichnung
 	TCP/IP Verbindung abgebrochen
 	}{%Sonderfallablauf
-	\item Fehlermeldung "`TCP/IP Verbindung abgebrochen"' ins Log schreiben}
+	\item Fehlermeldung „TCP/IP Verbindung abgebrochen“ ins Log schreiben}
 }
 
 
@@ -335,15 +329,15 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 
 }
 
-\usecase{Nutzer registrieren}{Client, Benutzer-DB}%Name und Akteure
-{Ein Nutzer soll in der Benutzer-DB registriert werden}%Ziel
+\usecase{Benutzer registrieren}{Client, Benutzer-DB}%Name und Akteure
+{Ein Benutzer soll in der Benutzer-DB registriert werden}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb.
   \item Der Server hat einen Request über \textit{/register} vom Client erhalten
 }
 {%Nachbedingungen
-  \item Nutzer ist in Datenbank eingetragen, aber noch nicht als aktiv gekennzeichnet.
-  \item Client wurde benachrichtigt, dass der Nutzer aufgenommen wurde.
+  \item Benutzer ist in Datenbank eingetragen, aber noch nicht als aktiv gekennzeichnet.
+  \item Client wurde benachrichtigt, dass der Benutzer aufgenommen wurde.
 }
 {%Normalablauf
   \item  Die Werte werden in die Benutzer-DB eingetragen.
@@ -351,12 +345,12 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
-	\item Nutzer wurde nicht in die Datenbank aufgenommen.
+	\item Benutzer wurde nicht in die Datenbank aufgenommen.
 	\item Fehler wurde ins Log geschrieben.
 	}
   
   \sonderfall[Fehler]{1a}%Letzte Zeile und Nummer
-	  {Wert existiert schon (Nutzername)}%Bezeichnung
+	  {Wert existiert schon (Benutzername)}%Bezeichnung
 	  {
 	  \item Der Fehler wird ins Log geschrieben.
 	  \item Dem Client wird ein entsprechender Fehler übermittelt.
@@ -384,7 +378,7 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	}
 }
 
-\usecase{Nutzer Anmelden}{Client, Benutzer-DB}%Name und Akteure
+\usecase{Benutzer anmelden}{Client, Benutzer-DB}%Name und Akteure
 {Benutzer wurde authentifiziert}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb.
@@ -426,18 +420,18 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 }
 
 %TODO: ggfs mit überarbeiteter Protokollspezi abgleichen
-\usecase{Nutzerdaten abfragen}{Client, Benutzer-DB}%Name und Akteure
-{Client erhält seine Nutzerdaten}%Ziel
+\usecase{Benutzerdaten abfragen}{Client, Benutzer-DB}%Name und Akteure
+{Client erhält seine Benutzerdaten}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb.
   \item Der Server hat einen Request über \textit{/retrieve} vom Client empfangen
 }
 {%Nachbedingungen
-  \item Client hat die Nutzerdaten erhalten.
+  \item Client hat die Benutzerdaten erhalten.
 }
 {%Normalablauf
   \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
-  \item Nutzerdaten werden an Client geschickt.
+  \item Benutzerdaten werden an Client geschickt.
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
@@ -467,20 +461,19 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 	}
 }
 
-\usecase{Nutzerdaten verändern}{Client, Benutzer-DB}%Name und Akteure
-{Client verändert seine Nutzerdaten}%Ziel
+\usecase{Benutzerdaten verändern}{Client, Benutzer-DB}%Name und Akteure
+{Client verändert seine Benutzerdaten}%Ziel
 {%Vorbedingungen
   \item Der Server ist in Betrieb.
   \item Der Server hat einen POST-Request mit optionalem id-Parameter über \textit{/update} vom Client empfangen
 }
 {%Nachbedingungen
-  \item Nutzerdaten wurden geändert.
+  \item Benutzerdaten wurden geändert.
 }
 {%Normalablauf
   \item Der Server prüft Benutzername und Passwort anhand der Benutzer-DB
-  \item Nutzerdaten werden anhand des id-Parameters bzw. aus Basic-Auth-Informationen aus der Datenbank gelesen.
-  \item Nutzerdaten werden an Client geschickt.
-  \item Geänderte Nutzerdaten werden in die Datenbank geschrieben
+  \item Benutzerdaten werden anhand des id-Parameters bzw. aus Basic-Auth-Informationen aus der Datenbank gelesen.
+  \item Geänderte Benutzerdaten werden in die Datenbank geschrieben
 }
 {%Sondernachbedingungen und Sonderfälle
   \sondernachbedingung{
@@ -518,7 +511,7 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 }
 
 %TODO: Billing vs History
-\usecase{Billinginformationen Abfragen}{Client, Abrechnungs-DB, Benutzer-DB}%Name und Akteure
+\usecase{Billinginformationen abfragen}{Client, Abrechnungs-DB, Benutzer-DB}%Name und Akteure
 {Die in der Benutzer-DB gespeicherten Requests des Benutzers sowie deren Ergebnisse (bzw. Status) und Kosten sollen angezeigt werden}%Ziel
 {%Vorbedingungen
   \item Der Server hat einen Get-Request an /billing erhalten
@@ -581,7 +574,7 @@ Der Client möchte die Server-Informationen über die Protokollversion und die v
 %}
 
 %TODO Protokollspezifikation??
-\usecase{Nutzerliste Abfragen}{Client, Benutzer-DB}%Name und Akteure
+\usecase{Benutzerliste abfragen}{Client, Benutzer-DB}%Name und Akteure
 {Eine Liste der Benutzer wird abgefragt}%Ziel
 {%Vorbedingungen
   \item Der Server hat einen Get-Request an /users erhalten
