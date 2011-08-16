@@ -473,4 +473,45 @@ Privat:\par
 	    	\hline
 		\end{tabular}
 
+\section{Fehlermeldungen}
+\subsection{Allgemeine Form}
+Am Beispiel eines falsch formatierten JSON Requests.
+Der \textit{details} Parameter ist dabei Optional und dient ausschließlich dem leichteren Debuggen von 
+Clients.
+	\begin{lstlisting}
+{
+	"errorid": "EBADJSON",
+	"message" : "Failed to parse request",
+	"details" : "Expected , found . at position 7"
+}
+	\end{lstlisting}
+
+\subsection{Übersicht}
+\begin{tabular}{|c|p{5cm}|p{5cm}|}
+\hline
+Error Id	& Message			& Beschreibung \\
+\hline
+EAUTH		& Wrong username or password	& Authenifizierung fehlgeschlagen \\
+\hline
+EBADJSON	& There was an error parsing the request & Es trat ein Fehler beim parsen des gelieferten JSON auf \\
+\hline
+EBUSY		& This server is currently too busy to fullfill the request	& Der Server ist ausgelastet und kann den Request derzeit nicht bearbeiten \\
+\hline
+EDATABASE	& The server can't contact it's database	& Die Benutzer-DB bzw Abrechnungs-DB ist nicht erreichbar \\
+\hline
+ELIMIT		& The given limit is invalid			& Das angegebene Limit ist ungültig (z.B. negativ) \\
+\hline
+ENOID		& The given user id is unknown to this server	& Die Benutzer-ID ist unbekannt \\
+\hline
+ENOTADMIN	& You are not an admin				& Der Benutzer ist kein Admin \\
+\hline
+EOFFSET		& The given offset is invalid 			& Das angegebene Offset ist ungültig (z.B. negativ) \\
+\hline
+EREGISTERED	& This username is already registred	& Der Benutzername ist schon vergeben \\
+\hline
+EUNKNOWNALG	& An unknown algorithm was requested	& Angeforderter Algorithmus unbekannt \\
+\hline
+\end{tabular}
+
+
 \end{document}
