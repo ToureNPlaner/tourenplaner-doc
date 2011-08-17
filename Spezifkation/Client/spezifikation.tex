@@ -154,13 +154,13 @@ Das Dokument endet schließlich mit einem angehängten Begriffslexikon.
 Folgende Kenngrößen sind für das System relevant:
 \begin{itemize}
 \item Es werden mindestens 2 Punkte benötigt, um einen sinnvollen Weg berechnen zu können.
-\item Als obere Grenze soll ToureNPlaner bis zu 100 Punkte anzeigen bzw. verwalten können.
+\item Alle ToureNPlaner-Clients sollen mindestens 100 Punkte anzeigen bzw. verwalten können.
 \item Der Client wird immer nur von einem Benutzer gleichzeitig verwendet.
 \end{itemize}
 
 \subsection{Entwurfseinschränkungen}
 
-\subsubsection{Systemumgebung}
+\subsubsection{Systemumgebung} \label{sysumgebung}
 Der Webclient soll mindestens auf den aktuellen Versionen von Firefox (Version 5) und Chromium/Google Chrome (Version 13) lauffähig sein.\\
 Für Android wird Version 2.1 oder höher vorausgesetzt.
 
@@ -168,16 +168,15 @@ Für Android wird Version 2.1 oder höher vorausgesetzt.
 Die Oberfläche wird beim Webclient mit Hilfe von HTML 5 und CSS 3, die des Androidclient mit XML und den Android Developer Tools umgesetzt.
 
 \subsubsection{Datenhaltung} \label{datenhaltung}
-Im Webclient werden die benötigten Daten in Cookies abgelegt.\\
+Im Webclient werden die benötigten Daten - wie Benutzname und Passwort - in Cookies abgelegt.\\
 Der Androidclient benutzt hierzu die vom Android SDK bereitgestellte Konfigurations-API.
 
 \subsection{Robustheit}
-Der Webclient verfügt über keine besondere Robustheit, da wichtige Daten auf dem Server vorgehalten werden.\\
-Auf Android können Daten beim Wechseln der Aktivitäten wiederhergestellt werden, solange sie sich noch im Speicher befinden.
+Der Web- und der Androidclient verfügt über keine besondere Robustheit, da wichtige Daten auf dem Server vorgehalten werden.
 
 \subsection{Portabilität}
 Der Webclient ist gut auf andere Browser adaptierbar.\\
-Der Androidclient ist wegen der ADTs und der verwendeten Programmiersprache (Java) nur auf Android-Geräten lauffähig.
+Der Androidclient ist wegen der Android Development Tools und der verwendeten Programmiersprache (Java) nur auf Android-Geräten - wie in \ref{sysumgebung} definiert - lauffähig.
 
 \subsection{Erweiterbarkeit}
 Alle Informationen über Algorithmen kommen vom Server, weshalb einfach neue Algorithmen hinzugefügt werden können.
