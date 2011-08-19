@@ -359,13 +359,6 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
 
 \clearpage
 \section{Anwendungsfälle (Use-Cases)}
-\begin{figure}[H]
-  \centering
-  %TODO
-  %\includegraphics[width=\linewidth]{usecases.png}
-  \caption{Usecase-Diagramm}
-\end{figure}
-
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingungen}{Nachbedingungen}{Normalablauf}{Sonderfälle und dessen Nachbedingungen}
 
@@ -392,7 +385,7 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
 \subsection*{Benutzeroberflächenfunktionen}
-\usecase{Algorithmus auswählen}{Benutzer, Server}%Name und Akteure
+\usecase{Algorithmus auswählen}{Benutzer}%Name und Akteure
 {%Ziel
 Algorithmus auswählen
 }{%Vorbedingungen
@@ -486,7 +479,7 @@ Eine Route berechnen
 	\item Eine Route wurde berechnet
 }{%Normalablauf
 	\item Der Benutzer bestätigt seine Eingaben
-	\item Der Benutzer berechnet seine Route
+	\item Der Server berechnet die Route
 }{%Sondernachbedingungen und Sonderfälle
 \sondernachbedingung{
 	\item Es wird eine Fehlermeldung ausgegeben
