@@ -17,7 +17,7 @@
 \graphicspath{{./grafiken/}}
 
 \author{ToureNPlaner Team}
-\title{Spezifikation ToureNPlaner\\ Stupro 2011/2012}
+\title{Clientspezifikation ToureNPlaner\\ Stupro 2011/2012\\ Version 0.1}
 
 \newcommand{\shortcut}[1]
 {\texttt{#1}}
@@ -116,8 +116,7 @@ Nachbedingungen im Sonderfall& \novspace
 
 \section{Einleitung}
 \subsection{Zweck der Spezifikation}
-Die Spezifikation beschreibt die Anforderungen und Funktionalitäten von ToureNPlaner. Sie ist die Grundlage für alle folgenden Dokumente; insbesondere muss sie ständig mit dem Entwurf verglichen und bei Bedarf angepasst werden.
-
+Die Spezifikation beschreibt die Anforderungen und Funktionalitäten von ToureNPlaner. Sie ist die Grundlage für alle folgenden Dokumente; insbesondere muss sie ständig mit dem Entwurf verglichen und bei Bedarf angepasst werden.\\
 Bei der Erstellung der Spezifikation wurde bewusst auf die Festlegung von Implementierungsdetails verzichtet, um gewisse Freiheiten in der Umsetzung der Anforderungen zu erhalten.
 
 \subsection{Leserkreis}
@@ -133,9 +132,8 @@ Der Leserkreis dieses Dokuments besteht aus folgenden Personengruppen:
 
 In diesem Projekt sollen die Clients für das ToureNPlaner-Projekt realisiert werden.
 Diese dienen der einfachen Nutzung der Funktionalitäten, die der ToureNPlaner-Server zur Verfügung steht.
-Dazu soll es möglich sein, einfach Strecken und Touren zu definieren und vom Server berechnen zu lassen.
-
-\noindent Das Ziel ist es, zu kommerziellen bzw. marktführenden Lösungen konkurrenzfähige Clients zu erstellen.
+Dazu soll es möglich sein, einfach Strecken und Touren zu definieren und vom Server berechnen zu lassen.\\
+Das Ziel ist es, zu kommerziellen bzw. marktführenden Lösungen konkurrenzfähige Clients zu erstellen.
 
 \subsection{Fachbegriffe und Abkürzungen}
 
@@ -144,8 +142,8 @@ Alle in dieser Spezifikation verwendeten Fachbegriffe werden im sich im Anhang b
 \subsection{Aufbau dieses Dokuments}
 
 Neben einer allgemeinen Beschreibung des Systems sollen die Anforderungen an die Funktionen des Systems und die geforderten Qualitäten hinsichtlich der Software dokumentiert werden. 
-Im Anschluss hierzu wird auf die Benutzeroberfläche und im nächsten Schritt auf die Anwendungsfälle des Systems näher eingegangen. 
-Das Dokument endet schließlich mit einem angehängten Begriffslexikon.
+Im Anschluss hierzu wird auf die Benutzeroberfläche des Webclients und des Androidclients eingegangen. 
+Zuletzt wird auf die Anwendungsfälle des Systems näher eingegangen. 
 
 \section{Nichtfunktionale Anforderungen}
 
@@ -165,10 +163,10 @@ Der Webclient soll mindestens auf den aktuellen Versionen von Firefox (Version 5
 Für Android wird Version 2.1 oder höher vorausgesetzt.
 
 \subsubsection{Layout und Gestaltung}
-Die Oberfläche wird beim Webclient mit Hilfe von HTML 5 und CSS 3, die des Androidclient mit XML und den Android Developer Tools umgesetzt.
+Die Oberfläche wird beim Webclient mit Hilfe von HTML 5 und CSS 3, die des Androidclient mit XML und den Android Developer Tools (ADT) umgesetzt.
 
 \subsubsection{Datenhaltung} \label{datenhaltung}
-Im Webclient werden die benötigten Daten - wie Benutzname und Passwort - in Cookies abgelegt.\\
+Im Webclient werden die für die Kommunikation mit dem Server benötigten Daten (Benutzname und Passwort) in einem Cookies abgelegt.\\
 Der Androidclient benutzt hierzu die vom Android SDK bereitgestellte Konfigurations-API.
 
 \subsection{Robustheit}
@@ -176,7 +174,7 @@ Der Web- und der Androidclient verfügt über keine besondere Robustheit, da wic
 
 \subsection{Portabilität}
 Der Webclient ist gut auf andere Browser adaptierbar.\\
-Der Androidclient ist wegen der Android Development Tools und der verwendeten Programmiersprache (Java) nur auf Android-Geräten - wie in \ref{sysumgebung} definiert - lauffähig.
+Der Androidclient ist auf Grund der Android Development Tools nur auf Android-Geräten - wie in \ref{sysumgebung} definiert - lauffähig.
 
 \subsection{Erweiterbarkeit}
 Alle Informationen über Algorithmen kommen vom Server, weshalb einfach neue Algorithmen hinzugefügt werden können.
@@ -194,7 +192,7 @@ Die Übersetzungen werden mit Hilfe von GNU gettext implementiert.
 \section{Funktionale Anforderungen}
 
 \subsection{Anmeldung und Registrierung}
-Wenn der Server eine Anmeldung verlangt so sind kostenpflichtige als auch kostenlose Berechnungen nur nach Anmeldung möglich. 
+Wenn der Server eine Anmeldung verlangt, so sind kostenpflichtige als auch kostenlose Berechnungen nur nach Anmeldung möglich. 
 Besitzt ein User noch keinen Account, so kann er diesen erhalten, nachdem er eine Registrierung durchgeführt hat.
 Bietet der Server seine Berechnungen kostenlos an, so ist eine Anmeldung beim Client nicht erforderlich.
 
@@ -206,8 +204,8 @@ Anschließend soll er mithilfe der Karte folgende Operationen durchführen könn
  \item ggfs. weitere Punkte hinzufügen
  \item bereits gesetzte Punkte editieren
  \item bereits gesetzte Punkte löschen.
- \item Globale- oder Punkt Constraints hinzufügen
- \item Globale- oder Punkt Constraints löschen
+ \item Globale- oder Punktconstraints hinzufügen
+ \item Globale- oder Punktconstraints löschen
 \end{itemize}
 Hat der User seine Angaben zum Algorithmus getätigt, so kann er diese letztendlich zum Server abschicken.
 
@@ -217,16 +215,24 @@ Dem User sollen dabei folgende Funktionen zur Verfügung stehen:
 \begin{itemize}
  \item hinein- und hinauszoomen
  \item auf der Karte navigieren (Karte mit der Maus verschieben)
- \item Informationen zur Route (bis jetzt: Länge der Route)
- \item Information zum einzelnen Punkt, der beim Klicken des jeweiligen Punktes erscheint. (bis jetzt: Koordinaten)
+ \item Informationen zur Route (abhängig vom Algorithmus)
+ \item Information zum einzelnen Punkt, der beim Klicken des jeweiligen Punktes erscheint
 \end{itemize}
 
 \subsection{Benutzerverwaltung}
-Der User soll seine Nutzerdaten anzeigen und bearbeiten können.
+Der User soll seine Nutzerdaten anzeigen und bearbeiten können. Zu diesen Daten gehören:
+
+\begin{itemize}
+	\item Vorname
+	\item Nachname
+	\item Email
+	\item Rechnungsadresse
+	\item Passwort
+\end{itemize}
 
 \subsection{Billing}
 Der User soll über die Clients Zugriff auf seine Billing-Informationen haben.
-Zudem soll er über die Billing-Informationen auf alle seine versendeten Requests und deren Ergebnisse zugreifen können.
+Zudem soll er über die Billinginformationen auf alle seine versendeten Requests und deren Ergebnisse zugreifen können.
 
 \subsection{Administration}
 Der Administrator soll auf eine Übersicht aller Benutzer zugreifen können, auf der folgende Funktionalitäten verfügbar sind:
@@ -321,7 +327,7 @@ Hier kann der Benutzer einen gewünschten Server auswählen. Es wird eine Eingab
 \end {center}
 
 \subsection{Anmeldeinformationen}
-Hier kann der sich der Benutzer mit seiner E-mail Adresse und Passwort auf dem Server anmelden.
+Hier kann der sich der Benutzer mit seiner Emailadresse und  seinem Passwort auf dem Server anmelden.
 \begin {center}
 \includegraphics[scale=0.35]{media/android/login.jpg}
 \end {center}
@@ -353,13 +359,6 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
 
 \clearpage
 \section{Anwendungsfälle (Use-Cases)}
-\begin{figure}[H]
-  \centering
-  %TODO
-  %\includegraphics[width=\linewidth]{usecases.png}
-  \caption{Usecase-Diagramm}
-\end{figure}
-
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingungen}{Nachbedingungen}{Normalablauf}{Sonderfälle und dessen Nachbedingungen}
 
@@ -386,7 +385,7 @@ Nachdem die Route berechnet wurde kann das Ergebnis, anhand eines angezeigten Pf
 
 %\usecase{Name}{Akteur}{Ziel}{Vorbedingung}{Nachbedingung}{Nachbedingung im Sonderfall}{Normalablauf}{Sonderfall}
 \subsection*{Benutzeroberflächenfunktionen}
-\usecase{Algorithmus auswählen}{Benutzer, Server}%Name und Akteure
+\usecase{Algorithmus auswählen}{Benutzer}%Name und Akteure
 {%Ziel
 Algorithmus auswählen
 }{%Vorbedingungen
@@ -480,7 +479,7 @@ Eine Route berechnen
 	\item Eine Route wurde berechnet
 }{%Normalablauf
 	\item Der Benutzer bestätigt seine Eingaben
-	\item Der Benutzer berechnet seine Route
+	\item Der Server berechnet die Route
 }{%Sondernachbedingungen und Sonderfälle
 \sondernachbedingung{
 	\item Es wird eine Fehlermeldung ausgegeben
@@ -743,19 +742,14 @@ Der Benutzer will eine alte Route sehen.
 
 \subsection{Begriffslexikon}
 
-%\begriff{Begriff}{Bedeutung}{Abgrenzung}{Gültigkeit}{Bezeichnung}{Unklarheiten}{Querverweise}
+Das Begriffslexikon ist in als externes Dokument erhältlich.
 
 \clearpage
 \subsection{Versionshistorie}
 
-	\subsubsection*{Version 0.1 (03.08.2011)}
+	\subsubsection*{Version 0.1 (19.08.2011)}
 	\begin{itemize}
 		\item Erste veröffentlichte Version
-	\end{itemize}
-
-	\subsubsection*{Version 0.2 (09.08.2011)}
-	\begin{itemize}
-		\item Nichtfunktionale Anforderungen hinzugefügt
 	\end{itemize}
 
 \end{document}
