@@ -255,7 +255,7 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 \request{Registrierung}%Name
 {/registeruser}%URL
 {Dient zur Erstellung eines Benutzerkontos.\par Dazu werden E-Mail, Passwort, Vor- und Nachname sowie die Rechnungsadresse übermittelt. 
-	Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Client statt.}%Beschreibung
+Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Client statt.}%Beschreibung
 {POST}%HTTP-Method
 {Privat}
 {Notwendig für direktes Freischalten (Admin)}%Auth
@@ -263,7 +263,7 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 {Keine}%Parameter
 {401 Unauthorized: Admin Authentifizierung fehlgeschlagen \par 403 Forbidden: Benutzer schon vorhanden}%Status-Code
 		
-		\subsubsection{Request}
+\subsubsection{Request}
 Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 		
 \request{Authentifizierung}%Name
@@ -274,7 +274,11 @@ Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 {Immer}%Auth
 {Immer}%SSL
 {Keine}%Parameter
-{401 Unauthorized: Benutzername/Passwort falsch}%Status-Code		
+{401 Unauthorized: Benutzername/Passwort falsch}%Status-Code
+\subsubsection{Request}
+Leer.
+\subsubsection{Response}
+Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 \clearpage
 
 \request{Benutzerdaten abfragen}%Name
