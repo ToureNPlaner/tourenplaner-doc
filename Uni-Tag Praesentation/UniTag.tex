@@ -1,34 +1,35 @@
+% to be compiled with xelatex
 \documentclass{beamer}
 \usepackage{ngerman}
-\usetheme{Frankfurt}
+\usepackage{fontspec}
+\usepackage[ngerman]{babel}
+\usetheme{lankton-keynote}
 \begin{document}
-\title{ToureNPlaner}   
-\author{Stupro Gruppe} 
-\date{\today} 
+\fontspec{Verdana}
+
+\title{UniTag 2011: ToureNPlaner}   
+\author{} 
+\date{16./17. November 2011} 
 
 \frame{\titlepage} 
 
-\frame{\frametitle{"Ubersicht}\tableofcontents} 
+\frame{\frametitle{Übersicht}\tableofcontents} 
 
-\section{"Uber uns}
-\subsection{Wer sind wir?} 
+\section{Über uns}
 \frame{\frametitle{Wer sind wir?} 
-ein "`freiwilliger"' Zusammenschluss aus 9 Studenten (8x Bsc. 5. Semester und 1x Diplom 7. Semester)
-}
-\subsection{Warum sind wir hier?}
-\frame{ \frametitle{Warum sind wir hier?}
 \begin{itemize}
-\item Studienprojekt ist ein Pflichtmodul im Softwaretechnikstudium
-\item Vollausgestatteter Arbeitsraum bietet mehr Ruhe als Arbeitsr"aume und Pools
-\item ToureNPlaner hat auch noch eine Kaffeemaschine
+\item 9 Softwaretechnik Studenten
+\item 8x Bsc. 5. Semester und 1x Diplom 7. Semester
+\item arbeiten gemeinsam dem Studienprojekt ToureNPlaner
+\item Leider keine Frauen :(
 \end{itemize}
 }
 
-\section{Studentenprojekt} 
-\subsection{Was ist das Stupro?}
-\frame{ \frametitle{Was ist das Stupro?}
+\section{Studentenprojekt}
+\frame{ \frametitle{Was ein Studienprojekt?}
 \begin{itemize}
-\item Projekt "uber 2 Semester
+\item Studienprojekt gehört zum Softwaretechnikstudium
+\item Projekt über 2 Semester
     \begin{itemize}
     \item 1 Semester projektspezifische Vorlesung besuchen
     \item 1 Seminar halten
@@ -38,24 +39,31 @@ ein "`freiwilliger"' Zusammenschluss aus 9 Studenten (8x Bsc. 5. Semester und 1x
 \end{itemize}
 }
 
-\subsection{Was bringt das Stupro?} 
 \frame{ \frametitle{Was bringt das Stupro?}
 \begin{itemize}
-\item {Praxiserfahrung Mit "`echten"' Kunden}
-\item {Arbeiten in einem gro"sen Team}
-\item {keine Micky Maus Programme}
+\item {Praxiserfahrung mit „echtem“ Kunden}
+\item {Arbeiten in einem großen Team}
+\item {Keine Micky Maus Programme}
 \item {Programmiererfahrung}
 \item {Softskills}
 \end{itemize}
 }
 
-
-\subsection{Unser Projekt}
-\frame{\frametitle{Unser Projekt}
-ToureNPlaner soll folgende Aufgaben durchf"uhren:
+\frame{ \frametitle{Warum machen wir dieses Projekt?}
 \begin{itemize}
+\item Interessantes Problem
+\item Vielfältige Technologie
+\item Netter Kunde
+\item Eigene „Besenkammer“
+\item ToureNPlaner hat auch noch eine Kaffeemaschine
+\end{itemize}
+}
 
-\item {Serveranwendung zur Routen- Tourenplanung realisieren}
+\frame{\frametitle{Das Projekt}
+ToureNPlaner soll folgende Aufgaben durchführen:
+\begin{itemize}
+\item {Serveranwendung zur Tourenplanung realisieren}
+\item {„Schwere“ Tourenprobleme lösen}
 \item {Zugriffsclients realisieren}
 \begin{itemize}
 \item {Webclient}
@@ -64,30 +72,29 @@ ToureNPlaner soll folgende Aufgaben durchf"uhren:
 \end{itemize}
 
 }
-\section{Motivation}
 \frame{\frametitle{Motivation}
 \begin{itemize}
-\item {Nicht triviale Routen \slash Tourenplanung berechnen}
-\item {Postbote (DHL) will bestm"ogliche Rundtour finden}
-\item {Fahrrad- und Elektroauto-Routen abh"angig von H"ohenmetern}
+\item {Nicht triviale Touren berechnen}
+\item {Bsp.: Postbote (DHL) will bestmögliche Rundtour finden}
+\item {Fahrradrouten mit oberer Grenze an zurückgelegten Höhenmetern finden}
+\item Eismann will möglichst viel Gewinn machen
 \end{itemize}
 }
 
-\section{Dijkstra Erkl"arung}
-\frame{
+\frame{\frametitle{Wie macht man sowas?}
 Kartenansicht
 \includegraphics[width =\linewidth]{01.png}}
-\frame{
-Einf"ugen von Knoten
+\frame{\frametitle{Wie macht man sowas?}
+Einfügen von Knoten
 \includegraphics[width =\linewidth]{02.png}}
-\frame{
+\frame{\frametitle{Wie macht man sowas?}
 Graphen erzeugen
 \includegraphics[width =\linewidth]{03.png}}
-\frame{
-Ziel und Startpunkt w"ahlen
+\frame{\frametitle{Wie macht man sowas?}
+Ziel und Startpunkt wählen
 \includegraphics[width =\linewidth]{04.png}}
-\frame{
-K"urzesten Weg berechnen
+\frame{\frametitle{Wie macht man sowas?}
+Kürzesten Weg berechnen
 \includegraphics[width =\linewidth]{05.png}}
 
 \section{LiveDemo}

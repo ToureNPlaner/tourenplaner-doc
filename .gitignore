@@ -4,6 +4,8 @@
 *.aux
 *.dvi
 *.toc
+*.nav
+*.snm
 
 # Tex output files
 *.pdf
