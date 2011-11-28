@@ -108,7 +108,7 @@
 	
 	\subsection{World Geodetic System 1984}
 	
-	Zur Kodierung der Längen- und Breitengrade einer Position auf der Karte wird das WGS 84 verwendet.
+	Zur Kodierung der Längen- und Breitengrade einer Position auf der Karte wird das WGS 84 verwendet. Alle Koordinaten werden dabei als Integer im Format $x*10^7$ gespeichert.
 	
 	\subsection*{Serverart}
 	Der Server kann in zwei verschiedenen Modi laufen: Privat/Öffentlich. Im öffentlichen Modus kann jeder Probleminstanzen bearbeiten lassen. Im privaten ist ein Benutzerkonto nötig, um Probleminstanzen bearbeiten zu lassen.
@@ -147,6 +147,13 @@
 	"response": { ... }
 }
 \end{lstlisting}
+
+\subsection{Feste Algorithmen} 
+Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter einem festen Namen zur Verfügung stellt.
+
+\begin{description}
+\item[NNS] Nearest Neighbor Search, gibt für eine Liste von Punkten, eine Liste von Punkten zurück, die auf dem jeweils nächsten Knoten im Graph liegen.
+\end{description}
 
 \clearpage
 \section{Server}
@@ -218,6 +225,9 @@
     	\hline
     	
     	name & Der Name des Algorithmus. \\
+    	\hline
+    	
+    	hidden & Gibt an, ob der Algorithmus dem Benutzer angezeigt wird. \\
     	\hline
     	
     	urlsuffix & Der Requeststring der Anfrage. \\
@@ -404,7 +414,7 @@ Privat:\par
 {
     "version": 1,
     "points": [
-         { "lt": -9.5123, "ln": 8.12, "k": 100 },
+         { "lt": -95123000, "ln": 81200000, "k": 100 },
          { ... }
     ],
     "constraints": { "t": 100 }
@@ -424,10 +434,10 @@ Privat:\par
 	    	points & Array aller Punkte. Der erste Punkt ist der Startpunkt, der Letzte falls nötig der Zielpunkt. \\ 
 	    	\hline
 	    	
-	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. \\ 
+	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7. \\ 
 	    	\hline
 	    	
-	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. \\
+	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7. \\
 	    	\hline
 	    	
 	    	points.k & Ein Beispielconstraint, der für jeden Punkt benötigt wird.\\ 
@@ -444,7 +454,11 @@ Privat:\par
 	\begin{lstlisting}
 {
 	"points": [
-		{"lt": -9.5123, "ln": 8.12 },
+		{"lt": -95123000, "ln": 81200000, ... },
+		{ ... }
+	],
+	"way": [
+		{"lt": -95123000, "ln": 81200000 },
 		{ ... }
 	],
 	"misc": {
@@ -461,13 +475,22 @@ Privat:\par
 			\textbf{Feld} & \textbf{Beschreibung} \\ 
 			\hline \hline
 			
-			points & Ein Array aller Punkte.\\
+			points & Ein Array aller bei der Abfrage übergebender Punkte. Die Reihenfolge wird vom Algorithmus angepasst. In der Abfrage übergebene Metadaten bleiben dabei erhalten. Dient dem Client zum Anzeigen des Ergebnisses z.B. in einer Liste. Dazu kann z.B. bei kürzester Weg Abfragen die Distanz zum vorherigen Knoten mitgegeben werden.\\
 			\hline
 			
-	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. \\ 
+	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7.\\ 
 	    	\hline
 	    	
-	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. \\
+	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7.\\
+	    	\hline
+	    	
+	    	way & Ein Array aller Punkte, die auf der Route liegen. Dient dem Client zum Anzeigen des Weges auf der Karte.\\
+			\hline
+			
+	    	way.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7.\\ 
+	    	\hline
+	    	
+	    	way.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7.\\
 	    	\hline
 	    	
 	    	misc & Ein JSON-Objekt mit algorithmusspezifischen Ergebnissen, welche nicht zum eigentlichen Pfad gehören \\
