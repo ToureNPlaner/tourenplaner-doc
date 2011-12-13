@@ -124,32 +124,62 @@
 	
 \begin{lstlisting}
 {
+	"userid": 42
 	"email": "max.mustermann@online.de",
 	"password": "1234",
 	"firstname": "Max",
 	"lastname": "Mustermann",
 	"address": "Musterstrasse 10, 12345 Musterstadt",
 	"admin": false,
-	"status": "Verified"
+	"status": "Verified",
+	"registrationdate": 1323165456000,
+	"verifieddate": null,
 }
 \end{lstlisting}
 	
-	``status'' kann nur die Werte ``NeedsVerification'',	``VerificationFailed'' oder ``Verified'' (oder evtl ``Delete'') annehmen.
+	``userid'' ist die ID eines Users, die bei bestimmten Adminfunktionen benötigt wird.
 	
-	Das Passwort sollte nur beim Registrieren oder beim ändern der Benutzerdaten verschickt werden.
+	Das Passwort sollte nur beim Registrieren oder beim Ändern der Benutzerdaten verschickt werden. Der Server wird das Passwort nie mitschicken.
+	
+	``status'' kann nur die Werte ``NeedsVerification'', ``VerificationFailed'' oder ``Verified'' (oder evtl. ``Delete'') annehmen. Bei ``Delete'' war ursprünglich angedacht, dass der User sich mit diesem Status zum Löschen vormerken lassen kann, diese Funktion ist aber aktuell nicht mehr vorgesehen.
+	
+	``registrationdate'' und ``verifieddate'' sind GMT-Timestamps in Millisekunden oder null. 
+	
 	\subsection{Requestlogobjekt}	
 	Dient der Speicherung alter Abfragen.
 	\label{requestlogobjekt}
 
 \begin{lstlisting}
 {
-	"timestamp": 1234567890,
-	"duration": 500,
-	"cost": 123.24,
+	"requestid": 42,
+	"userid": 42,
+	"algorithm": sp,
 	"request": { ... },
-	"response": { ... }
+	"response": { ... },
+	"ispending": true,
+	"costs": 12324,
+	"ispaid": false,
+	"requestdate": 1323165456000,
+	"finisheddate": null,
+	"duration": 500,
+	"hasfailed": false,
+	"faildescription": null
 }
 \end{lstlisting}
+
+	``requestid'' ist die ID eines Requests, die bei bestimmten Adminfunktionen benötigt wird.
+
+	``userid'' ist die ID eines Users, die bei bestimmten Adminfunktionen benötigt wird.
+	
+	``request'' und ``response'' sind JSON-Objekte.
+	
+	``costs'' sind die Kosten als ganzahliger Wert in Cents.
+
+	``requestdate'' und ``finisheddate'' sind GMT-Timestamps in Millisekunden oder null. 
+	
+	``duration'' ist die Berechnungsdauer des Requests in Millisekunden.
+	
+	``faildescription'' ist ein String oder null.
 
 \subsection{Feste Algorithmen} 
 Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter einem festen Namen zur Verfügung stellt.
