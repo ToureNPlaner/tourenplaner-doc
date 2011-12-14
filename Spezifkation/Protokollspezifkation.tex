@@ -171,7 +171,7 @@
 
 	``userid'' ist die ID eines Users, die bei bestimmten Adminfunktionen benötigt wird.
 	
-	``request'' und ``response'' sind JSON-Objekte.
+	``request'' und ``response'' sind JSON-Strings oder null.
 	
 	``costs'' sind die Kosten als ganzahliger Wert in Cents.
 
@@ -327,12 +327,12 @@ Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 
 \request{Benutzerdaten abfragen}%Name
 {/getuser}%URL
-{Holt die eigenen Benutzerdaten. Falls der Parameter ID angegeben ist, werden die Daten des Benutzers mit dieser ID geliefert (Admin).}%Beschreibung
+{Holt die eigenen Benutzerdaten. Falls der Parameter ``id'' angegeben ist, werden die Daten des Benutzers mit dieser ID geliefert (Admin).}%Beschreibung
 {GET}%HTTP-Method
 {Privat}%Server-Typ
 {Immer}%Auth
 {Immer}%SSL
-{ID}%Parameter
+{``id'' (ganzahlige UserID)}%Parameter
 {401 Unauthorized: Email/Passwort falsch. Keine Rechte}%Status-Code
 \subsubsection{Request}
 Leer.
@@ -343,12 +343,12 @@ Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 
 \request{Benutzerdaten ändern}%Name
 {/updateuser}%URL
-{Ändert die eigenen Benutzerdaten. Falls der Parameter ID angegeben ist, werden die Daten des Benutzers mit dieser ID geändert (Admin)}%Beschreibung
+{Ändert die eigenen Benutzerdaten. Falls der Parameter ``id'' angegeben ist, werden die Daten des Benutzers mit dieser ID geändert (Admin). Wenn der Benutzer kein Admin ist, kann er nur sein Passwort ändern.}%Beschreibung
 {POST}%HTTP-Method
 {Privat}%Server-Typ
 {Immer}%Auth
 {Immer}%SSL
-{ID}%Parameter
+{``id'' (ganzahlige UserID)}%Parameter
 {401 Unauthorized: Email/Passwort falsch.\par
  403 Forbidden: Keine Admin Rechte}%Status-Code		
 \subsubsection{Request}
@@ -356,16 +356,39 @@ Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
 Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benutzerobjekt. Wenn er es nicht setzen will darf er das Feld nicht angeben.
 \clearpage
 
-\request{Abfragenverlauf abrufen}%Name
-{/listrequests}%URL
-{Ruft die eigenen Abfragen ab. Falls der Parameter ID angegeben ist, werden die Daten des Benutzers mit dieser ID abgerufen. Limit limitiert die Anzahl der zurückgelieferten Datensätze. Offset gibt den Offset zum ersten Datensatz an. (Admin)}%Beschreibung
-{POST}%HTTP-Method
+\request{Abfrage abrufen}%Name
+{/getrequest}%URL
+{Ruft eine bestimmte Abfrage ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Requests an, dessen Daten abgerufen werden sollen. Wenn der Benutzer kein Admin ist und der Request nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet. Die JSON-Strings werden immer mit abgerufen und in die Request-Objekt-Felder \mbox{``request''} und \mbox{``response''} geschrieben (die Felder können aber null sein, wenn die Datenbank kein JSON-Objekt gespeichert hat).
+}%Beschreibung
+{GET}%HTTP-Method
 {Privat}%Server-Typ
 {Immer}%Auth
 {Immer}%SSL
-{ID, Limit, Offset}%Parameter
+{``id''}%Parameter
 {401 Unauthorized: Email/Passwort falsch.\par
- 403 Forbidden: Keine Admin Rechte}%Status-Code		
+ 403 Forbidden: Keine Admin Rechte\par
+404 Not Found: Kein Request zur angegebenen ID gefunden}%Status-Code		
+
+
+\request{Abfragenverlauf abrufen}%Name
+{/listrequests}%URL
+{Ruft die eigenen Abfragen ab. 
+	\begin{itemize}
+		\item Falls der Parameter ``id'' angegeben ist, werden die Daten des Benutzers mit dieser ID abgerufen. Falls der Parameter ``id'' den Wert ``all'' (also \mbox{``id=all''}) übergibt, werden die Request-Datensätze aller Benutzer abgerufen (die Anzahl wird aber mit Limit und Offset beschränkt). Der Parameter ID steht nur Admins zur Verfügung. 
+		\item \mbox{``limit''} limitiert die Anzahl der zurückgelieferten Datensätze. \mbox{``offset''} gibt den Offset zum ersten Datensatz an, gibt also an wie viele Datensätze übersprungen werden. Limit und Offset müssen immer übergeben werden. 
+		\item Der Parameter ``details'' ist optional. Wenn \mbox{``details=nojson''} übergeben wird sind die Requestobjekt-Felder \mbox{``request''} und \mbox{``response''} immer null, es werden also keine JSON-Strings abgerufen. Wenn der Parameter nicht mitgegeben wird oder einen anderen Wert hat, werden die JSON-Strings abgerufen (die Felder können aber null sein, wenn die Datenbank kein JSON-Objekt gespeichert hat).
+\end{itemize}
+}%Beschreibung
+{GET}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{``id'' (ganzahlige UserID oder ``all''), ``limit'', ``offset'', ``details''}%Parameter
+{401 Unauthorized: Email/Passwort falsch.\par
+ 403 Forbidden: Keine Admin Rechte\par
+404 Not Found: Kein Benutzer zur angegebenen ID gefunden}%Status-Code		
+
+
 	
 \subsubsection{Response}		
 		\begin{lstlisting}
@@ -377,7 +400,10 @@ Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benut
 	]
 }
 		\end{lstlisting}
+		
 Siehe \nameref{requestlogobjekt}.
+
+		``number'' gibt die Anzahl aller Einträge an, die zum jeweiligen Benutzer gehören, bzw. bei \mbox{``id=all''} die Anzahl aller Request-Einträge.
 		
 	
 
@@ -391,14 +417,13 @@ Zusätzlich gibt es für Administratoren die Möglichkeit Benutzer zu löschen u
 
 \request{Benutzerliste abrufen}%Name
 {/listusers}%URL
-{Limit limitiert die Anzahl der zurückgelieferten Datensätze. Offset gibt den Offset zum ersten Datensatz an.}%Beschreibung
+{``limit' limitiert die Anzahl der zurückgelieferten Datensätze. ``offset'' gibt den Offset zum ersten Datensatz an, gibt also an wie viele Datensätze übersprungen werden. Limit und Offset müssen immer übergeben werden.}%Beschreibung
 {GET}%HTTP-Method
 {Privat}%Server-Typ
 {Immer}%Auth
 {Immer}%SSL
-{Limit, Offset}%Parameter
-{401 Unauthorized: Email/Passwort falsch. Keine Rechte\par
-404 Not Found: Kein Benutzer zur angegebenen ID gefunden}%Status-Code
+{``limit'', ``offset''}%Parameter
+{401 Unauthorized: Email/Passwort falsch. Keine Rechte}%Status-Code
 \subsubsection{Response}		
 		\begin{lstlisting}
 {
@@ -409,17 +434,21 @@ Zusätzlich gibt es für Administratoren die Möglichkeit Benutzer zu löschen u
 	]
 }
 		\end{lstlisting}
+		
 Siehe \nameref{benutzerobjekt}.
+
+		``number'' gibt die Anzahl aller Benutzer in der Datenbank an.
+		
 \clearpage
 
 \request{Benutzer löschen}%Name
 {/deleteuser}%URL
-{Löscht den Benutzer mit der angegeben ID.}%Beschreibung
+{Löscht den Benutzer mit der angegeben ``id''.}%Beschreibung
 {GET}%HTTP-Method
 {Privat}%Server-Typ
 {Immer}%Auth
 {Immer}%SSL
-{ID}%Parameter
+{``id''}%Parameter
 {401 Unauthorized: Email/Passwort falsch.\par
  403 Forbidden: Keine Admin Rechte}%Status-Code
 \clearpage
@@ -562,7 +591,9 @@ EDATABASE	& The server can't contact it's database	& Die Benutzer-DB bzw Abrechn
 \hline
 ELIMIT		& The given limit is invalid			& Das angegebene Limit ist ungültig (z.B. negativ) \\
 \hline
-ENOID		& The given user id is unknown to this server	& Die Benutzer-ID ist unbekannt \\
+ENOUSERID	& The given user id is unknown to this server	& Die Benutzer-ID ist unbekannt \\
+\hline
+ENOREQUESTID	& The given request id is unknown to this server	& Die Request-ID ist unbekannt \\
 \hline
 ENOTADMIN	& You are not an admin				& Der Benutzer ist kein Admin \\
 \hline
