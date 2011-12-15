@@ -1,0 +1,110 @@
+\documentclass[ngerman,titlepage,parskip=true]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{babel}
+\usepackage{wrapfig}
+\usepackage{longtable}
+\usepackage[unicode=true,pdfusetitle,bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+\lstset{ %
+	language=bash,                % the language of the code
+	basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+	stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+	                                % will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code
+	backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores
+	frame=single,                   % adds a frame around the code
+	tabsize=4,                      % sets default tabsize to 2 spaces
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	                                % also try caption instead of title
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	morekeywords={*,...}            % if you want to add more keywords to the set
+}
+
+% adjust table padding
+\setlength{\tabcolsep}{8pt} \renewcommand{\arraystretch}{1.5}
+ 
+\title{Benutzerhandbuch}
+\author{ToureNPlaner Team}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\pagebreak
+
+\section{Einleitung}
+
+	\subsection{\"Uber ToureNPlaner}
+   ToureNPlaner ist eine Server-Anwendung, die folgende Algorithmen implementiert:\\
+   \begin{itemize}
+     \item Shortest Path (mit Contraction Hierarchy)
+     \item Constrained Shortest Path
+     \item Travelling Sales Person
+   \end{itemize}
+   ToureNPlaner hat zwei Betriebsmodi:
+   \begin{itemize}
+     \item Public - Es sind keine Anmeldedaten n\"otig, um auf dem Server Berechnungen durchzuf\"uhren.
+     \item Private - Es ist eine Registrierung erforderlich, um auf dem Server Berechnungen durchzuf\"uhren. Die Verbindung wird mit SSL verschl\"usselt.
+   \end{itemize}
+
+
+\section{Generelles}
+	\subsection{Systemvoraussetzungen}
+	
+	\begin{itemize}
+		\item JVM in Version 1.6 oder h\"oher
+		\item 3 Gigabyte Arbeitsspeicher f\"ur den Graph + TODO Gigabyte pro Thread
+		\item optional eine MySQL-Datenbank f\"ur den Betrieb im Private-Modus
+	\end{itemize}
+
+  \subsection{Von ToureNPlaner benutzte Dateien}
+	 \begin{itemize}
+	   \item Der ToureNPlaner-Server selbst besteht aus dem ausf\"uhrbahren .jar-Archiv tourenplaner-server.jar.
+	   \item Konfigurationsdatei tourenplaner.conf im json-Format, deren Pfad mit ``-c /Pfad/zur/Konfigurationsdatei'' angegeben werden kann
+	   \item Stra\ss{}engraph in einem Speziellen Textformat (siehe Graphspezifikation), dessen Pfad in der Konfigurationsdatei angegeben wird
+	   \subitem optional schneller einlesbarer Bin\"ardump des Stra\ss{}engraphen, der von ToureNPlaner erstellt und benutzt wird, wenn ``-f dump'' angegeben wird
+	   \item optional ein Java Keystore, der ein Zertifikat f\"ur den SSL-verschl\"usselten Betrieb enth\"alt
+	 \end{itemize}
+
+\section{Installation}
+  Pakete f\"ur Folgende Distributionen werden angeboten:
+  \begin{itemize}
+    \item Archlinux
+  \end{itemize}
+  \subsection{Dateien im Archlinux-Paket}
+	\begin{itemize}
+	  \item /etc/rc.d/tourenplanerd - Script zum Starten und Stoppen des ToureNPlaner Servers als Daemon
+	  \item /etc/tourenplaner.conf - Konfigurationsdatei
+	  \item /usr/bin/tourenplaner-server minimales Script, zum direkten Starten des ToureNPlaner Servers
+	  \item /usr/share/java/tourenplaner/tourenplaner-server.jar - der eigentliche Server
+	  \item Script zum Einrichten der Datenbank f\"ur den Betrieb im Private-Modus
+	  \subitem /usr/share/tourenplaner/db_init_script
+	  \subitem /usr/share/tourenplaner/db_init.sh
+	\end{itemize}
+
+	\subsection{weitere Installations-Schritte}
+	 In der Standardkonfiguration muss der Stra\ss{}engraph nach /var/tourenplaner/germany.txt und der Java Keystore nach /var/tourenplaner/keystore.jks kopiert werden.\\
+	 F\"ur den Private-Betrieb muss die Datenbank mit dem Initialisierungs-Script eingerichtet werden (daf\"ur wird das MySQL root-Passwort ben\"otigt):
+   \begin{lstlisting}
+	 cd /usr/share/tourenplaner
+	 ./db_init.sh
+	\end{lstlisting}
+
+\section{Konfiguration}
+
+\section{Inbetriebnahme}
+
+\end{document}
