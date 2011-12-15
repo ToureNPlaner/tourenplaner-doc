@@ -7,6 +7,7 @@
 \usepackage[unicode=true,pdfusetitle,bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{tabularx}
 
 \lstset{ %
 	language=bash,                % the language of the code
@@ -48,7 +49,7 @@
 \section{Einleitung}
 
 	\subsection{\"Uber ToureNPlaner}
-   ToureNPlaner ist eine Server-Anwendung, die folgende Algorithmen implementiert:\\
+   ToureNPlaner ist eine Server-Anwendung, die folgende Algorithmen implementiert:
    \begin{itemize}
      \item Shortest Path (mit Contraction Hierarchy)
      \item Constrained Shortest Path
@@ -75,7 +76,9 @@
 	   \item Der ToureNPlaner-Server selbst besteht aus dem ausf\"uhrbahren .jar-Archiv tourenplaner-server.jar.
 	   \item Konfigurationsdatei tourenplaner.conf im json-Format, deren Pfad mit ``-c /Pfad/zur/Konfigurationsdatei'' angegeben werden kann
 	   \item Stra\ss{}engraph in einem Speziellen Textformat (siehe Graphspezifikation), dessen Pfad in der Konfigurationsdatei angegeben wird
-	   \subitem optional schneller einlesbarer Bin\"ardump des Stra\ss{}engraphen, der von ToureNPlaner erstellt und benutzt wird, wenn ``-f dump'' angegeben wird
+		\begin{itemize}
+		  \item optional schneller einlesbarer Bin\"ardump des Stra\ss{}engraphen, der von ToureNPlaner erstellt und benutzt wird, wenn ``-f dump'' angegeben wird
+		\end{itemize}
 	   \item optional ein Java Keystore, der ein Zertifikat f\"ur den SSL-verschl\"usselten Betrieb enth\"alt
 	 \end{itemize}
 
@@ -91,8 +94,10 @@
 	  \item /usr/bin/tourenplaner-server minimales Script, zum direkten Starten des ToureNPlaner Servers
 	  \item /usr/share/java/tourenplaner/tourenplaner-server.jar - der eigentliche Server
 	  \item Script zum Einrichten der Datenbank f\"ur den Betrieb im Private-Modus
-	  \subitem /usr/share/tourenplaner/db_init_script
-	  \subitem /usr/share/tourenplaner/db_init.sh
+		\begin{itemize}
+		  \item /usr/share/tourenplaner/db\_init\_script
+		  \item /usr/share/tourenplaner/db\_init.sh
+		\end{itemize}
 	\end{itemize}
 
 	\subsection{weitere Installations-Schritte}
@@ -104,7 +109,29 @@
 	\end{lstlisting}
 
 \section{Konfiguration}
+Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen:
 
-\section{Inbetriebnahme}
+%TODO: Die Tabelle sieht grauenhaft aus
+\begin{center}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline
+``Name'' & Beispiel & Typ & Beschreibung\\
+\hline
+``threads'' & 2 & integer & Anzahl der gleichzeitig ausf\"uhrbahren Algorithmen. Ein guter Wert ist die Anzahl der zu verwendenden CPU-Kerne - 1 (Reserve f\"ur den Garbage-Collector)\\
+``queuelength'' & 20 & integer & Die Anzahl der Requests, die warten sollen, sollten alle Berechnungsthreads belegt sein. Requests, die auch nicht mehr in die Warteschlange passen, werden direkt abgewiesen\\
+``graphfilepath'' & ``/var/tourenplaner/germany.txt'' & string & Pfad zum Stra\ss{}engraphen\\
+``private'' & true & boolean & F\"ur Berechnungen auf einem Public Server ist keine Authentifizierung notwendig. Ein Private-Server hat eine Benutzerverwaltung und bietet seinen Service \"uber HTTPS an\\
+``dburi'' & ``jdbc:mysql://localhost:3306/'' & string & Die URI zur MySQL Datenbank in Form einer von JAVA verarbeitbaren URI\\
+``dbuser'' & ``tourenplaner'' & string & MySQL Benutzername\\
+``dbname'' & ``tourenplaner'' & string & Name der MySQL Datenbank\\
+``dbpw'' & ``toureNPlaner'' & string & MySQL Passwort f\"ur den angegebenen Benutzer\\
+``httppport'' & 8080 & integer & Port, auf dem der Server via HTTP lauscht\\
+``sslport'' & 8081 & integer & Port, auf dem der Server via HTTPS lauscht\\
+``sslcert'' & ``/var/tourenplaner/keystore.jks'' & string & Pfad zum Java Keystore, der das SSL-Zertifikat enth\"alt\\
+``sslalias'' & ``tourenplaner'' & string & *\\
+``sslpw'' & ``tour3nplan3er'' & string & Passwort f\"ur den Java Keystore\\
+\hline
+\end{tabularx}
+\end{center}
 
 \end{document}
