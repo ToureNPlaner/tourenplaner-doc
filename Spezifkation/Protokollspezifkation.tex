@@ -96,7 +96,7 @@
 
 	Die Kommunikation zwischen Client und Server baut auf HTTP (Hyper Text Transport Protocol) in der Version 1.1 auf. Alle Abfragen eines nicht anonymen Servers, bis auf die /info Abfrage gehen über HTTPS.
 	Zur Authentifizierung des Nutzers wird das HTTP Basic Authentication Verfahren, ein Feature von HTTP 1.1 verwendet.\\
-	Dabei werden Email und Passwort (bzw. in unserem Fall Email und Passwort) mit einer Base64-Kodierung als Teil des HTTP-Headers an den Server gesendet.
+	Dabei werden Email und Passwort (bzw. in unserem Fall Email und Passwort) mit einer Base64-Kodierung als Teil des HTTP-Headers an den Server gesendet.local
 	
 	\subsection{JSON}
 	 
@@ -115,11 +115,15 @@
 	
 	\subsection{Standardablauf einer Abfrage}
 	Bei erfolgreicher Bearbeitung einer Abfrage antwortet der Server mit dem HTTP-Status-Code 200 OK und gibt eine evtl. Antwort im HTTP-Body als JSON Objekt zurück. Bei einem Fehler gibt der Server einen entsprechenden Status-Code $>$= 400 und weitere Informationen zum Fehler im HTTP-Body als JSON Objekt zurück. siehe Fehlerliste %TODO
-
+	
+	\subsection{Format der Date-Time-Strings}
+	Die Date-Time-Strings sind im Format\\
+	2000-12-11T13:55:30Z\\
+	nach IS08061 (Date and time of day, Extended format, complete calendar date, complete UTC local time). Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit in UTC angegeben ist.	
 
 	\subsection{Benutzerobjekt}
 	\label{benutzerobjekt}
-	Für jeden Benutzer müssen in einer Datenbanktabelle die Informationen gespeichert werden, die zum Login sowie zur Rechnungserstellung benötigt werden. 
+	Für jeden Benutzer müssen in einer Datenbanktabelle die Informationen gespeichert werden, die zum Login sowie zur Rechnungserstellung benötigt werden. 	
 	Das sind:
 	
 \begin{lstlisting}
@@ -132,8 +136,8 @@
 	"address": "Musterstrasse 10, 12345 Musterstadt",
 	"admin": false,
 	"status": "Verified",
-	"registrationdate": 1323165456000,
-	"verifieddate": null,
+	"registrationdate": "2000-12-11T13:55:30Z",
+	"verifieddate": null
 }
 \end{lstlisting}
 	
@@ -143,7 +147,25 @@
 	
 	``status'' kann nur die Werte ``NeedsVerification'', ``VerificationFailed'' oder ``Verified'' (oder evtl. ``Delete'') annehmen. Bei ``Delete'' war ursprünglich angedacht, dass der User sich mit diesem Status zum Löschen vormerken lassen kann, diese Funktion ist aber aktuell nicht mehr vorgesehen.
 	
-	``registrationdate'' und ``verifieddate'' sind GMT-Timestamps in Millisekunden oder null. 
+	``registrationdate'' und ``verifieddate'' sind Date-Time-Strings oder null. 
+	
+	\begin{tabular}{|l|l|c|c|}
+	\hline
+	Parameter 			& Typ 		& Änderbar durch Admin & Änderbar durch Benutzer \\\hline
+	userid 				& Integer 	& Nein & Nein \\
+	email 				& String 	& Ja   & Nein \\
+	password 			& String 	& Ja   & Ja   \\
+	firstname 			& String 	& Ja   & Nein \\
+	lastname 			& String 	& Ja   & Nein \\
+	address 			& String 	& Ja   & Nein \\
+	admin 				& Boolean 	& Ja   & Nein \\
+	status 				& Enum	 	& Ja   & Nein \\
+	registrationdate 	& Date-Time-String 	& Nein & Nein \\
+	verifieddate 		& Date-Time-String 	& Nein & Nein \\
+	\hline
+	\end{tabular}
+	
+	
 	
 	\subsection{Requestlogobjekt}	
 	Dient der Speicherung alter Abfragen.
@@ -156,14 +178,13 @@
 	"algorithm": sp,
 	"request": { ... },
 	"response": { ... },
-	"ispending": true,
 	"costs": 12324,
 	"ispaid": false,
-	"requestdate": 1323165456000,
+	"requestdate": "2000-12-11T13:55:30Z",
 	"finisheddate": null,
 	"duration": 500,
-	"hasfailed": false,
-	"faildescription": null
+	"status": "OK"
+	
 }
 \end{lstlisting}
 
@@ -175,11 +196,29 @@
 	
 	``costs'' sind die Kosten als ganzahliger Wert in Cents.
 
-	``requestdate'' und ``finisheddate'' sind GMT-Timestamps in Millisekunden oder null. 
+	``requestdate'' und ``finisheddate'' sind Date-Time-Strings oder null.
 	
 	``duration'' ist die Berechnungsdauer des Requests in Millisekunden.
 	
-	``faildescription'' ist ein String oder null.
+	``status'' kann nur die Werte ``OK'', ``Failed'' oder ``Pending''.
+	
+	\begin{tabular}{|l|l|c|c|}
+	\hline
+	Parameter 		& Typ 		& Änderbar durch Admin & Änderbar durch Benutzer \\\hline
+	requestid 		& Integer 	& Nein & Nein \\
+	userid 			& Integer 	& Nein & Nein \\
+	algorithm 		& String 	& Nein & Nein \\
+	request 		& String 	& Nein & Nein   \\
+	response 		& String 	& Nein & Nein \\
+	costs 			& Integer 	& Nein & Nein \\
+	ispaid 			& Date-Time-String 	& Ja   & Nein \\
+	requestdate 	& Date-Time-String 	& Nein & Nein \\
+	finisheddate 	& Date-Time-String	& Nein & Nein \\
+	duration 		& Integer 	& Nein & Nein \\
+	status 			& Enum 	    & Nein & Nein \\
+	\hline
+	\end{tabular}	
+	
 
 \subsection{Feste Algorithmen} 
 Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter einem festen Namen zur Verfügung stellt.
