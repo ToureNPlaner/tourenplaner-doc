@@ -117,9 +117,11 @@
 	Bei erfolgreicher Bearbeitung einer Abfrage antwortet der Server mit dem HTTP-Status-Code 200 OK und gibt eine evtl. Antwort im HTTP-Body als JSON Objekt zurück. Bei einem Fehler gibt der Server einen entsprechenden Status-Code $>$= 400 und weitere Informationen zum Fehler im HTTP-Body als JSON Objekt zurück. siehe Fehlerliste %TODO
 	
 	\subsection{Format der Date-Time-Strings}
-	Die Date-Time-Strings sind im Format\\
+	Die Date-Time-Strings sind nach ISO 8061 formatiert. Somit sind zur Übertragung von Date-Time-Angaben zum Beispiel Strings nach folgendem Muster erlaubt: \\
+	2000-12-11T13:55:30.000+0000\\
 	2000-12-11T13:55:30Z\\
-	nach IS08061 (Date and time of day, Extended format, complete calendar date, complete UTC local time). Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit in UTC angegeben ist.	
+%nach ISO8061 (Date and time of day, Extended format, complete calendar date, complete UTC local time). 
+Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit in UTC angegeben ist, +0000 ist der Zeitzonen-Offset zur UTC-Zeit.	
 
 	\subsection{Benutzerobjekt}
 	\label{benutzerobjekt}
