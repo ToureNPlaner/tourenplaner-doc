@@ -138,7 +138,7 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 	"address": "Musterstrasse 10, 12345 Musterstadt",
 	"admin": false,
 	"status": "Verified",
-	"registrationdate": "2000-12-11T13:55:30Z",
+	"registrationdate": "2000-12-11T13:55:30.000+0000",
 	"verifieddate": null
 }
 \end{lstlisting}
@@ -147,27 +147,19 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 	
 	Das Passwort sollte nur beim Registrieren oder beim Ändern der Benutzerdaten verschickt werden. Der Server wird das Passwort nie mitschicken.
 	
-	``status'' kann nur die Werte ``NeedsVerification'', ``VerificationFailed'' oder ``Verified'' (oder evtl. ``Delete'') annehmen. Bei ``Delete'' war ursprünglich angedacht, dass der User sich mit diesem Status zum Löschen vormerken lassen kann, diese Funktion ist aber aktuell nicht mehr vorgesehen.
+	``status'' kann nur die Werte ``needs{\_}verification'' oder ``verified'' annehmen. 
+	
+	\begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
+	\hline
+	Statusname 	& Beschreibung \\\hline
+	needs{\_}verification 	& Neu registrierter Benutzer, der noch nicht aktiviert wurde\\
+	verified 				& Durch den Admin aktivierter Benutzer \\
+	\hline
+	\end{tabular}	
+	
+	% Kein Status ``Delete'' oder ``VerificationFailed''. Bei ``Delete'' war ursprünglich angedacht, dass der User sich mit diesem Status zum Löschen vormerken lassen kann, diese Funktion ist aber aktuell nicht mehr vorgesehen.
 	
 	``registrationdate'' und ``verifieddate'' sind Date-Time-Strings oder null. 
-	
-	\begin{tabular}{|l|l|c|c|}
-	\hline
-	Parameter 			& Typ 		& Änderbar durch Admin & Änderbar durch Benutzer \\\hline
-	userid 				& Integer 	& Nein & Nein \\
-	email 				& String 	& Ja   & Nein \\
-	password 			& String 	& Ja   & Ja   \\
-	firstname 			& String 	& Ja   & Nein \\
-	lastname 			& String 	& Ja   & Nein \\
-	address 			& String 	& Ja   & Nein \\
-	admin 				& Boolean 	& Ja   & Nein \\
-	status 				& Enum	 	& Ja   & Nein \\
-	registrationdate 	& Date-Time-String 	& Nein & Nein \\
-	verifieddate 		& Date-Time-String 	& Nein & Nein \\
-	\hline
-	\end{tabular}
-	
-	
 	
 	\subsection{Requestlogobjekt}	
 	Dient der Speicherung alter Abfragen.
@@ -180,9 +172,8 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 	"algorithm": sp,
 	"request": { ... },
 	"response": { ... },
-	"costs": 12324,
-	"ispaid": false,
-	"requestdate": "2000-12-11T13:55:30Z",
+	"cost": 12324,
+	"requestdate": "2000-12-11T13:55:30.000+0000",
 	"finisheddate": null,
 	"duration": 500,
 	"status": "OK"
@@ -190,36 +181,29 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 }
 \end{lstlisting}
 
-	``requestid'' ist die ID eines Requests, die bei bestimmten Adminfunktionen benötigt wird.
+	``requestid'' ist die ID eines Requests, die bei bestimmten (Admin-)Funktionen benötigt wird.
 
-	``userid'' ist die ID eines Users, die bei bestimmten Adminfunktionen benötigt wird.
+	``userid'' ist die ID eines Users, die bei bestimmten (Admin-)Funktionen benötigt wird.
 	
 	``request'' und ``response'' sind JSON-Strings oder null.
 	
-	``costs'' sind die Kosten als ganzahliger Wert in Cents.
+	``cost'' sind die Kosten als ganzahliger Wert in Cents.
 
 	``requestdate'' und ``finisheddate'' sind Date-Time-Strings oder null.
 	
 	``duration'' ist die Berechnungsdauer des Requests in Millisekunden.
 	
-	``status'' kann nur die Werte ``OK'', ``Failed'' oder ``Pending''.
+	``status'' kann nur die Werte ``ok'', ``failed'' oder ``pending'' annehmen.
 	
-	\begin{tabular}{|l|l|c|c|}
+	\begin{tabular}{|p{0.2\textwidth}|p{0.7\textwidth}|}
 	\hline
-	Parameter 		& Typ 		& Änderbar durch Admin & Änderbar durch Benutzer \\\hline
-	requestid 		& Integer 	& Nein & Nein \\
-	userid 			& Integer 	& Nein & Nein \\
-	algorithm 		& String 	& Nein & Nein \\
-	request 		& String 	& Nein & Nein   \\
-	response 		& String 	& Nein & Nein \\
-	costs 			& Integer 	& Nein & Nein \\
-	ispaid 			& Date-Time-String 	& Ja   & Nein \\
-	requestdate 	& Date-Time-String 	& Nein & Nein \\
-	finisheddate 	& Date-Time-String	& Nein & Nein \\
-	duration 		& Integer 	& Nein & Nein \\
-	status 			& Enum 	    & Nein & Nein \\
+	Statusname 	& Beschreibung \\\hline
+	ok 			& Request wurde erfolgreich berechnet\\
+	failed 		& Request kann nicht berechnet werden \\
+	pending 	& Request ist in Berechnung oder wird noch berechnet. Der Status kann auch bei beendeter Berechnung (egal ob erfolgreich oder erfolglos) auftreten, wenn die Datenbank durch einen Verbindungsfehler nicht aktualisiert werden konnte. \\
 	\hline
 	\end{tabular}	
+	
 	
 
 \subsection{Feste Algorithmen} 
@@ -334,7 +318,7 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
    	\clearpage
 \section{Benutzer}
 
-Auf private Servern benötigt ein Benutzer ein Konto und muss sich authentifizieren, um einen Algorithmus auf dem Server laufen lassen zu können.
+Auf privaten Servern benötigt ein Benutzer ein Konto und muss sich authentifizieren, um einen Algorithmus auf dem Server laufen lassen zu können.
 Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeiten seines Accounts gegeben, sowie eine Auflistung der durchgeführten Requests sowie ihrer Kosten.
 
 \request{Registrierung}%Name
@@ -394,7 +378,24 @@ Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
  403 Forbidden: Keine Admin Rechte}%Status-Code		
 \subsubsection{Request}
 Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
-Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benutzerobjekt. Wenn er es nicht setzen will darf er das Feld nicht angeben.
+Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benutzerobjekt. Wenn er es nicht setzen will darf er das Feld nicht angeben. Im Benutzerobjekt müssen nur die Felder mitgeschickt werden, die der Absender des Requests auch ändern kann, siehe folgende Tabelle. Es müssen immer alle Pflichtfelder im Benutzerobjekt angegeben werden. Das Passwort-Feld ist optional, es soll nur angegeben werden wenn das Passwort geändert werden soll. Ein normaler Benutzer muss also nur sein Passwort mitschicken, kann aber auch ansonsten nichts ändern. 
+
+	\begin{tabular}{|p{0.2\textwidth}|p{0.15\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.15\textwidth}|}
+	\hline
+	Parameter 			& Typ 		& Änderbar durch Admin & Pflichtfeld für Admin & Änderbar durch Benutzer & Pflichtfeld für Benutzer \\\hline
+	userid 				& Integer 			& Nein & Nein 	& Nein & Nein\\
+	email 				& String 			& Ja   & Ja 	& Nein & Nein\\
+	password 			& String 			& Ja   & Nein 	& Ja   & Nein\\
+	firstname 			& String 			& Ja   & Ja 	& Nein & Nein\\
+	lastname 			& String 			& Ja   & Ja 	& Nein & Nein\\
+	address 			& String 			& Ja   & Ja 	& Nein & Nein\\
+	admin 				& Boolean 			& Ja   & Ja 	& Nein & Nein\\
+	status 				& Enum	 			& Ja   & Ja 	& Nein & Nein\\
+	registrationdate 	& Date-Time-String 	& Nein & Nein 	& Nein & Nein\\
+	verifieddate 		& Date-Time-String 	& Nein & Nein	& Nein & Nein\\
+	\hline
+	\end{tabular}
+
 \clearpage
 
 \request{Abfrage abrufen}%Name
@@ -557,6 +558,7 @@ Privat:\par
     \subsubsection{Antwort}	
 	\begin{lstlisting}
 {
+	"requestid": 42,
 	"points": [
 		{"lt": -95123000, "ln": 81200000, ... },
 		{ ... }
@@ -578,6 +580,9 @@ Privat:\par
 			\hline
 			\textbf{Feld} & \textbf{Beschreibung} \\ 
 			\hline \hline
+
+			requestid & Die ID des Requests, wodurch die Daten des Requests erneut abgefragt werden können.\\
+			\hline
 			
 			points & Ein Array aller bei der Abfrage übergebender Punkte. Die Reihenfolge wird vom Algorithmus angepasst. In der Abfrage übergebene Metadaten bleiben dabei erhalten. Dient dem Client zum Anzeigen des Ergebnisses z.B. in einer Liste. Dazu kann z.B. bei kürzester Weg Abfragen die Distanz zum vorherigen Knoten mitgegeben werden.\\
 			\hline
