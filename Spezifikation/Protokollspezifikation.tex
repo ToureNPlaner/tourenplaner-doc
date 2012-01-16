@@ -237,7 +237,11 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
             "version": 2,
             "name": "Shortest Path",
             "urlsuffix": "sp",
-            "hidden" : false,
+            "details": {
+                "hidden" : false,
+                "minPoints": 2,
+                "sourceIsTarget": true 
+            },
             "pointconstraints": [                    
                 {
                     "name": "height",
@@ -246,10 +250,14 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
                     "max": 2000.0
                 }
             ],
-            "constraints": {
-                   "minPoints": 2,
-                   "sourceIsTarget": true/false 
-            }
+            "constraints": [
+                {
+                    "name": "height",
+                    "type": "meter",
+                    "min": 0.0,
+                    "max": 2000.0
+                }
+            ]
         }, { ... }
     ],
 }
@@ -307,13 +315,16 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
     	pointconstraints.max & Maximaler Wert des Constraints. \\
     	\hline
     	
-    	constraints & Constraints, die nur einmal pro Route benötigt werden und nicht Punktspezifisch sind. Kann Objekte wie in pointconstraints enthalten. \\
+    	constraints & Constraints, die nur einmal pro Route benötigt werden und nicht Punktspezifisch sind. Enthält Objekte wie in pointconstraints. \\
     	\hline
     	
-    	constraints.minPoints & Die minimale Anzahl an Punkten, die benötigt wird um eine sinnvolle Antwort vom Algorithmus zu erhalten.\\ 
+    	details.minPoints & Die minimale Anzahl an Punkten, die benötigt wird um eine sinnvolle Antwort vom Algorithmus zu erhalten.\\ 
 		\hline
 		
-		constraints.sourceIsTarget & Gibt an, ob Start und Ziel der gleiche Punkt sind.\\    		\hline    		
+		details.sourceIsTarget & Gibt an, ob Start und Ziel der gleiche Punkt sind.\\    		\hline    		
+    	details.hidden & Soll der Algorithmus dem Benutzer angezeigt werden.\\ 
+		\hline
+
    	\end{tabular}
    	\clearpage
 \section{Benutzer}
