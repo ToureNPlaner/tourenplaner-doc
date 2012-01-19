@@ -58,7 +58,7 @@
    ToureNPlaner hat zwei Betriebsmodi:
    \begin{itemize}
      \item Public - Es sind keine Anmeldedaten n\"otig, um auf dem Server Berechnungen durchzuf\"uhren.
-     \item Private - Es ist eine Registrierung erforderlich, um auf dem Server Berechnungen durchzuf\"uhren. Die Verbindung wird mit SSL verschl\"usselt.
+     \item Private - Es ist eine Registrierung erforderlich, um auf dem Server Berechnungen durchzuf\"uhren. Die Verbindung wird mit SSL verschl\"usselt. Berechnungen werden in einer Datenbank gespeichert.
    \end{itemize}
 
 
@@ -89,10 +89,10 @@
   \end{itemize}
   \subsection{Dateien im Archlinux-Paket}
 	\begin{itemize}
-	  \item /etc/rc.d/tourenplanerd - Script zum Starten und Stoppen des ToureNPlaner Servers als Daemon
-	  \item /etc/tourenplaner.conf - Konfigurationsdatei
-	  \item /usr/bin/tourenplaner-server minimales Script, zum direkten Starten des ToureNPlaner Servers
-	  \item /usr/share/java/tourenplaner/tourenplaner-server.jar - der eigentliche Server
+	  \item /etc/rc.d/tourenplanerd : Script zum Starten und Stoppen des ToureNPlaner Servers als Daemon
+	  \item /etc/tourenplaner.conf : Konfigurationsdatei
+	  \item /usr/bin/tourenplaner-server : minimales Script, zum direkten Starten des ToureNPlaner Servers
+	  \item /usr/share/java/tourenplaner/tourenplaner-server.jar : der eigentliche Server
 	  \item Script zum Einrichten der Datenbank f\"ur den Betrieb im Private-Modus
 		\begin{itemize}
 		  \item /usr/share/tourenplaner/db\_init\_script
@@ -100,13 +100,46 @@
 		\end{itemize}
 	\end{itemize}
 
-	\subsection{weitere Installations-Schritte}
-	 In der Standardkonfiguration muss der Stra\ss{}engraph nach /var/tourenplaner/germany.txt und der Java Keystore nach /var/tourenplaner/keystore.jks kopiert werden.\\
-	 F\"ur den Private-Betrieb muss die Datenbank mit dem Initialisierungs-Script eingerichtet werden (daf\"ur wird das MySQL root-Passwort ben\"otigt):
+	\subsection{weitere Installations-Schritte (Public-Modus und Private-Modus)}
+	\subsubsection{Stra\ss{}engraph}
+	 In der Standardkonfiguration muss der Stra\ss{}engraph nach /var/lib/tourenplaner/germany.txt.
+	\subsection{weitere Installations-Schritte (nur Private-Modus)}
+	 \subsubsection{Java Keystore}
+	 F\"ur den Private-Betrieb muss der Java Keystore nach /var/lib/tourenplaner/keystore.jks kopiert werden.\\
+	 Erstellen eines Java Keystore:
+	%TODO erstellen des java keystore
+	\subsubsection{Einrichten der Datenbank}
+	und die Datenbank mit dem Initialisierungs-Script eingerichtet werden (daf\"ur wird das MySQL root-Passwort ben\"otigt):
    \begin{lstlisting}
 	 cd /usr/share/tourenplaner
 	 ./db_init.sh
 	\end{lstlisting}
+	
+  \subsection{Manuelle Installation}
+	%TODO: Link einf\"ugen
+	Es werden die im Abschnitt ``Von ToureNPlaner verwendeten Dateien'' ben\"otigt.\\
+	In der Datei \textit{tourenplaner.conf} werden die entsprechenden Pfade zu den Dateien eingestellt. Das Verzeichnis, in dem der Stra\ss{}engraph liegt, muss f\"ur den Benutzer, der ToureNPlaner ausf\"uhrt schreibbar sein, wenn der ToureNPlaner Server einen Bin\"ardump erstellen soll
+	\subsubsection{Manuelles Starten}
+  Gestartet wird der Server folgenderma\ss{}en:
+	\begin{lstlisting}
+  "${JAVA_HOME}/bin/java" -Xmx12g -Xincgc -jar /pfad/zum/server/tourenplaner-server.jar -c /pfad/zur/config/tourenplaner.conf -f dump
+	\end{lstlisting}
+	Hierbei gibt \textit{-Xmx12g} die maximale RAM-Nutzung des Servers an. Beendet sich der Server mit einer OutOfMemoryException, sollte dieser Wert erh\"oht werden.
+	Um den Server unter einem anderen Benutzername zu starten, kann sudo verwendet werden:
+	\begin{lstlisting}
+	   sudo -E -u http "${JAVA_HOME}/bin/java" -Xmx12g -Xincgc -jar /pfad/zum/server/tourenplaner-server.jar -c /pfad/zur/config/tourenplaner.conf -f dump
+	\end{lstlisting}
+  Hierbei steht \textit{-E} f\"ur das beibehalten der Environment Variablen des Ausf\"uhrenden, also z.B. \$JAVA_HOME
+
+
+	\subsubsection{Command Line Switches}
+	Der ToureNPlaner Server unterst\"utzt die folgenden Kommandozeilenoptionen:
+	\begin{itemize}
+	  \item -c \textit{Pfad} : Pfad zur Konfigurationsdatei (wenn nicht angegeben, wird im Server eingebaute Standardkonfiguration wird verwendet)
+	  \item -f text / -f dump : Liest den Graph aus einer Textdatei oder aus einem Bin\"ardump mit der Erweiterung \textit{.txt.dat} (Ist mit -f dump kein Bin\"ardump vorhanden, wird \textit{-f text} angenommen und ein Bin\"ardump erstellt) (Wenn nicht angegeben, wird \textit{-f text} angenommen)
+	 \item dumpgraph : Erstellt nur den Bin\"ardump des Graphen, ohne den Server zu starten
+	  ToureNPlaner aus der Textdatei und erstellt einen Bin\"ardump).
+	\end{itemize}
 
 \section{Konfiguration}
 Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen:
