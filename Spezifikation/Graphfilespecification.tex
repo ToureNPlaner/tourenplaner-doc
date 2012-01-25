@@ -1,0 +1,75 @@
+\documentclass[ngerman,titlepage,parskip=true]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{babel}
+\usepackage{wrapfig}
+\usepackage{longtable}
+\usepackage[unicode=true,pdfusetitle,bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+\title{Graphfilespecification}
+\author{ToureNPlaner Team}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+To compute routes and tour on a street network ToureNPlaner needs to have a memory representation of the street network as 
+a graph where each edge represents a section of a road (two edges in oppisite direction for a street that can be traveled in both directions).
+To load new street networks into the ToureNPlaner server we use a text based representation of the graph.
+This representation is described in this document so that graphs in this format can be generated and loaded into ToureNPlaner.
+
+\section{Basics}
+The graph file format used by ToureNPlaner is a text based representation of a graph with additional data on the nodes (e.g. coordinates)
+and edges (e.g. travel time).
+It uses the file ending ``.txt'' and is encoded in ASCII/UTF-8 with line-feed (Unix) line endings (though Windows line endings will work).
+
+\section{Structure}
+Each graph file has the following three sections
+\begin{itemize}
+ \item Header
+ \item Nodes
+ \item Edges
+\end{itemize}
+
+\section{Section Descriptions}
+\subsection{Conventions}
+To describe the format we use place holders of the form ``<place holder name>'' which need to replaced with
+actual values.
+
+\subsection{Header}
+The header consits of two lines:
+\begin{verbatim*}
+<numNodes>
+<numEdges>
+\end{verbatim*}
+
+\begin{itemize}
+ \item 
+ \textbf{numNodes} the number of nodes in the graph as a decimal number string e.g. ``14505''
+ \item
+ \textbf{numEdges} the number of edges in the graph (including shortcuts if Contraction Hierarchies is used) e.g. ``59600''
+\end{itemize}
+
+
+\subsection{Nodes}
+The nodes section consists of number of nodes lines with each line describing a node of the graph in the following way.
+\begin{verbatim*}
+<latitude> <longitude> <height> <nodeRank>
+\end{verbatim*}
+
+\begin{itemize}
+\item \textbf{latitude} the geographical latitude of the node times $10^7$ e.g. ``484878025'' for ``48.4878025 \textdegree N''
+\item \textbf{longitude} the geographical longitude of the node times $10^7$ e.g. ``91901961'' for ``9.1901961 \textdegree E''
+\item \textbf{height} the height (geographical elevation above NN) in meters
+\item \textbf{nodeRank} the Contraction Hierachy rank of the node (optional if no Contraction Hierachy is used) if the
+CH hasn't been computed completely all uncontracted nodes must have their rank set to 32 bit signed int maximum ($2^31 - 1$) 
+\end{itemize}
+
+
+
+\end{document}
