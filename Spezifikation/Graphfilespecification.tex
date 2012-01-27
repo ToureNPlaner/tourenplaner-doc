@@ -38,7 +38,11 @@ Each graph file has the following three sections
 
 \section{Section Descriptions}
 \subsection{Conventions}
-To describe the format we use place holders of the form ``<place holder name>'' which need to replaced with
+To describe the format we use place holders of the form 
+\begin{verbatim}
+<placeholdername>                                                         
+\end{verbatim}
+place holder name which need to replaced with
 actual values.
 
 \subsection{Header}
@@ -58,18 +62,37 @@ The header consits of two lines:
 
 \subsection{Nodes}
 The nodes section consists of number of nodes lines with each line describing a node of the graph in the following way.
+Not that each node has an implicit node id that is it's position in this file so the first nodes line
+represents node 0, the second node 1 and so on.
 \begin{verbatim*}
 <latitude> <longitude> <height> <nodeRank>
 \end{verbatim*}
 
 \begin{itemize}
-\item \textbf{latitude} the geographical latitude of the node times $10^7$ e.g. ``484878025'' for ``48.4878025 \textdegree N''
-\item \textbf{longitude} the geographical longitude of the node times $10^7$ e.g. ``91901961'' for ``9.1901961 \textdegree E''
+\item \textbf{latitude} the geographical latitude of the node times $10^7$ e.g. ``484878025'' for ``48.4878025 N''
+\item \textbf{longitude} the geographical longitude of the node times $10^7$ e.g. ``91901961'' for ``9.1901961 E''
 \item \textbf{height} the height (geographical elevation above NN) in meters
 \item \textbf{nodeRank} the Contraction Hierachy rank of the node (optional if no Contraction Hierachy is used) if the
-CH hasn't been computed completely all uncontracted nodes must have their rank set to 32 bit signed int maximum ($2^31 - 1$) 
+CH hasn't been computed completely all uncontracted nodes must have their rank set to 32 bit signed int maximum ($2^{31} - 1$) 
 \end{itemize}
 
+\subsection{Edges}
+The edges section consits of number of edges lines with each line describing an edge of the graph ordered by ascending source id
+\begin{verbatim*}
+<sourceId> <targetId> <length> <euclidianDist> <shortcuttedId1> <shortcuttedId2>
+\end{verbatim*}
+
+\begin{itemize}
+ \item \textbf{sourceId} the node id of the source node of this edge
+ \item \textbf{targetId} the node id of the target node of this edge
+ \item \textbf{length} the length of this edge, this length property is used during shortest path computation and
+ can be weighted to compensate for the speedlimit on the real world street
+ \item \textbf{euclidianDist} die euclidian (great circle) length of this edge in meters used to compute the real length of the paths
+ \item \textbf{shortcuttedId1} if this edge is a Contraction Hierachy shortcuted this is the edge id (position in the edge list starting from 0) of the
+ first edge shortcutted by this edge. If this is not a shortcut it must be -1
+ \item \textbf{shortcuttedId2} if this edge is a Contraction Hierachy shortcuted this is the edge id (position in the edge list starting from 0) of the
+ second edge shortcutted by this edge. If this is not a shortcut it must be -1
+\end{itemize}
 
 
 \end{document}
