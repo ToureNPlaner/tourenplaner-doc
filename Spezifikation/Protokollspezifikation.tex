@@ -137,7 +137,7 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 	"lastname": "Mustermann",
 	"address": "Musterstrasse 10, 12345 Musterstadt",
 	"admin": false,
-	"status": "Verified",
+	"status": "verified",
 	"registrationdate": "2000-12-11T13:55:30.000+0000",
 	"verifieddate": null
 }
@@ -169,14 +169,14 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 {
 	"requestid": 42,
 	"userid": 42,
-	"algorithm": sp,
+	"algorithm": "sp",
 	"request": { ... },
 	"response": { ... },
 	"cost": 12324,
 	"requestdate": "2000-12-11T13:55:30.000+0000",
 	"finisheddate": null,
 	"duration": 500,
-	"status": "OK"
+	"status": "ok"
 	
 }
 \end{lstlisting}
@@ -425,11 +425,17 @@ Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benut
 
 \request{Abfragenverlauf abrufen}%Name
 {/listrequests}%URL
-{Ruft die eigenen Abfragen ab. 
-	\begin{itemize}
-		\item Falls der Parameter ``id'' angegeben ist, werden die Daten des Benutzers mit dieser ID abgerufen. Falls der Parameter ``id'' den Wert ``all'' (also \mbox{``id=all''}) übergibt, werden die Request-Datensätze aller Benutzer abgerufen (die Anzahl wird aber mit Limit und Offset beschränkt). Der Parameter ID steht nur Admins zur Verfügung. 
+{Ruft die eigenen Abfragen ab, falls kein ``id''-Parameter übergeben wurde. Der ``id''-Parameter darf nur von Admins genutzt werden, nähere Informationen dazu stehen in der folgenden Auflistung. Die Liste wird absteigend nach dem Requestdatum (wann der Request beim Server gespeichert wurde) sortiert an den Client geschickt.
+\par
+Parameter für alle Nutzer:
+\begin{itemize}
 		\item \mbox{``limit''} limitiert die Anzahl der zurückgelieferten Datensätze. \mbox{``offset''} gibt den Offset zum ersten Datensatz an, gibt also an wie viele Datensätze übersprungen werden. Limit und Offset müssen immer übergeben werden. 
 		\item Der Parameter ``details'' ist optional. Wenn \mbox{``details=nojson''} übergeben wird sind die Requestobjekt-Felder \mbox{``request''} und \mbox{``response''} immer null, es werden also keine JSON-Strings abgerufen. Wenn der Parameter nicht mitgegeben wird oder einen anderen Wert hat, werden die JSON-Strings abgerufen (die Felder können aber null sein, wenn die Datenbank kein JSON-Objekt gespeichert hat).
+\end{itemize}
+
+Parameter nur für Admins:
+	\begin{itemize}
+		\item Falls der Parameter ``id'' angegeben ist, werden die Daten des Benutzers mit dieser UserID abgerufen. Falls der Parameter ``id'' den Wert ``all'' (also \mbox{``id=all''}) übergibt, werden die Request-Datensätze aller Benutzer abgerufen (die abgerufenen Datensätze werden aber mit Limit und Offset beschränkt).
 \end{itemize}
 }%Beschreibung
 {GET}%HTTP-Method
@@ -456,7 +462,7 @@ Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benut
 		
 Siehe \nameref{requestlogobjekt}.
 
-		``number'' gibt die Anzahl aller Einträge an, die zum jeweiligen Benutzer gehören, bzw. bei \mbox{``id=all''} die Anzahl aller Request-Einträge.
+		``number'' gibt die Anzahl aller Einträge an, die zum jeweiligen Benutzer gehören, bzw. bei \mbox{``id=all''} wird die Anzahl aller Request-Einträge angegeben.
 		
 	
 
