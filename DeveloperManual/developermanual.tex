@@ -52,10 +52,38 @@
 
 \section{Introduction}
 
-\section{General Information}
-  \subsection{How Algorithms in ToureNPlaner work}
+Writing algorithm classes for ToureNPlaner consists of three easy steps:
+\begin{itemize}
+  \item Write an algorithm
+  \item Write a factory that creates instances of that algorithm
+  \item Register the factory in the algorithmregistry
+\end{itemize}
 
-  \section{Writing new Algorithms}
+
+  \subsection{Overview: How Algorithms in ToureNPlaner work}
+  After a request from a client to the server has been received by netty server.AlgorithmHandler will do the following things:
+  \begin{itemize}
+    \item from the URL suffix \textit{/alg\textbf{myalg}} checks, whether there is an algorithm factory in the algorithm registry that provides \textbf{myalg} via the getURLSuffix() method
+    \item if in private mode, writes the request to the database
+    \item gives the request object (name of the algorithm, a responder object in which the result can be written, the data from the request) to the queue
+  \end{itemize}
+  Each ComputeThread (nondeterministically) takes a request object out of the queue, gets the correct algorithm factory from the algorithm manager via the algorithm suffix in the request and getURLSuffix() in the factory, starts the MyAlgorithm.compute() method, initiates writing of the response object (original way, calculated result way, misc information) back to netty.\\
+  In MyAlgorithm compute(Computerequest req) is called.  After the calculation is done MyAlgorithm should put the resulting way in the Points object acquired with req.getResulWay()
+
+\section{Detailed Steps}
+
+  \subsection{How to write an Algorithm}
+  
+  \subsection{Data Structure Sharing}
+
+  \subsection{Finishing steps}
+  The algorithm factory needs to be \textit{registered} in the AlgorithmRegistry. This is also the place to pass the graph to the algorithm.
+  In the server.TourenPlaner class do:
+  \begin{lstlisting}[language=java,caption=register your algorithm factory]
+          reg.registerAlgorithm(new MyAlgorithmFactory(graph));
+  \end{lstlisting}
+  
+  \section{Example}
 	 \subsection{Proto classes}
 	 \lstinputlisting[language=Java,caption=``Factory Class'']{ProtoAlgorithmFactory.java}
 	 \lstinputlisting[language=Java,caption=``Algorithm Class'']{ProtoAlgorithm.java}
