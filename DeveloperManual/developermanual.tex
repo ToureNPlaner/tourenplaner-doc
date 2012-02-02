@@ -68,11 +68,30 @@ Writing algorithm classes for ToureNPlaner consists of three easy steps:
     \item gives the request object (name of the algorithm, a responder object in which the result can be written, the data from the request) to the queue
   \end{itemize}
   Each ComputeThread (nondeterministically) takes a request object out of the queue, gets the correct algorithm factory from the algorithm manager via the algorithm suffix in the request and getURLSuffix() in the factory, starts the MyAlgorithm.compute() method, initiates writing of the response object (original way, calculated result way, misc information) back to netty.\\
-  In MyAlgorithm compute(Computerequest req) is called.  After the calculation is done MyAlgorithm should put the resulting way in the Points object acquired with req.getResulWay()
+  In MyAlgorithm compute(Computerequest req) is called. After the calculation is done MyAlgorithm should put the resulting way in the Points object acquired with req.getResulWay() and additional information in a misc object with req.setMisc(Object o).
 
 \section{Detailed Steps}
 
   \subsection{How to write an Algorithm}
+
+    \subsubsection{The algorithm class}
+		A new Algorithm will almost surely inherit from the abstract GraphAlgorithm class (which implements the Algorithm interface). Only in the unlikely case that the new algorithm does not run on the graph it can directly implement the Algorithm interface.\\
+		Algorithm (and GraphAlgorithm) is are very simple to implement: It only requires to implement the compute(ComputeRequest req) method.
+		The req object allows to get the following information
+		\begin{itemize}
+		  \item The points the client sent: req.getPoints()
+		  \item The constraints the client sent: req.getConstraints()
+		\end{itemize}
+		Now the actual algorithm can be implemented using this information.\\
+		After calculating the result it should be returned to the client. Since java has no good mechanism to return arbitrary ``structs'' we decided to write the result directly into the response object.\\
+		This information should be written:
+		\begin{itemize}
+		  \item the resulting way, into the Points object acquired by req.getResultWay()
+		  \item optionally an arbitrary misc object as long as jackson can map it to json (for example, a Map): req.setMisc(Object o)
+		\end{itemize}
+
+
+	 \subsubsection{The factory class}
   
   \subsection{Data Structure Sharing}
 
