@@ -8,6 +8,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{tabularx}
+\usepackage{hyperref}
 
 \lstset{ %
 	language=java,                % the language of the code
@@ -92,7 +93,23 @@ Writing algorithm classes for ToureNPlaner consists of three easy steps:
 
 
 	 \subsubsection{The factory class}
-  
+	 The factory class should inherit directly from AlgorithmFactory if the algorithm doesn't need the graph. If the algorithm works on the graph, it should either inherit from GraphAlgorithmFactory (which extends AlgorithmFactory) or from SharingAlgorithmFactory (which extends GraphAlgorithmFactory) depending on whether the algorithm uses \hyperref[sharing]{data structure sharing}.
+	 Methods the factory needs to implement:
+	 \begin{itemize}
+	   \item createAlgorithm: returns a new instance of the algorithm
+	   \item getDetails: returns a Map with the details that will be sent to the client with the serverinfo
+	   \begin{itemize}
+	     \item Convention: the ``hidden'' - boolean entry in the details causes the algorithm to not be displayed to the user in the clients
+	   \end{itemize}
+		\item getURLSuffix(): returns the suffix of the algorithm url that will be used. \textbf{/alg} will pre prefixed automatically. (Example: returning \textbf{sp} will result in the url for this algorithm be /alg\textbf{sp})
+		\item getAlgName(): returns the complete name of the algorithm that will be displayed in the clients
+		\item getVersion(): returns a version number for the algorithm
+		\item getPointConstraints(): returns a list of constraints for the points
+		\item getConstraints(): returns a list of global constraints for the algorithm
+		\item isHidden(): returns whether the algorithm is ``hidden''. If true, algorithms will not be logged in the database when using a private server
+	 \end{itemize}
+	 
+  \label{sharing}
   \subsection{Data Structure Sharing}
 
   \subsection{Finishing steps}
