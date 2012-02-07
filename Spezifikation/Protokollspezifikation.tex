@@ -7,6 +7,8 @@
 \usepackage[unicode=true,pdfusetitle,bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{geometry}
+\geometry{a4paper,left=20mm,right=20mm, top=2cm, bottom=4cm} 
 
 \lstset{ %
 	language=C,                % the language of the code
@@ -420,6 +422,7 @@ Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benut
 {``id''}%Parameter
 {401 Unauthorized: Email/Passwort falsch.\par
  403 Forbidden: Keine Admin Rechte\par
+ 403 Forbidden: Benutzer nicht verifiziert\par
 404 Not Found: Kein Request zur angegebenen ID gefunden}%Status-Code		
 
 
@@ -640,9 +643,9 @@ Clients.
 	\end{lstlisting}
 
 \subsection{Übersicht}
-\begin{tabular}{|c|p{5cm}|p{5cm}|}
+\begin{tabular}{|c|p{0.35\textwidth}|p{0.35\textwidth}|}
 \hline
-Error Id	& Message			& Beschreibung \\
+\textbf{Error Id}	& \textbf{Message}			& \textbf{Beschreibung} \\
 \hline
 EAUTH		& Wrong email or password	& Authenifizierung fehlgeschlagen \\
 \hline
@@ -659,6 +662,8 @@ ENOUSERID	& The given user id is unknown to this server	& Die Benutzer-ID ist un
 ENOREQUESTID	& The given request id is unknown to this server	& Die Request-ID ist unbekannt \\
 \hline
 ENOTADMIN	& You are not an admin				& Der Benutzer ist kein Admin \\
+\hline
+ENOTVERIFIED	& User account is not verified	& Der Benutzer ist noch nicht verifiziert (aktiviert) \\
 \hline
 EOFFSET		& The given offset is invalid 			& Das angegebene Offset ist ungültig (z.B. negativ) \\
 \hline
