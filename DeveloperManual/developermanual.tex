@@ -111,6 +111,17 @@ Writing algorithm classes for ToureNPlaner consists of three easy steps:
 	 
   \label{sharing}
   \subsection{Data Structure Sharing}
+  An algorithm can share data structures with other algorithms on the same ComputeCore. An algorithm that uses data structure sharing receives a ``Resource Sharer'' of the type DijkstraStructs as parameter in its constructor. This ``Resource Sharer'' allows \textit{borrowing} from and \textit{returning} to a pool of data structures. The data structures are named after a specific purpose. While an array named ``DistArray'' is just an array of ints that does not enforce any usage, for the sake of clarity it is a good idea to use it to store distances.\\
+  Currently those data structures are:
+  \begin{itemize}
+    \item Deque: IntArrayDeque (com.carrotsearch.hppc.IntArrayDeque)
+    \item Heap: dynamically growing MinHeap of int
+    \item DistArray: int array, size: # of nodes, (re))initialized with Integer.MAX_VALUE every time it is \textit{return}ed, except when the returnDistArray() method is given alreadyReset = true as a parameter
+    \item PrevArray: int array, size: # of nodes
+    \item VisitedSet: BitSet, size: # of nodes
+    \item MarkedSet: BitSet, size: # of edges
+  \end{itemize}
+  Note: \textit{Borrowed} data structures need to be \textit{returned} in \textbf{every} possible code path including exception handling. If a data structure is \textit{borrowed} that has not been \textit{returned} before, an IllegalAccessException("Heap borrowed <X> again") will be thrown.
 
   \subsection{Finishing steps}
   The algorithm factory needs to be \textit{registered} in the AlgorithmRegistry. This is also the place to pass the graph to the algorithm.
