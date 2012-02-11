@@ -116,12 +116,12 @@ Writing algorithm classes for ToureNPlaner consists of three easy steps:
   \begin{itemize}
     \item Deque: IntArrayDeque (com.carrotsearch.hppc.IntArrayDeque)
     \item Heap: dynamically growing MinHeap of int
-    \item DistArray: int array, size: # of nodes, (re))initialized with Integer.MAX_VALUE every time it is \textit{return}ed, except when the returnDistArray() method is given alreadyReset = true as a parameter
-    \item PrevArray: int array, size: # of nodes
-    \item VisitedSet: BitSet, size: # of nodes
-    \item MarkedSet: BitSet, size: # of edges
+    \item DistArray: int array, size: \# of nodes, (re-)initialized with Integer.MAX\_VALUE every time it is \textit{return}ed, except when the returnDistArray() method is given alreadyReset = true as a parameter
+    \item PrevArray: int array, size: \# of nodes
+    \item VisitedSet: BitSet, size: \# of nodes
+    \item MarkedSet: BitSet, size: \# of edges
   \end{itemize}
-  Note: \textit{Borrowed} data structures need to be \textit{returned} in \textbf{every} possible code path including exception handling. If a data structure is \textit{borrowed} that has not been \textit{returned} before, an IllegalAccessException("Heap borrowed <X> again") will be thrown.
+  Note: \textit{Borrowed} data structures need to be \textit{returned} in \textbf{every} possible code path including exception handling. If a data structure is \textit{borrowed} that has not been \textit{returned} before, an IllegalAccessException("Heap borrowed X again") will be thrown.
 
   \subsection{Finishing steps}
   The algorithm factory needs to be \textit{registered} in the AlgorithmRegistry. This is also the place to pass the graph to the algorithm.
