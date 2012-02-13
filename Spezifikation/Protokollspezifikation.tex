@@ -590,7 +590,7 @@ Siehe \nameref{requestlogobjekt}.
 
 \request{Abfrage abrufen}%Name
 {/getrequest}%URL
-{Ruft einen bestimmten Request, so wie er vom Client gesendet wurde, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Requests an, dessen Daten abgerufen werden sollen. Wenn der Benutzer kein Admin ist und der Request nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
+{Ruft einen bestimmten Request, so wie er vom Client gesendet wurde, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Requests an, dessen Daten abgerufen werden sollen. Falls die Antwort NULL ist, wird null an den Client gesendet. Wenn der Benutzer kein Admin ist und der Request nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
 }%Beschreibung
 {GET}%HTTP-Method
 {Privat}%Server-Typ
@@ -603,8 +603,8 @@ Siehe \nameref{requestlogobjekt}.
 404 Not Found: Kein Request zur angegebenen ID gefunden}%Status-Code		
 
 \request{Antwort abrufen}%Name
-{/getrequest}%URL
-{Ruft eine bestimmte Antwort, so wie sie der Server gesendet hatte, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Responses an, dessen Daten abgerufen werden sollen. Wenn der Benutzer kein Admin ist und der Response nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
+{/getresponse}%URL
+{Ruft eine bestimmte Antwort, so wie sie der Server gesendet hatte, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Responses an, dessen Daten abgerufen werden sollen. Falls die Antwort NULL ist, wird null an den Client gesendet. Wenn der Benutzer kein Admin ist und der Response nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
 }%Beschreibung
 {GET}%HTTP-Method
 {Privat}%Server-Typ
