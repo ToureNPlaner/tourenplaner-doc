@@ -172,8 +172,6 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 	"requestid": 42,
 	"userid": 42,
 	"algorithm": "sp",
-	"request": { ... },
-	"response": { ... },
 	"cost": 12324,
 	"requestdate": "2000-12-11T13:55:30.000+0000",
 	"finisheddate": null,
@@ -187,7 +185,6 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 
 	``userid'' ist die ID eines Users, die bei bestimmten (Admin-)Funktionen benötigt wird.
 	
-	``request'' und ``response'' sind JSON-Strings oder null.
 	
 	``cost'' sind die Kosten als ganzahliger Wert in Cents.
 
@@ -205,8 +202,119 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 	pending 	& Request ist in Berechnung oder wird noch berechnet. Der Status kann auch bei beendeter Berechnung (egal ob erfolgreich oder erfolglos) auftreten, wenn die Datenbank durch einen Verbindungsfehler nicht aktualisiert werden konnte. \\
 	\hline
 	\end{tabular}	
+
+\subsection{Requestobjekt}	
+
+	Dient dem Transfer von der Algorithmenanfragen vom Server zum Client und zur Speicherung in der Datenbank.
+\label{requestobjekt}
+\subsubsection{Beispiel}
+\begin{lstlisting}
+{
+    "version": 1,
+    "points": [
+         { "lt": -95123000, "ln": 81200000, "k": 100 },
+         { ... }
+    ],
+    "constraints": { "t": 100 }
+}    	
+	\end{lstlisting}
 	
+		\subsubsection*{Erklärung}
 	
+	    \noindent \begin{tabular}{|c|p{12cm}|}
+	    	\hline
+	    	\textbf{Feld} & \textbf{Beschreibung} \\ 
+	    	\hline \hline
+	    	
+	    	version & Die Protokollversion, die der Client verwendet.\\
+	    	\hline
+	    	
+	    	points & Array aller Punkte. Der erste Punkt ist der Startpunkt, der Letzte falls nötig der Zielpunkt. \\ 
+	    	\hline
+	    	
+	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7. \\ 
+	    	\hline
+	    	
+	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7. \\
+	    	\hline
+	    	
+	    	points.k & Ein Beispielconstraint, der für jeden Punkt benötigt wird.\\ 
+	    	\hline
+	    	
+	    	constraints & Array globaler Constraints.\\ 
+	    	\hline
+	    	
+	    	constraints.t & Ein Beispielconstraint, der an keinen Punkt gebunden ist.\\ 
+	    	\hline
+	    \end{tabular}
+
+\subsection{Responseobjekt}	
+Dient dem Transfer der Algorithmenantworten zwischen Server und Client und zum speichern in der Datenbank. 
+\label{responseobjekt}
+		\begin{lstlisting}
+{
+	"requestid": 42,
+	"constraints": {"maxAltitudeDifference": 30, ... },
+	"points": [
+		{"lt": -95123000, "ln": 81200000, ... },
+
+		 ...,		
+		
+		{ ... }
+	],
+	"way": [
+	
+		[{"lt": -95123000, "ln": 81200000 }, ... ],
+		
+		 ...,
+		 
+		[{...}, ... ]
+	
+	],
+	"misc": {
+		"distance": 100,
+		"apx": 0.5
+	}
+}
+	\end{lstlisting}
+\subsubsection*{Erklärung}
+		
+		\begin{tabular}{|c|p{12cm}|}
+			\hline
+			\textbf{Feld} & \textbf{Beschreibung} \\ 
+			\hline \hline
+
+			requestid & Die ID des Requests, wodurch die Daten des Requests erneut abgefragt werden können. Wird nur im privaten Modus angegeben.\\
+			\hline
+			
+			constraints & Ein JSON-Objekt mit Constraintdaten für den Algorithmus\\
+			\hline
+			
+			points & Ein Array aller bei der Abfrage übergebender Punkte. Die Reihenfolge wird vom Algorithmus angepasst. In der Abfrage übergebene Metadaten bleiben dabei erhalten. Dient dem Client zum Anzeigen des Ergebnisses z.B. in einer Liste. Dazu kann z.B. bei kürzester Weg Abfragen die Distanz zum vorherigen Knoten mitgegeben werden.\\
+			\hline
+			
+	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7.\\ 
+	    	\hline
+	    	
+	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7.\\
+	    	\hline
+	    	
+	    	way & Ein Array aller Punkte, die auf der Route liegen. Dient dem Client zum Anzeigen des Weges auf der Karte.\\
+			\hline
+			
+	    	way.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7.\\ 
+	    	\hline
+	    	
+	    	way.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7.\\
+	    	\hline
+	    	
+	    	misc & Ein JSON-Objekt mit algorithmusspezifischen Ergebnissen, welche nicht zum eigentlichen Pfad gehören \\
+	    	\hline
+	    	
+	    	misc.distance & Ein Beispielergebnis, in diesem Fall die Distanz zwischen Start und Ziel.\\
+	    	\hline
+		\end{tabular}
+
 
 \subsection{Feste Algorithmen} 
 Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter einem festen Namen zur Verfügung stellt.
@@ -411,21 +519,6 @@ Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benut
 
 \clearpage
 
-\request{Abfrage abrufen}%Name
-{/getrequest}%URL
-{Ruft eine bestimmte Abfrage ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Requests an, dessen Daten abgerufen werden sollen. Wenn der Benutzer kein Admin ist und der Request nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet. Die JSON-Strings werden immer mit abgerufen und in die Request-Objekt-Felder \mbox{``request''} und \mbox{``response''} geschrieben (die Felder können aber null sein, wenn die Datenbank kein JSON-Objekt gespeichert hat).
-}%Beschreibung
-{GET}%HTTP-Method
-{Privat}%Server-Typ
-{Immer}%Auth
-{Immer}%SSL
-{``id''}%Parameter
-{401 Unauthorized: Email/Passwort falsch.\par
- 403 Forbidden: Keine Admin Rechte\par
- 403 Forbidden: Benutzer nicht verifiziert\par
-404 Not Found: Kein Request zur angegebenen ID gefunden}%Status-Code		
-
-
 \request{Abfragenverlauf abrufen}%Name
 {/listrequests}%URL
 {Ruft die eigenen Abfragen ab, falls kein ``id''-Parameter übergeben wurde. Der ``id''-Parameter darf nur von Admins genutzt werden, nähere Informationen dazu stehen in der folgenden Auflistung. Die Liste wird absteigend nach dem Requestdatum (wann der Request beim Server gespeichert wurde) sortiert an den Client geschickt.
@@ -433,7 +526,6 @@ Wenn der Benutzer sein Passwort ändern will setzt er das Passwort Feld im Benut
 Parameter für alle Nutzer:
 \begin{itemize}
 		\item \mbox{``limit''} limitiert die Anzahl der zurückgelieferten Datensätze. \mbox{``offset''} gibt den Offset zum ersten Datensatz an, gibt also an wie viele Datensätze übersprungen werden. Limit und Offset müssen immer übergeben werden. 
-		\item Der Parameter ``details'' ist optional. Wenn \mbox{``details=nojson''} übergeben wird sind die Requestobjekt-Felder \mbox{``request''} und \mbox{``response''} immer null, es werden also keine JSON-Strings abgerufen. Wenn der Parameter nicht mitgegeben wird oder einen anderen Wert hat, werden die JSON-Strings abgerufen (die Felder können aber null sein, wenn die Datenbank kein JSON-Objekt gespeichert hat).
 \end{itemize}
 
 Parameter nur für Admins:
@@ -445,7 +537,7 @@ Parameter nur für Admins:
 {Privat}%Server-Typ
 {Immer}%Auth
 {Immer}%SSL
-{``id'' (ganzahlige UserID oder ``all''), ``limit'', ``offset'', ``details''}%Parameter
+{``id'' (ganzahlige UserID oder ``all''), ``limit'', ``offset''}%Parameter
 {401 Unauthorized: Email/Passwort falsch.\par
  403 Forbidden: Keine Admin Rechte\par
 404 Not Found: Kein Benutzer zur angegebenen ID gefunden}%Status-Code		
@@ -468,6 +560,36 @@ Siehe \nameref{requestlogobjekt}.
 		``number'' gibt die Anzahl aller Einträge an, die zum jeweiligen Benutzer gehören, bzw. bei \mbox{``id=all''} wird die Anzahl aller Request-Einträge angegeben.
 		
 	
+
+\request{Abfrage abrufen}%Name
+{/getrequest}%URL
+{Ruft einen bestimmten Request, so wie er vom Client gesendet wurde, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Requests an, dessen Daten abgerufen werden sollen. Wenn der Benutzer kein Admin ist und der Request nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
+}%Beschreibung
+{GET}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{``id''}%Parameter
+{401 Unauthorized: Email/Passwort falsch.\par
+ 403 Forbidden: Keine Admin Rechte\par
+ 403 Forbidden: Benutzer nicht verifiziert\par
+404 Not Found: Kein Request zur angegebenen ID gefunden}%Status-Code		
+
+\request{Antwort abrufen}%Name
+{/getrequest}%URL
+{Ruft eine bestimmte Antwort, so wie sie der Server gesendet hatte, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Responses an, dessen Daten abgerufen werden sollen. Wenn der Benutzer kein Admin ist und der Response nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
+}%Beschreibung
+{GET}%HTTP-Method
+{Privat}%Server-Typ
+{Immer}%Auth
+{Immer}%SSL
+{``id''}%Parameter
+{401 Unauthorized: Email/Passwort falsch.\par
+ 403 Forbidden: Keine Admin Rechte\par
+ 403 Forbidden: Benutzer nicht verifiziert\par
+404 Not Found: Kein Response zur angegebenen ID gefunden}%Status-Code
+
+
 
 \section{Administration}
 
@@ -535,100 +657,12 @@ Privat:\par
  403 Forbidden: Keine Admin Rechte}%Status-Code
 
 \subsubsection{Beispiel}
-	\begin{lstlisting}
-{
-    "version": 1,
-    "points": [
-         { "lt": -95123000, "ln": 81200000, "k": 100 },
-         { ... }
-    ],
-    "constraints": { "t": 100 }
-}    	
-	\end{lstlisting}
-	
-		\subsubsection*{Erklärung}
-	
-	    \noindent \begin{tabular}{|c|p{12cm}|}
-	    	\hline
-	    	\textbf{Feld} & \textbf{Beschreibung} \\ 
-	    	\hline \hline
-	    	
-	    	version & Die Protokollversion, die der Client verwendet.\\
-	    	\hline
-	    	
-	    	points & Array aller Punkte. Der erste Punkt ist der Startpunkt, der Letzte falls nötig der Zielpunkt. \\ 
-	    	\hline
-	    	
-	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7. \\ 
-	    	\hline
-	    	
-	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7. \\
-	    	\hline
-	    	
-	    	points.k & Ein Beispielconstraint, der für jeden Punkt benötigt wird.\\ 
-	    	\hline
-	    	
-	    	constraints & Array globaler Constraints.\\ 
-	    	\hline
-	    	
-	    	constraints.t & Ein Beispielconstraint, der an keinen Punkt gebunden ist.\\ 
-	    	\hline
-	    \end{tabular}
+	siehe \nameref{requestobjekt}
     
     \subsubsection{Antwort}	
-	\begin{lstlisting}
-{
-	"requestid": 42,
-	"points": [
-		{"lt": -95123000, "ln": 81200000, ... },
-		{ ... }
-	],
-	"way": [
-		{"lt": -95123000, "ln": 81200000 },
-		{ ... }
-	],
-	"misc": {
-		"distance": 100,
-		"apx": 0.5
-	}
-}
-	\end{lstlisting}
+	siehe \nameref{responseobjekt}
 	
-		\subsubsection*{Erklärung}
 		
-		\begin{tabular}{|c|p{12cm}|}
-			\hline
-			\textbf{Feld} & \textbf{Beschreibung} \\ 
-			\hline \hline
-
-			requestid & Die ID des Requests, wodurch die Daten des Requests erneut abgefragt werden können. Wird nur im privaten Modus angegeben.\\
-			\hline
-			
-			points & Ein Array aller bei der Abfrage übergebender Punkte. Die Reihenfolge wird vom Algorithmus angepasst. In der Abfrage übergebene Metadaten bleiben dabei erhalten. Dient dem Client zum Anzeigen des Ergebnisses z.B. in einer Liste. Dazu kann z.B. bei kürzester Weg Abfragen die Distanz zum vorherigen Knoten mitgegeben werden.\\
-			\hline
-			
-	    	points.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7.\\ 
-	    	\hline
-	    	
-	    	points.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7.\\
-	    	\hline
-	    	
-	    	way & Ein Array aller Punkte, die auf der Route liegen. Dient dem Client zum Anzeigen des Weges auf der Karte.\\
-			\hline
-			
-	    	way.lt & Latitude: Der Breitengrad des Punktes nach WGS 84. Als Integer in 10E7.\\ 
-	    	\hline
-	    	
-	    	way.ln & Longitude: Der Längengrad des Punktes nach WGS 84. Als Integer in 10E7.\\
-	    	\hline
-	    	
-	    	misc & Ein JSON-Objekt mit algorithmusspezifischen Ergebnissen, welche nicht zum eigentlichen Pfad gehören \\
-	    	\hline
-	    	
-	    	misc.distance & Ein Beispielergebnis, in diesem Fall die Distanz zwischen Start und Ziel.\\
-	    	\hline
-		\end{tabular}
-
 \section{Fehlermeldungen}
 \subsection{Allgemeine Form}
 Am Beispiel eines falsch formatierten JSON Requests.
