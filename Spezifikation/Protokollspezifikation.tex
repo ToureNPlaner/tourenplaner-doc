@@ -246,7 +246,8 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
             },
             "pointconstraints": [                    
                 {
-                    "name": "height",
+                    "id": "height",
+                    "description": "Height",
                     "type": "meter",
                     "min": 0.0,
                     "max": 2000.0
@@ -254,7 +255,8 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
             ],
             "constraints": [
                 {
-                    "name": "height",
+                    "id": "maxAltitudeDifference",
+                    "description": "Maximum Altitude Difference",
                     "type": "meter",
                     "min": 0.0,
                     "max": 2000.0
@@ -305,10 +307,13 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
     	pointconstraints & Array von Constraints, die für jeden einzelnen Punkt benötigt werden. \\
     	\hline
     	
-    	pointconstraints.name & Name des Constraints. \\
+    	pointconstraints.id & Eindeutiger Name des Constraints. \\
     	\hline
     	
-    	pointconstraints.type & Der Typ des Constraints, um dem Nutzer entsprechende Anzeigen/Hilfen geben zu können. Koordinatenconstraints werden immer angenommen. Folgende Typen stehen dabei zur Verfügung:\ integer, float, meter, price und boolean.\\ 
+    	pointconstraints.description & Name des Constraints, der einem Clientnutzer angezeigt werden soll. \\
+    	\hline
+    	
+    	pointconstraints.type & Der Typ des Constraints, um dem Nutzer entsprechende Anzeigen/Hilfen geben zu können. Koordinatenconstraints werden immer angenommen. Zur Verfügung stehende Typen können der Tabelle unten entnommen werden.\\ 
     	\hline
     	
     	pointconstraints.min & Minimaler Wert des Constraints. \\
@@ -328,6 +333,28 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
 		\hline
 
    	\end{tabular}
+   	
+   	\subsubsection*{Constraint Types}
+   	Es stehen für Constraints folgende Constrainttypes zur Verfügung.\\
+   	Die Datentypen beziehen sich hierbei auf die JSON-Datentypen.\\
+   	\\
+   	 \noindent \begin{tabular}{|c|p{3.5cm}|}
+    	\hline
+    	\textbf{Name} & \textbf{Datentyp} \\ 
+    	\hline \hline
+    	
+    	meter & Fließkommazahl \\ 
+    	\hline
+    	
+    	price & Fließkommazahl \\
+    	\hline
+    	
+    	integer & Ganzzahl \\
+    	\hline
+    	
+    	float & Fließkommazahl \\
+    	\hline
+    	\end{tabular}
    	\clearpage
 \section{Benutzer}
 
