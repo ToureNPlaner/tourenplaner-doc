@@ -198,7 +198,7 @@ Siehe auch http://en.wikipedia.org/wiki/ISO{\_}8601. Z bedeutet, dass die Zeit i
 	\hline
 	Statusname 	& Beschreibung \\\hline
 	ok 			& Request wurde erfolgreich berechnet\\
-	failed 		& Request kann nicht berechnet werden \\
+	failed 		& Request kann nicht berechnet werden (z.B. wenn ein Fehler bei der Berechnung auftritt oder der Server zu viele Requests zu bearbeiten hat)\\
 	pending 	& Request ist in Berechnung oder wird noch berechnet. Der Status kann auch bei beendeter Berechnung (egal ob erfolgreich oder erfolglos) auftreten, wenn die Datenbank durch einen Verbindungsfehler nicht aktualisiert werden konnte. \\
 	\hline
 	\end{tabular}	
@@ -471,8 +471,8 @@ Deshalb werden dem Benutzer Formulare zum Registrieren, Einloggen sowie Bearbeit
 
 \request{Registrierung}%Name
 {/registeruser}%URL
-{Dient zur Erstellung eines Benutzerkontos.\par Dazu werden E-Mail, Passwort, Vor- und Nachname sowie die Rechnungsadresse übermittelt. 
-Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Client statt.}%Beschreibung
+{Dient zur Erstellung eines Benutzerkontos.\par Dazu werden E-Mail, Passwort, Vor- und Nachname sowie die Rechnungsadresse (und optional das Admin Flag) übermittelt. Wenn eine Authorizierung eines Benutzers mitgeschickt wird, der kein Admin ist, kann kein neuer Benutzer registriert werden. Entweder soll keine Authorizierung mitgeschickt werden oder der zu authorizierende Benutzer muss ein Admin sein. Wenn ein Admin einen neuen Benutzer registriert, wird der neue Benutzer automatisch verifiziert, ansonsten sind neue Benutzer unverifiziert (Status needs{\_}verification).
+Eine Validierung der Eingaben findet auf dem Client statt. Eine manuelle Validierung der Daten soll durch den Admin erfolgen, der den Benutzer registriert beziehungsweise verifiziert.}%Beschreibung
 {POST}%HTTP-Method
 {Privat}
 {Notwendig für direktes Freischalten (Admin)}%Auth
@@ -481,7 +481,8 @@ Eine Validierung der Eingaben findet sowohl auf dem Server als auch auf dem Clie
 {401 Unauthorized: Admin Authentifizierung fehlgeschlagen \par 403 Forbidden: Benutzer schon vorhanden}%Status-Code
 		
 \subsubsection{Request}
-Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}.
+Ein \texttt{\$\{BenutzerObjekt\}}, siehe \nameref{benutzerobjekt}. Es müssen nur die Felder email, 
+password, firstname, lastname und address mitgeschickt werden, optional kann auch das Feld admin mitgeschickt werden. Das Feld admin wird allerdings nur vom Server ausgelesen, wenn die Registrierung durch einen Admin vorgenommen wird: ein Admin kann somit durch ``admin'':true den neuen Benutzer als Admin registrieren. In allen anderen Fällen ist ein neu registrierter Benutzer nie ein Admin. 
 		
 \request{Authentifizierung}%Name
 {/authuser}%URL
@@ -590,7 +591,7 @@ Siehe \nameref{requestlogobjekt}.
 
 \request{Abfrage abrufen}%Name
 {/getrequest}%URL
-{Ruft einen bestimmten Request, so wie er vom Client gesendet wurde, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Requests an, dessen Daten abgerufen werden sollen. Falls die Antwort NULL ist, wird null an den Client gesendet. Wenn der Benutzer kein Admin ist und der Request nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
+{Ruft einen bestimmten Request, so wie er vom Client gesendet wurde, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Requests an, dessen Daten abgerufen werden sollen. Falls die Antwort NULL ist, wird ein leerer Content an den Client gesendet (der Content Type ist auch in dem Fall ``application/json''). Wenn der Benutzer kein Admin ist und der Request nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
 }%Beschreibung
 {GET}%HTTP-Method
 {Privat}%Server-Typ
@@ -604,7 +605,7 @@ Siehe \nameref{requestlogobjekt}.
 
 \request{Antwort abrufen}%Name
 {/getresponse}%URL
-{Ruft eine bestimmte Antwort, so wie sie der Server gesendet hatte, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Responses an, dessen Daten abgerufen werden sollen. Falls die Antwort NULL ist, wird null an den Client gesendet. Wenn der Benutzer kein Admin ist und der Response nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
+{Ruft eine bestimmte Antwort, so wie sie der Server gesendet hatte, ab. Der Parameter ``id'' ist ein Pflichtparameter und gibt die ID des Responses an, dessen Daten abgerufen werden sollen. Falls die Antwort NULL ist, wird ein leerer Content an den Client gesendet (der Content Type ist auch in dem Fall ``application/json''). Wenn der Benutzer kein Admin ist und der Response nicht zum Benutzer gehört, wird mit einer Forbidden-Nachricht geantwortet.
 }%Beschreibung
 {GET}%HTTP-Method
 {Privat}%Server-Typ
