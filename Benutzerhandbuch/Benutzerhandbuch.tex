@@ -171,7 +171,15 @@
 	\end{itemize}
 
 \section{Konfiguration}
-Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen:
+Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen im JSON-Format nach folgendem Schema:
+\begin{lstlisting}[caption=Konfigurations-Schema,float]
+  {
+	 "A_String" = "text",
+	 // A Comment
+	 "A_Boolean" = true, // another comment
+	 "An_Integer" = 3
+  }
+\end{lstlisting}
 
 %\configoption
 %{}
@@ -286,7 +294,7 @@ Fehlende Optionen werden durch im Server eingebaute Standardoptionen ersetzt.
 Prinzipiell kann jeder Webserver, der die ``Reverse-Proxy''-Technik unterst\"utzt, verwendet werden, um Anfragen zu ToureNPlaner weiterzuleiten. Praktisch ist nur nginx getestet.\\
 
 Folgende ``locations'' werden dazu in die nginx-Konfiguration eingetragen:
-\lstinputlisting[language=plaintext,caption=``nginx location Konfiguration'']{nginx-proxy-location.txt}
+\lstinputlisting[caption=nginx location Konfiguration]{nginx-proxy-location.txt}
 Im Falle eines ``public''-Servers sind diese Locations f\"ur den http-Port einzutragen, im Falle eines ``private''-Servers sind die Locations f\"ur den HTTPS-Port einzutragen sowie nur die ``/info''-Location f\"ur den HTTP Port einzutragen.
 
 F\"ur den Android Client muss noch das ChunkinModule f\"ur nginx installiert werden und die entsprechende Konfiguration vorgenommen werden:
