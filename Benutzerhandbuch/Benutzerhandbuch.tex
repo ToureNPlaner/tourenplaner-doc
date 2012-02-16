@@ -87,7 +87,7 @@
    ToureNPlaner hat zwei Betriebsmodi:
    \begin{itemize}
      \item Public - Es sind keine Anmeldedaten n\"otig, um auf dem Server Berechnungen durchzuf\"uhren.
-     \item Private - Es ist eine Registrierung erforderlich, um auf dem Server Berechnungen durchzuf\"uhren. Die Verbindung wird mit SSL verschl\"usselt. Berechnungen werden in einer Datenbank gespeichert.
+     \item Private - Es ist eine Registrierung erforderlich, um auf dem Server Berechnungen durchzuf\"uhren. Die Verbindung wird mit SSL verschl\"usselt. Berechnungen und die Ergebnisse werden in einer Datenbank gespeichert.
    \end{itemize}
 
 
@@ -95,11 +95,12 @@
 	\subsection{Systemvoraussetzungen}
 	
 	\begin{itemize}
-		\item JVM in Version 1.6 oder h\"oher
+		\item JVM in Version 1.6 (oder h\"oher)
 		\item 3 Gigabyte Arbeitsspeicher f\"ur den Graph + TODO Gigabyte pro Thread
 		\item optional eine MySQL-Datenbank f\"ur den Betrieb im Private-Modus
 	\end{itemize}
 
+	\label{usedfiles}
   \subsection{Von ToureNPlaner benutzte Dateien}
 	 \begin{itemize}
 	   \item Der ToureNPlaner-Server selbst besteht aus dem ausf\"uhrbahren .jar-Archiv tourenplaner-server.jar.
@@ -124,7 +125,7 @@
 	  \item /usr/share/java/tourenplaner/tourenplaner-server.jar : der eigentliche Server
 	  \item Script zum Einrichten der Datenbank f\"ur den Betrieb im Private-Modus
 		\begin{itemize}
-		  \item /usr/share/tourenplaner/db\_init\_script
+		  \item /usr/share/tourenplaner/db\_init\_script.sql
 		  \item /usr/share/tourenplaner/db\_init.sh
 		\end{itemize}
 	\end{itemize}
@@ -134,8 +135,8 @@
 	 In der Standardkonfiguration muss der Stra\ss{}engraph nach /var/lib/tourenplaner/germany.txt.
 	\subsection{weitere Installations-Schritte (nur Private-Modus)}
 	 \subsubsection{Java Keystore}
-	 F\"ur den Private-Betrieb muss der Java Keystore nach /var/lib/tourenplaner/keystore.jks kopiert werden.\\
-	 Erstellen eines Java Keystore:
+	 F\"ur den Private-Betrieb muss der Java Keystore nach /var/lib/tourenplaner/keystore.jks kopiert werden.
+	 \paragraph{Erstellen eines Java Keystore}
 	%TODO erstellen des java keystore
 	\subsubsection{Einrichten der Datenbank}
 	und die Datenbank mit dem Initialisierungs-Script eingerichtet werden (daf\"ur wird das MySQL root-Passwort ben\"otigt):
@@ -145,8 +146,7 @@
 	\end{lstlisting}
 	
   \subsection{Manuelle Installation}
-	%TODO: Link einf\"ugen
-	Es werden die im Abschnitt ``Von ToureNPlaner verwendeten Dateien'' ben\"otigt.\\
+	Es werden die im Abschnitt \hyperref[usedfiles]{Von ToureNPlaner verwendeten Dateien} ben\"otigt.\\
 	In der Datei \textit{tourenplaner.conf} werden die entsprechenden Pfade zu den Dateien eingestellt. Das Verzeichnis, in dem der Stra\ss{}engraph liegt, muss f\"ur den Benutzer, der ToureNPlaner ausf\"uhrt schreibbar sein, wenn der ToureNPlaner Server einen Bin\"ardump erstellen soll
 	\subsubsection{Manuelles Starten}
   Gestartet wird der Server folgenderma\ss{}en:
@@ -154,7 +154,7 @@
   "${JAVA_HOME}/bin/java" -Xmx12g -Xincgc -jar /pfad/zum/server/tourenplaner-server.jar -c /pfad/zur/config/tourenplaner.conf -f dump
 	\end{lstlisting}
 	Hierbei gibt \textit{-Xmx12g} die maximale RAM-Nutzung des Servers an. Beendet sich der Server mit einer OutOfMemoryException, sollte dieser Wert erh\"oht werden.
-	Um den Server unter einem anderen Benutzername zu starten, kann sudo verwendet werden:
+	Um den Server unter einem anderen Benutzername zu starten, kann \textit{sudo} verwendet werden:
 	\begin{lstlisting}
 	   sudo -E -u http "${JAVA_HOME}/bin/java" -Xmx12g -Xincgc -jar /pfad/zum/server/tourenplaner-server.jar -c /pfad/zur/config/tourenplaner.conf -f dump
 	\end{lstlisting}
@@ -165,9 +165,8 @@
 	Der ToureNPlaner Server unterst\"utzt die folgenden Kommandozeilenoptionen:
 	\begin{itemize}
 	  \item -c \textit{Pfad} : Pfad zur Konfigurationsdatei (wenn nicht angegeben, wird im Server eingebaute Standardkonfiguration wird verwendet)
-	  \item -f text / -f dump : Liest den Graph aus einer Textdatei oder aus einem Bin\"ardump mit der Erweiterung \textit{.txt.dat} (Ist mit -f dump kein Bin\"ardump vorhanden, wird \textit{-f text} angenommen und ein Bin\"ardump erstellt) (Wenn nicht angegeben, wird \textit{-f text} angenommen)
+	  \item -f text / -f dump : Liest den Graph aus einer Textdatei oder aus einem Bin\"ardump mit dem selben Namen des Textgraphen mit der zus\"atzlichen Erweiterung \textit{.dat} (Ist mit -f dump kein Bin\"ardump vorhanden, wird \textit{-f text} angenommen und ein Bin\"ardump erstellt) (Wenn nicht angegeben, wird \textit{-f text} angenommen)
 	 \item dumpgraph : Erstellt nur den Bin\"ardump des Graphen, ohne den Server zu starten
-	  ToureNPlaner aus der Textdatei und erstellt einen Bin\"ardump).
 	\end{itemize}
 
 \section{Konfiguration}
@@ -181,6 +180,8 @@ Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen im 
   }
 \end{lstlisting}
 
+Fehlende Optionen werden durch im Server eingebaute Standardoptionen ersetzt.
+
 %\configoption
 %{}
 %{}
@@ -189,6 +190,7 @@ Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen im 
 
 \subsection{Empfohlene Optionen}
 
+\subsubsection{Public und Privater Server}
 \configoption
 {threads}
 {2}
@@ -214,6 +216,26 @@ Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen im 
 {F\"ur Berechnungen auf einem Public Server ist keine Authentifizierung notwendig. Ein Private-Server hat eine Benutzerverwaltung und bietet seinen Service \"uber HTTPS an}
 
 \configoption
+{httppport}
+{8080}
+{integer}
+{Port, auf dem der Server via HTTP lauscht}
+
+\configoption
+{costpertimeunit}
+{10}
+{integer}
+{Gibt die Kosten (ohne spezifizierte W\"ahrung) f\"ur eine Zeiteinheit an, deren L\"ange durch die \textit{timeunitsize} angegen wird}
+
+\configoption
+{timeunitsize}
+{1000}
+{integer}
+{Gibt an, wie lange eine Zeiteinheit f\"ur die Abrechnung sein soll. Die Basiseinheit sind Millisekunden. Eine Angabe von 1000 bedeutet, dass der Preis bei \textit{costpertimeunit} f\"ur eine Sekunde gilt}
+
+\subsubsection{Nur Privater Server}
+
+\configoption
 {dburi}
 {``jdbc:mysql://localhost:3306/tourenplaner?autoReconnect=true''}
 {string}
@@ -232,12 +254,6 @@ Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen im 
 {MySQL Passwort f\"ur den angegebenen Benutzer}
 
 \configoption
-{httppport}
-{8080}
-{integer}
-{Port, auf dem der Server via HTTP lauscht}
-
-\configoption
 {sslport}
 {8081}
 {integer}
@@ -253,27 +269,13 @@ Die Konfigurationsdatei (/etc/tourenplaner.conf) enth\"alt folgende Optionen im 
 {sslalias}
 {tourenplaner}
 {string}
-{??}
+{Bezeichnung des SSL-Zertifikates im Java Keystore}
 
 \configoption
 {sslpw}
 {``tour3nplan3er''}
 {string}
 {Passwort f\"ur den Java Keystore}
-
-\configoption
-{costpertimeunit}
-{10}
-{integer}
-{Gibt die Kosten (ohne spezifizierte W\"ahrung) f\"ur eine Zeiteinheit an, deren L\"ange durch die \textit{timeunitsize} angegen wird}
-
-\configoption
-{timeunitsize}
-{1000}
-{integer}
-{Gibt an, wie lange eine Zeiteinheit f\"ur die Abrechnung sein soll. Die Basiseinheit sind Millisekunden. Eine Angabe von 1000 bedeutet, dass der Preis bei \textit{costpertimeunit} f\"ur eine Sekunde gilt}
-
-Fehlende Optionen werden durch im Server eingebaute Standardoptionen ersetzt.
 
 \subsection{Optionale Optionen}
 

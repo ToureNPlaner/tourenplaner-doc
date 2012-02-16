@@ -1,0 +1,309 @@
+\documentclass[ngerman,titlepage,parskip=true]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{babel}
+\usepackage{wrapfig}
+\usepackage{longtable}
+\usepackage[unicode=true,pdfusetitle,bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{tabularx}
+
+\lstset{ %
+	language=bash,                % the language of the code
+	basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+	stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+	                                % will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code
+	backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores
+	frame=single,                   % adds a frame around the code
+	tabsize=4,                      % sets default tabsize to 2 spaces
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	title=\lstname,                 % show the filename of files included with \lstinputlisting;
+	                                % also try caption instead of title
+	escapeinside={\%*}{*)},         % if you want to add a comment within your code
+	morekeywords={*,...}            % if you want to add more keywords to the set
+}
+
+% adjust table padding
+\setlength{\tabcolsep}{8pt} \renewcommand{\arraystretch}{1.5}
+ 
+\title{User Manual}
+\author{ToureNPlaner Team}
+
+
+\newenvironment{owncompactitem}{%
+\compactitem
+}{%
+\@finalstrut\@arstrutbox
+\@nameuse{endcompactitem}%
+\aftergroup\let\aftergroup\@finalstrut\aftergroup\@gobble
+}
+\newenvironment{owncompactenum}{%
+\compactenum
+}{%
+\@finalstrut\@arstrutbox
+\@nameuse{endcompactenum}%
+\aftergroup\let\aftergroup\@finalstrut\aftergroup\@gobble
+}
+\makeatother
+
+\newcommand{\configoption}[4]
+{%\paragraph{#1}
+\setlength{\extrarowheight}{2pt}
+\begin{tabular}{|p{0.2\textwidth}|p{0.9\textwidth}|}
+\hline
+  \textbf{Name} & \textbf{#1}\\\hline
+  Example & #2\\\hline
+  Type & #3\\\hline
+  Description & #4\\\hline
+\end{tabular}
+}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\pagebreak
+
+\section{Introduction}
+
+	\subsection{About ToureNPlaner}
+   ToureNPlaner is a server application that implements the following algorithms:
+   \begin{itemize}
+     \item Shortest Path (with Contraction Hierarchy)
+     \item Constrained Shortest Path
+     \item Travelling Sales Person
+   \end{itemize}
+   ToureNPlaner can run in two modes:
+   \begin{itemize}
+     \item Public - No authentication is required to send requests to the server.
+     \item Private - Users that send requests to the server need to be registered and verified. The connection to the server is secured with SSL. Requests and their responses are saved in a MySQL database.
+   \end{itemize}
+
+
+\section{Generelles}
+	\subsection{System Requirements}
+	
+	\begin{itemize}
+		\item JVM in Version 1.6 (or higher)
+		\item 3 Gigabytes of memory for the graph + TODO Gigabytes per Thread
+		\item optionally a MySQL-database for running the server in the private modus
+	\end{itemize}
+
+	\label{usedfiles}
+  \subsection{Files used by ToureNPlaner}
+	 \begin{itemize}
+	   \item The ToureNPlaner server itself: A runnable jar ``tourenplaner-server.jar''
+	   \item Configuration file: tourenplaner.conf in json format. Its path is given to the server via ``-c /path/to/config/file''
+	   \item Street graph in the text format specified in the graph file specification. Its path is given to the server in the configuration file
+		\begin{itemize}
+		  \item optional: Binary dump of the street graph that is read faster than the text graph. The server uses the dump (and creates it from the textgraph if it is not present) when given ``-f dump''
+		\end{itemize}
+	   \item optional: a Java Keystore that contains an SSL certificate used for a ``private'' server
+	 \end{itemize}
+
+\section{Installation}
+  Packages for the following Linux distributions are provided:
+  \begin{itemize}
+    \item Archlinux
+  \end{itemize}
+  \subsection{Files in the Archlinux package}
+	\begin{itemize}
+	  \item /etc/rc.d/tourenplanerd : a script for starting and stopping of the tourenplaner server as an Archlinux daemon
+	  \item /etc/tourenplaner.conf : the configuration file
+	  \item /usr/bin/tourenplaner-server : a minimal startscript for the tourenplaner server
+	  \item /usr/share/java/tourenplaner/tourenplaner-server.jar : the server itself
+	  \item scripts to set up the database for a private server
+		\begin{itemize}
+		  \item /usr/share/tourenplaner/db\_init\_script.sql
+		  \item /usr/share/tourenplaner/db\_init.sh
+		\end{itemize}
+	\end{itemize}
+
+	\subsection{Further Installation Steps  (public and private server)}
+	\subsubsection{Street graph}
+	 Per default the street graph needs to be copied to /var/lib/tourenplaner/germany.txt.
+	\subsection{Further Installation Steps (private server only)}
+	 \subsubsection{Java Keystore}
+	 Per default a java keystore needs to be copied to /var/lib/tourenplaner/keystore.jks\\
+	 \paragraph{How to create a Java Keystore}
+	 %TODO erstellen des java keystore
+	\subsubsection{Setting up the Database (private server only)}
+	The database is set up by the \textit{db\_init.sh} script (the MySQL root password is needed)
+   \begin{lstlisting}
+	 cd /usr/share/tourenplaner
+	 ./db_init.sh
+	\end{lstlisting}
+	
+  \subsection{Manual Installation}
+	%TODO: Link einf\"ugen
+	For the manual installation the files described in \hyperref[usedfiles]{Files used by ToureNPlaner} are required.\\
+	Firstly, in the file \textit{tourenplaner.conf} the paths to all further files are configured: The directory containing the street graph needs to be writeable by the user that runs ToureNPlaner to write a binary graph.
+	\subsubsection{Manual starting}
+  The ToureNPlaner server is started using the following command:
+	\begin{lstlisting}
+  "${JAVA_HOME}/bin/java" -Xmx12g -Xincgc -jar /pfad/zum/server/tourenplaner-server.jar -c /pfad/zur/config/tourenplaner.conf -f dump
+	\end{lstlisting}
+	Here \textit{-Xmx12g} tells the JVM how much memory ToureNPlaner is allowed to allocate on the heap. In case the ToureNPlaner dies with an OutOfMemoryException this value should be increased.
+	The server can be run as a different user by using \textit{sudo}
+	\begin{lstlisting}
+	   sudo -E -u http "${JAVA_HOME}/bin/java" -Xmx12g -Xincgc -jar /pfad/zum/server/tourenplaner-server.jar -c /pfad/zur/config/tourenplaner.conf -f dump
+	\end{lstlisting}
+  The sudo parameter \textit{-E} tells sudo to preserve the environment variables of the executing user, for example \$JAVA\_HOME
+
+	\subsubsection{Command Line Switches}
+	ToureNPlaner supports the following command line switches:
+	\begin{itemize}
+	  \item -c \textit{Pfad} : Path to the configuration file. If it is missing ToureNPlaner will use an inbuilt default configuration.
+	  \item -f text / -f dump : Read the graph either from a text file described in the graph format specification or from a binary dump with the same name of the text graph and the added file extension of \textit{.dat} (If -f dump is given and the binary dump cannot be opened ToureNPlaner assumes \textit{-f text} and creates a binary dump) (This parameter is optional and if omitted, the server assumes \textit{-f text})
+	 \item dumpgraph : Just creates a binary dump without actually starting the ToureNPlaner server
+	\end{itemize}
+
+\section{Configuration}
+The configuration file (/etc/tourenplaner.conf) contains the following options in the JSON format following this pattern:
+\begin{lstlisting}[caption=Sample configuration,float]
+  {
+	 "A_String" = "text",
+	 // A Comment
+	 "A_Boolean" = true, // another comment
+	 "An_Integer" = 3
+  }
+\end{lstlisting}
+
+Missing Options will be replaced by inbuilt defaults.
+
+%\configoption
+%{}
+%{}
+%{}
+%{}
+
+\subsection{Recommended Options}
+
+\subsubsection{public and private server}
+
+\configoption
+{threads}
+{2}
+{integer}
+{Number of Computecores that can calculate requests at the same time. A good value is CPU-cores - 1 (It\'s a good idea to let a spare core that the garbage collector can run on)}
+
+\configoption
+{queuelength}
+{20}
+{integer}
+{The number of requests being queued in case all computethreads are active. Requests that are sent to the server when all cores are active and the queue is full will be rejected}
+
+\configoption
+{graphfilepath}
+{``/var/tourenplaner/germany.txt''}
+{string}
+{Path to the street graph}
+
+\configoption
+{private}
+{true}
+{boolean}
+{A private server has user management, logs all requests and provides its service through HTTPS. A server that is not private is public and answers requests through HTTP without authentication and without saving them}
+
+\configoption
+{httppport}
+{8080}
+{integer}
+{listen port for HTTP}
+
+\configoption
+{costpertimeunit}
+{10}
+{integer}
+{The cost for a time unit that is set in \textit{timeunitsize}}
+
+\configoption
+{timeunitsize}
+{1000}
+{integer}
+{The length of one time unit that has the costs set in \textit{costpertimeunit}. The basis unit is milliseconds. A timeunitsize of 1000 means that the cost is per second}
+
+\subsubsection{private server only}
+
+\configoption
+{dburi}
+{``jdbc:mysql://localhost:3306/tourenplaner?autoReconnect=true''}
+{string}
+{private only: The URI to the MySQL database. It must be a JAVA JDBC URI. The database name is directly set with this option (e.g. ``/tourenplaner'')}
+
+\configoption
+{dbuser}
+{``tourenplaner''}
+{string}
+{MySQL user name}
+
+\configoption
+{dbpw}
+{toureNPlaner}
+{string}
+{MySQL password}
+
+\configoption
+{sslport}
+{8081}
+{integer}
+{listen port for HTTPS}
+
+\configoption
+{sslcert}
+{``/var/tourenplaner/keystore.jks''}
+{string}
+{Path to the Java Keystore that contains the certificate named in sslalias}
+
+\configoption
+{sslalias}
+{tourenplaner}
+{string}
+{Identifier of the SSL certificate in the Java Keystore}
+
+\configoption
+{sslpw}
+{``tour3nplan3er''}
+{string}
+{Passwort for the Java Keystore}
+
+\subsection{Optionale Optionen}
+
+\configoption
+{serverinfosslport}
+{443}
+{integer}
+{The port that is displayed in the serverinfo the ToureNPlaner server answers by a HTTP(s) request on /info. In reality the server listens for HTTPS connections on the port given by sslport}
+
+\configoption
+{maxdbtries}
+{3}
+{integer}
+{How often the server tries to reconnect to the database after the connection has been lost}
+
+\subsection{nginx as Proxy for ToureNPlaner}
+
+Theoretically every Webserver that supports ``reverse proxying'' can be used to relay requests to ToureNPlaner. But only nginx has been tested.\\
+
+The following ``locations'' need to be set in the nginx config file:
+
+\lstinputlisting[caption=nginx location Configuration]{nginx-proxy-location.txt}
+
+For a ``public'' server these locations only need to be set for the HTTP port.\\
+For a ``private'' server these locations need to be set for the HTTPS port and additionally the ``/info'' location needs to be set for the HTTP port. (Clients will always connect to the HTTP port to get the server info and will reconnect to the HTTPS port in case of a private server).
+
+For the Android Client the ChunkinModule for nginx needs to be installed and set up:
+\url{http://wiki.nginx.org/HttpChunkinModule}
+
+\end{document}
