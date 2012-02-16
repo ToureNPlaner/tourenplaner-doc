@@ -355,7 +355,8 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
             "pointconstraints": [                    
                 {
                     "id": "height",
-                    "description": "Height",
+                    "name": "Height",
+                    "description": "Short description for this constraint.",
                     "type": "meter",
                     "min": 0.0,
                     "max": 2000.0
@@ -364,7 +365,8 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
             "constraints": [
                 {
                     "id": "maxAltitudeDifference",
-                    "description": "Maximum Altitude Difference",
+					 "name": "Maximum Altitude Difference",
+                    "description": "The maximum difference in altitude combined over the path",
                     "type": "meter",
                     "min": 0.0,
                     "max": 2000.0
@@ -395,7 +397,7 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
     
     \subsubsection*{Algorithmen}
     
-    \noindent \begin{tabular}{|c|p{11.5cm}|}
+    \noindent \begin{tabular}{|c|p{10.5cm}|}
     	\hline
     	\textbf{Feld} & \textbf{Beschreibung} \\ 
     	\hline \hline
@@ -415,13 +417,16 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
     	pointconstraints & Array von Constraints, die für jeden einzelnen Punkt benötigt werden. \\
     	\hline
     	
-    	pointconstraints.id & Eindeutiger Name des Constraints. \\
+    	\{constraints, pointconstraints\}.id & Eindeutiger Name des Constraints. \\
     	\hline
     	
-    	pointconstraints.description & Name des Constraints, der einem Clientnutzer angezeigt werden soll. \\
+    	\{constraints, pointconstraints\}.name & Name des Constraints, der einem Clientnutzer angezeigt werden soll. \\
+    	\hline 
+    	
+    	\{constraints, pointconstraints\}.description & Kurzer Beschreibungstext \\
     	\hline
     	
-    	pointconstraints.type & Der Typ des Constraints, um dem Nutzer entsprechende Anzeigen/Hilfen geben zu können. Koordinatenconstraints werden immer angenommen. Zur Verfügung stehende Typen können der Tabelle unten entnommen werden.\\ 
+    	\{constraints, pointconstraints\}.type & Der Typ des Constraints, um dem Nutzer entsprechende Anzeigen/Hilfen geben zu können. Koordinatenconstraints werden immer angenommen. Zur Verfügung stehende Typen können der Tabelle unten entnommen werden.\\ 
     	\hline
     	
     	pointconstraints.min & Minimaler Wert des Constraints. \\
