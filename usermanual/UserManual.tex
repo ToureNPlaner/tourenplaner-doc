@@ -135,7 +135,7 @@
 	 Per default the street graph needs to be copied to /var/lib/tourenplaner/germany.txt.
 	\subsection{Further Installation Steps (private server only)}
 	 \subsubsection{Java Keystore}
-	 Per default a java keystore needs to be copied to /var/lib/tourenplaner/keystore.jks\\
+	 Per default a java keystore needs to be copied to /var/lib/tourenplaner/keystore.jks
 	 \paragraph{How to create a Java Keystore}
 	 %TODO erstellen des java keystore
 	\subsubsection{Setting up the Database (private server only)}
@@ -170,8 +170,17 @@
 	\end{itemize}
 
 \section{Configuration}
+\subsection{Database Configuration}
+\subsubsection{/etc/mysql/my.cnf}
+	 \paragraph{\#skip-networking}
+	 The ToureNPlaner server connects to the database server only through TCP. MySQL distributions might be set to per default only accept connections through sockets.
+	 To enable TCP connections, find \textit{skip-networking} and put the comment sign \textit{\#} in front of it.
+	 \paragraph{max\_allowed\_packet}
+	 The responses to large request may be larger than the default size of packets that MySQL accepts. Reasonable requests should not generate responses bigger than about 16M.
+
+\subsection{The config file}
 The configuration file (/etc/tourenplaner.conf) contains the following options in the JSON format following this pattern:
-\begin{lstlisting}[caption=Sample configuration,float]
+\begin{lstlisting}[caption=Sample configuration]
   {
 	 "A_String" = "text",
 	 // A Comment
@@ -237,10 +246,22 @@ Missing Options will be replaced by inbuilt defaults.
 \subsubsection{private server only}
 
 \configoption
+{store-full-response}
+{true}
+{boolean}
+{If set, the full result of every query is saved in the database. If not set, it only stores the points of the request connected with a straight line}
+
+\configoption
 {dburi}
 {``jdbc:mysql://localhost:3306/tourenplaner?autoReconnect=true''}
 {string}
-{private only: The URI to the MySQL database. It must be a JAVA JDBC URI. The database name is directly set with this option (e.g. ``/tourenplaner'')}
+{The URI to the MySQL database. It must be a JAVA JDBC URI. The database name is directly set with this option (e.g. ``/tourenplaner'')}
+
+\configoption
+{dbdriverclass}
+{"com.mysql.jdbc.Driver"}
+{string}
+{}
 
 \configoption
 {dbuser}
