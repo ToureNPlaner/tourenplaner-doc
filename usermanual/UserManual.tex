@@ -317,14 +317,21 @@ Missing Options will be replaced by inbuilt defaults.
 
 Theoretically every Webserver that supports ``reverse proxying'' can be used to relay requests to ToureNPlaner. But only nginx has been tested.\\
 
+For the Android Client the ChunkinModule for nginx needs to be installed and set up according to the documentation:
+\url{http://wiki.nginx.org/HttpChunkinModule}
+
 The following ``locations'' need to be set in the nginx config file:
 
 \lstinputlisting[caption=nginx location Configuration]{nginx-proxy-location.txt}
 
+\subsubsection{}
 For a ``public'' server these locations only need to be set for the HTTP port.\\
 For a ``private'' server these locations need to be set for the HTTPS port and additionally the ``/info'' location needs to be set for the HTTP port. (Clients will always connect to the HTTP port to get the server info and will reconnect to the HTTPS port in case of a private server).
 
-For the Android Client the ChunkinModule for nginx needs to be installed and set up:
-\url{http://wiki.nginx.org/HttpChunkinModule}
+\subsubsection{Public server with SSL with nginx}
+
+It may be desired to run a server in public mode and still use SSL for all requests. This can be easily achieved with a similar configuration than above.\\
+Run the server with \textit{``private'' = false} and modify the above location rules so that they point at the http port of the ToureNPlaner server instead of the ssl port.
+In this configuration nginx will encrypt all traffic between the client and nginx, but the traffic between nginx and the ToureNPlaner server will be unencrypted.
 
 \end{document}
