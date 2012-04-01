@@ -1,42 +1,4 @@
-location /info {
- proxy_pass https://localhost:8081/info;
-}
-location /registeruser {
- proxy_pass https://localhost:8081/registeruser;
-}
-location /authuser {
- proxy_pass https://localhost:8081/authuser;
-}
-location /getuser {
- proxy_pass https://localhost:8081/getuser;
-}
-location /updateuser {
- proxy_pass https://localhost:8081/updateuser;
-}
-location /getrequest {
- proxy_pass https://localhost:8081/getrequest;
-}
-location /listrequests {
- proxy_pass https://localhost:8081/listrequests;
-}
-location /listusers {
- proxy_pass https://localhost:8081/listusers;
-}
-location /deleteuser {
- proxy_pass https://localhost:8081/deleteuser;
-}
-location /algsp {
- proxy_pass https://localhost:8081/algsp;
-}
-location /algtsp {
- proxy_pass https://localhost:8081/algtsp;
-}
-location /algnns {
- proxy_pass https://localhost:8081/algnns;
-}
-location /algcsp {
- proxy_pass https://localhost:8081/algcsp;
-}
-location /getresponse {
- proxy_pass https://localhost:8081/getresponse;
+location ~* (/info|/registeruser|/authuser|/getuser|/updateuser|/getrequest|/listrequests|/listusers|/deleteuser|/algsp|/algtsp|/algnns|/algcsp|/getresponse) {
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_pass https://127.0.0.1:8081$uri;
 }

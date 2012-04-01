@@ -137,8 +137,17 @@
 	 \subsubsection{Java Keystore}
 	 Per default a java keystore needs to be copied to /var/lib/tourenplaner/keystore.jks
 	 \paragraph{How to create a Java Keystore}
-	 %TODO erstellen des java keystore
-	\subsubsection{Setting up the Database (private server only)}
+	 A java keystore can be generated with the \textit{keytool} utility:
+	 	\begin{lstlisting}
+keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass testpasswort -validity 360 -keysize 2048
+		\end{lstlisting}
+		If the resulting keystore is placed in \textit{/var/lib/tourenplaner/keystore.jks} the resulting configuration looks like this:
+	 	\begin{lstlisting}
+"sslcert" : "/var/lib/tourenplaner/keystore.jks",
+"sslalias" : "selfsigned",
+"sslpw" : "testpasswort",
+ 		\end{lstlisting}
+	 \subsubsection{Setting up the Database (private server only)}
 	The database is set up by the \textit{db\_init.sh} script (the MySQL root password is needed)
    \begin{lstlisting}
 	 cd /usr/share/tourenplaner
@@ -243,6 +252,18 @@ Missing Options will be replaced by inbuilt defaults.
 {integer}
 {The length of one time unit that has the costs set in \textit{costpertimeunit}. The basis unit is milliseconds. A timeunitsize of 1000 means that the cost is per second}
 
+\configoption
+{logfilepath}
+{``/var/log/tourenplaner/tourenplaner.log''}
+{string}
+{The location of the logfile. Should be writeable by the tourenplaner user.}
+
+\configoption
+{loglevel}
+{``info''}
+{string}
+{A java loglevel. Possible values: ALL, SEVERE (highest value), WARNING, INFO, CONFIG, FINE, FINER, FINEST (lowest value), OFF. Not case sensitive. FINE generates anonymous requestlogs (Hash of IP and current day)}
+
 \subsubsection{private server only}
 
 \configoption
@@ -299,7 +320,7 @@ Missing Options will be replaced by inbuilt defaults.
 {string}
 {Passwort for the Java Keystore}
 
-\subsection{Optionale Optionen}
+\subsection{Optional Options}
 
 \configoption
 {serverinfosslport}
@@ -325,13 +346,12 @@ The following ``locations'' need to be set in the nginx config file:
 \lstinputlisting[caption=nginx location Configuration]{nginx-proxy-location.txt}
 
 \subsubsection{}
-For a ``public'' server these locations only need to be set for the HTTP port.\\
-For a ``private'' server these locations need to be set for the HTTPS port and additionally the ``/info'' location needs to be set for the HTTP port. (Clients will always connect to the HTTP port to get the server info and will reconnect to the HTTPS port in case of a private server).
+For a ``public'' server these locations should be set for the HTTP port.\\
+For a ``private'' server these locations should be set for the HTTPS port. If needed, an ``/info'' location can be set for the HTTP port. (Clients can connect to the HTTP port to get the server info and then reconnect to the HTTPS port in case of a private server).
 
 \subsubsection{Public server with SSL with nginx}
 
-It may be desired to run a server in public mode and still use SSL for all requests. This can be easily achieved with a similar configuration than above.\\
-Run the server with \textit{``private'' = false} and modify the above location rules so that they point at the http port of the ToureNPlaner server instead of the ssl port.
+It may be desired to run a server in public mode and still use SSL for all requests. This can be achieved with a similar configuration than above.\\
+Run the server with the configuration option \textit{``private'' = false} and the above location rule but modify the port so that it points at the http port of the ToureNPlaner server instead of the ssl port.
 In this configuration nginx will encrypt all traffic between the client and nginx, but the traffic between nginx and the ToureNPlaner server will be unencrypted.
-
 \end{document}
