@@ -99,7 +99,9 @@ Writing algorithm classes for ToureNPlaner consists of three easy steps:
 	   \item createAlgorithm: returns a new instance of the algorithm
 	   \item getDetails: returns a Map with the details that will be sent to the client with the serverinfo
 	   \begin{itemize}
-	     \item Convention: the ``hidden'' - boolean entry in the details causes the algorithm to not be displayed to the user in the clients
+	     \item Convention: the ``hidden'' - boolean entry causes the algorithm to not be displayed to the user in the clients
+	     \item Convention: the ``minpoints'' - int entry is used to tell the client how much points the algorithm needs
+	     \item Convention: the ``sourceistarget'' - boolean entry 
 	   \end{itemize}
 		\item getURLSuffix(): returns the suffix of the algorithm url that will be used. \textbf{/alg} will pre prefixed automatically. (Example: returning \textbf{sp} will result in the url for this algorithm be /alg\textbf{sp})
 		\item getAlgName(): returns the complete name of the algorithm that will be displayed in the clients
@@ -125,14 +127,14 @@ Writing algorithm classes for ToureNPlaner consists of three easy steps:
 
   \subsection{Finishing steps}
   The algorithm factory needs to be \textit{registered} in the AlgorithmRegistry. This is also the place to pass the graph to the algorithm.
-  In the server.TourenPlaner class do:
+  In the de.tourenplaner.server.TourenPlaner class do:
   \begin{lstlisting}[language=java,caption=register your algorithm factory]
-          reg.registerAlgorithm(new MyAlgorithmFactory(graph));
+          reg.registerAlgorithm(new ExampleAlgorithmFactory(graph));
   \end{lstlisting}
   
   \section{Example}
-	 \subsection{Proto classes}
-	 \lstinputlisting[language=Java,caption=``Factory Class'']{ProtoAlgorithmFactory.java}
-	 \lstinputlisting[language=Java,caption=``Algorithm Class'']{ProtoAlgorithm.java}
+	 \subsection{Example classes}
+	 \lstinputlisting[language=Java,caption=``Factory Class'']{ExampleAlgorithmFactory.java}
+	 \lstinputlisting[language=Java,caption=``Algorithm Class'']{ExampleAlgorithm.java}
 
 \end{document}
