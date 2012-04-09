@@ -365,11 +365,18 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
             "constraints": [
                 {
                     "id": "maxAltitudeDifference",
-					 "name": "Maximum Altitude Difference",
+					"name": "Maximum Altitude Difference",
                     "description": "The maximum difference in altitude combined over the path",
                     "type": "meter",
                     "min": 0.0,
                     "max": 2000.0
+                },
+                {
+                	"id": "transportation",
+                	"name": "Typ of transportation",
+                	"description": "The kind of transportation to use.",
+                	"type" :"enum",
+                	"values" : ["Foot", "Bicycle", "Car"]
                 }
             ]
         }, { ... }
@@ -451,7 +458,7 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
    	Es stehen für Constraints folgende Constrainttypes zur Verfügung.\\
    	Die Datentypen beziehen sich hierbei auf die JSON-Datentypen.\\
    	\\
-   	 \noindent \begin{tabular}{|c|p{3.5cm}|}
+   	 \noindent \begin{tabular}{|c|p{7.5cm}|}
     	\hline
     	\textbf{Name} & \textbf{Datentyp} \\ 
     	\hline \hline
@@ -466,6 +473,12 @@ Hier findet sich eine Liste aller Algorithmen, die der Server dem Client unter e
     	\hline
     	
     	float & Fließkommazahl \\
+    	\hline
+    	
+    	string & String \\
+    	\hline
+    	
+    	enum & String. Die gültigen Strings werden in dem String-Array values übergeben \\
     	\hline
     	\end{tabular}
    	\clearpage
