@@ -1,0 +1,53 @@
+ToureNPlaner Protocol Specification
+====================================
+
+== Introduction
+The protocol is using HTTP/S as Transport Layer. The encoding used is JSON and optionally http://wiki.fasterxml.com/SmileFormat[SMILE] (binary JSON) as used by the Jackson project. The server might sent answers in SMILE if the client adds +application/x-jackson-smile+ to its HTTP Accept Header, plain JSON otherwise.
+
+The server supports two modi: public and privat. In public mode only the info and alg* request are supported. In private mode user authentication is used.
+
+== Data Formats
+=== Coordinates
+All coordinates are sent as integers using a fixed point presentation with a factor of +10e7+. E.g. the latitude +50.1234+ is encoded as +5012340000+.
+
+=== Date-Time-Strings
+Date-Time-Strings are encoded after ISO 8061. E.g.: +2000-12-11T13:55:30.000+0000+ or +2000-12-11T13:55:30Z+.
+
+== Public Requests
+
+.List of available commands in public mode:
+[options="header",format="dsv"]
+|=======================
+URL: Description
+<<info,+/info+>>: Get server information
+<<alg,+/alg*+>>: Make a request to the server, where +*+ is the shortname of an algorithm
+|=======================
+
+=== +/info+ [[info]]
+asdasd
+
+=== +/alg*+ [[alg]]
+fdgfdg
+
+== Private Requests
+
+.List of available commands in private mode:
+[options="header",format="dsv"]
+|=======================
+URL: Description
++/authuser+: Check the provided authentication is correct
++/listrequests+: List all request from every user of from a specific user
++/getuser+: Get information about a user
++/getreqeuest+: Get a previously issued request
++/updateuser+: Change user information
++/registeruser+: Register a user
+|=======================
+
+.List of available commands which need admin privileges in private mode:
+[options="header",format="dsv"]
+|=======================
+URL: Description
++/listusers+: List all users
++/deleteuser+: Delete a user
+|=======================
+
