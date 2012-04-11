@@ -1,1 +1,9 @@
- 
+\subsection*{Spezifische Vorgaben}
+Um die leichte Weiterentwicklung der Serverkomponente durch kommende Studentengruppen und Institutsmitarbeiter zu erleichtern, war als Programmiersprache Java zu verwenden. Desweiteren war, wie auch in den anderen Komponenten von ToureNPlaner auf eine leichte Erweiterbarkeit um neue Algorithmen zu achten, was sich in einem relativ generischen Design widerspiegelt.\\
+Um möglichst einfach neue Clients entwickeln zu können und vorhandene Technologien wie Load Balancer direkt nutzen zu können wurde früh festgelegt, dass der Server per HTTP und JSON ansprechbar sein soll.\\
+Eine weitere Vorgabe ergab sich durch das beim Institut verfügbare Kartenmaterial, so war Kartenmaterial mit vorberechneten Contraction Hierarchies vorhanden, so dass diese bei den Algorithmen genutzt werden konnte und in die Entwicklung der Graphrepräsentation einfloss.
+\subsection*{Organisatorisches}
+Mit 4 Personen war das Serverteam das größte Teilteam des Projekts. Am Anfang wurde dabei demokratisch Niklas Schnelle zum Leiter des Serverteams gewählt. Während des Projektverlaufs wurden dann alle anfallenden Aufgaben dynamisch auf die einzelnen Teammitglieder verteilt, wobei dem Teamleiter zwar eine gewisse Entscheidungshoheit oblag, die eigentliche Entwicklungsarbeit jedoch zu gleichen Teilen auf alle Teammitglieder verteilt wurde.\\
+Dieses Vorgehen lehnte sich dabei an das Konzept des Chief Programmer Teams an, bei dem der Teamleiter eine aktive Entwicklerrolle einnimmt und die eigentliche Entwicklungsarbeit im Fokus des Teams steht.
+\subsection*{Umsetzung}
+Als Grundlage des Servers diente das Netzwerkframework Netty des JBoss Projekts. Hierbei handelt es sich um ein Java Framework für die Entwicklung Event basierter Serversysteme, welches leicht benutzbare Primitive für die Umsetzung eines HTTP Servers liefert, ohne dabei einen schwergewichtigen Java Application Server oder ähnlichem zu benutzen. Vielmehr wird das HTTP Protokoll direkt in die eigene Software integriert und zur direkten Schnittstelle zur Außenwelt.\\
