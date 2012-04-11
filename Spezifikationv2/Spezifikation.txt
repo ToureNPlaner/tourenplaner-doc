@@ -156,9 +156,123 @@ URL: Description
 +/listrequests+: List all request from every user of from a specific user
 +/getuser+: Get information about a user
 +/getreqeuest+: Get a previously issued request
++/getresponse+: Get a previously issued response
 +/updateuser+: Change user information
 +/registeruser+: Register a user
 |=======================
+
+=== +/authuser+ [[authuser]]
+[format="dsv"]
+|=======================
+Description: Checks email and password of an user.
+HTTP-Method: GET
+Server-Typ: Private
+Authentication: Always
+SSL: Always
+URL-Parameters: None
+Status-Code exception: 401 Unauthorized - Authentification failed
+|=======================
+
+==== Response
+A <<user_object,+user+>> Object
+
+=== +/listrequests+ [[listrequests]]
+[options="autowidth",cols="2*a"]
+|=======================
+|Description|Gets own requests, requests of other users (admin only) or all requests (admin only). Sorted downwards.
+|HTTP-Method|GET
+|Server-Typ|Private
+|Authentication|Always
+|SSL|Always
+|URL-Parameters|
+:frame: none
+[options="header,autowidth", cols="3*"]
+!==============================================
+!Name !Type ! Description
+!id!+Integer+ or +String+, +Optional+!id of requested user or +all+ for all requests
+!limit!+Integer+!Maxiumum number of requests
+!offset!+Integer+!Offset to first data record
+!==============================================
+|Status-Code exception|401 Unauthorized - Authentification failed. No rights.
+
+403 Forbidden - No admin rights
+
+404 Not Found - User id not found
+|=======================
+
+==== Response
+[options="autowidth,header",cols="2*a"]
+|=======================
+|Name|Description
+|number|Total number of requests of an +id+
+|requests| Array of <<response_object,+response+>> Objects
+|=======================
+-----
+{
+   "number": 100,
+   "requests":[
+      +Requestobjects+
+   ]
+}
+-----
+
+=== +/getuser+ [[getuser]]
+[options="autowidth,header",cols="2*"]
+|=======================
+|Description| Gets own user-data. If +id+ is present, gets data of this user (admin only).
+|HTTP-Method| GET
+|Server-Typ| Private
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|Status-Code exception| 401 Unauthorized - Authentification failed. No rights.
+|=======================
+
+==== Response
+A <<user_object,+user+>> Object
+
+=== +/getreqeuest+ [[getrequest]]
+[options="autowidth",cols="2*"]
+|=======================
+|Description| Gets own or any (admin only) request, as sent to server. If answer is NULL empty content will be returned.
+|HTTP-Method| GET
+|Server-Typ| Private
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|Status-Code exception| 401 Unauthorized - Authentification failed.
+
+403 Forbidden - No Admin rights
+
+403 Forbidden - User not verified
+
+404 Not Found - Request not found
+|=======================
+
+==== Response
+A <<request_object,+request+>> Object
+
+=== +/getresponse+ [[getresponse]]
+[options="autowidth",cols="2*"]
+|=======================
+|Description| Gets own or any (admin only) response, as sent from server. If answer is NULL empty content will be returned.
+|HTTP-Method| GET
+|Server-Typ| Private
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|Status-Code exception| 401 Unauthorized - Authentification failed.
+
+403 Forbidden - No Admin rights
+
+403 Forbidden - User not verified
+
+404 Not Found - Request not found
+|=======================
+
+==== Response
+A <<response_object,+response+>> Object
+
 
 .List of available commands which need admin privileges in private mode:
 [options="header",format="dsv"]
@@ -167,6 +281,8 @@ URL: Description
 +/listusers+: List all users
 +/deleteuser+: Delete a user
 |=======================
+
+
 
 == Data Types (Objects)
 === Algorithm [[algorithm_object]]
@@ -196,6 +312,38 @@ Default=+0+!The minium number of points the algorithm expects
 Default=+False+! If false the request has a source and target
 !==============================================
 |==================================
+
+=== User [[user_object]]
+[options="header,autowidth",cols="3*a"]
+|==================================
+|Name    | Type  | Description
+|userid|+Integer+|ID of the user
+|email|+String+|Email of the user
+|firstname|+String+|First name of the user
+|lastname|+String+|Last name of the user
+|address|+String+|Street and city of the user
+|admin|+Boolean+|True if user is admin
+|status|+String+|Either +needs_verification+ (new or deactivated) or +verified+ (user was activated by an admin)
+|registrationdate|+Date+ or +null+|Date when user was registrated
+|verifieddate|+Date+ or +null+|Date when user was verified
+|==================================
+Just send password on registration or user-data change. Server never sends the password.
+
+==== Example
+-----
+{
+   "userid": 42
+   "email": "max.mustermann@online.de",
+   "password": "1234",
+   "firstname": "Max",
+   "lastname": "Mustermann",
+   "address": "Musterstrasse 10, 12345 Musterstadt",
+   "admin": false,
+   "status": "verified",
+   "registrationdate": "2000-12-11T13:55:30.000+0000",
+   "verifieddate": null
+}
+-----
 
 === Constraint [[constraint_object]]
 [options="header,autowidth",cols="3*"]
