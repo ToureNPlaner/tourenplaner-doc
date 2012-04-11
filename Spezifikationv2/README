@@ -1,1 +1,2 @@
-To build use asciidoc
+To build use asciidoc:
+asciidoc --backend html5 Spezifikation.txt

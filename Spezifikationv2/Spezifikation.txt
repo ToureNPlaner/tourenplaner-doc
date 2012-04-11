@@ -24,7 +24,23 @@ URL: Description
 |=======================
 
 === +/info+ [[info]]
-asdasd
+[format="dsv"]
+|=======================
+Description: Get information about available algorithms and other properties of the server.
+HTTP-Method: GET
+Authentication: Never
+SSL: Optional
+URL-Parameters: None
+|=======================
+
+==== Response
+
+&&&&
+  { sadjklsajd, }
+&&&&
+
+==== Example
+
 
 === +/alg*+ [[alg]]
 fdgfdg
