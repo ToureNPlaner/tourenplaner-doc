@@ -221,8 +221,19 @@ Default=+False+! If false the request has a source and target
 |type|+String+|Either <<integer_constraint,+integer+>>, <<float_constraint,+float+>>, <<meter_constraint,+meter+>>, <<price_constraint,+price+>>, <<string_constraint, +string+>> or <<enum_constraint, +enum+>>
 |==================================
 
+==== Integer Constraint [[integer_constraint]]
+The JSON data type is +Integer+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|min|+Integer+|Minimal value
+|max|+Integer+|Maximum value
+|==================================
+
 ==== Float Constraint [[float_constraint]]
-The JSON data type is +float+. 
+The JSON data type is +Float+. 
 
 ===== Additional attributes
 [options="header,autowidth",cols="3*"]
@@ -232,6 +243,40 @@ The JSON data type is +float+.
 |max|+Float+|Maximum value
 |==================================
 
+==== Meter Constraint [[meter_constraint]]
+The JSON data type is +Float+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|min|+Float+|Minimal value
+|max|+Float+|Maximum value
+|==================================
+
+==== Price Constraint [[price_constraint]]
+The JSON data type is +Float+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|min|+Float+|Minimal value
+|max|+Float+|Maximum value
+|==================================
+
+==== String Constraint [[string_constraint]]
+The JSON data type is +String+.
+
+==== Enum Constraint [[enum_constraint]]
+The JSON data type is +String+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|values|+Array+|Array of allowed +String+ values
+|==================================
 
 === Request [[request_object]]
 [options="header,autowidth",cols="3*"]
