@@ -1037,6 +1037,10 @@ style="
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Get a previously issued request</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">/getresponse</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Get a previously issued response</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">/updateuser</span></p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Change user information</p></td>
 </tr>
@@ -1046,6 +1050,290 @@ style="
 </tr>
 </tbody>
 </table>
+<div class="sect2">
+<h3 id="_span_class_monospaced_authuser_span_a_id_authuser_a"><span class="monospaced">/authuser</span> <a id="authuser"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+width:100%;
+">
+<col style="width:50%;">
+<col style="width:50%;">
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Checks email and password of an user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Server-Typ</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Private</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">401 Unauthorized - Authentification failed</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_response_3">Response</h4>
+<div class="paragraph"><p>A <a href="#user_object"><span class="monospaced">user</span></a> Object</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_listrequests_span_a_id_listrequests_a"><span class="monospaced">/listrequests</span> <a id="listrequests"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Description</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Gets own requests, requests of other users (admin only) or all requests (admin only). Sorted downwards.</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>HTTP-Method</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>GET</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Server-Typ</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Private</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Authentication</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Always</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>SSL</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Always</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>URL-Parameters</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><table class="tableblock frame-none grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name </th>
+<th class="tableblock halign-left valign-top" >Type </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span> or <span class="monospaced">String</span>, <span class="monospaced">Optional</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">id of requested user or <span class="monospaced">all</span> for all requests</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">limit</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Maxiumum number of requests</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">offset</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Offset to first data record</p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Status-Code exception</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>401 Unauthorized - Authentification failed. No rights.</p></div>
+<div class="paragraph"><p>403 Forbidden - No admin rights</p></div>
+<div class="paragraph"><p>404 Not Found - User id not found</p></div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_response_4">Response</h4>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name</th>
+<th class="tableblock halign-left valign-top" >Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>number</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Total number of requests of an <span class="monospaced">id</span></p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>requests</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Array of <a href="#requestlog_object"><span class="monospaced">Requestlog</span></a> Objects</p></div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="literalblock">
+<div class="content monospaced">
+<pre>{
+   "number": 100,
+   "requests":[
+      <a href="#requestlog_object">Requestlogobjects</a>
+   ]
+}</pre>
+</div></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_getuser_span_a_id_getuser_a"><span class="monospaced">/getuser</span> <a id="getuser"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Description</th>
+<th class="tableblock halign-left valign-top" > Gets own user-data. If <span class="monospaced">id</span> is present, gets data of this user (admin only).</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Server-Typ</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Private</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">id</span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">401 Unauthorized - Authentification failed. No rights.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_response_5">Response</h4>
+<div class="paragraph"><p>A <a href="#user_object"><span class="monospaced">user</span></a> Object</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_getreqeuest_span_a_id_getrequest_a"><span class="monospaced">/getreqeuest</span> <a id="getrequest"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Gets own or any (admin only) request, as sent to server. If answer is NULL empty content will be returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Server-Typ</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Private</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">id</span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">401 Unauthorized - Authentification failed.</p>
+<p class="tableblock">403 Forbidden - No Admin rights</p>
+<p class="tableblock">403 Forbidden - User not verified</p>
+<p class="tableblock">404 Not Found - Request not found</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_response_6">Response</h4>
+<div class="paragraph"><p>A <a href="#request_object"><span class="monospaced">request</span></a> Object</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_getresponse_span_a_id_getresponse_a"><span class="monospaced">/getresponse</span> <a id="getresponse"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Gets own or any (admin only) response, as sent from server. If answer is NULL empty content will be returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Server-Typ</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Private</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">id</span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">401 Unauthorized - Authentification failed.</p>
+<p class="tableblock">403 Forbidden - No Admin rights</p>
+<p class="tableblock">403 Forbidden - User not verified</p>
+<p class="tableblock">404 Not Found - Request not found</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_response_7">Response</h4>
+<div class="paragraph"><p>A <a href="#response_object"><span class="monospaced">response</span></a> Object</p></div>
 <table class="tableblock frame-all grid-all"
 style="
 width:100%;
@@ -1070,6 +1358,101 @@ width:100%;
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_listusers_span_a_id_listusers_a"><span class="monospaced">/listusers</span> <a id="listusers"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+width:100%;
+">
+<col style="width:50%;">
+<col style="width:50%;">
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Get a list of all users</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">limit</span> the number of users to return, <span class="monospaced">offset</span> the offset in the list of users</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_response_8">Response</h4>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">number</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The total number of users</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">users</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Array</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">An array of <a href="#user_object"><span class="monospaced">user</span></a> objects</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_deleteuser_span_a_id_deleteuser_a"><span class="monospaced">/deleteuser</span> <a id="deleteuser"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+width:100%;
+">
+<col style="width:50%;">
+<col style="width:50%;">
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Delete a user with the given <span class="monospaced">id</span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">id</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1151,6 +1534,12 @@ style="
 <td class="tableblock halign-left valign-top" ><p class="tableblock">The minium number of points the algorithm expects</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">maxpoints</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span>, <span class="monospaced">Optional</span></p>
+<p class="tableblock">Default=<span class="monospaced">0</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The maximum number of points the algorithm expects. 0 means unlimited.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">sourceistarget</p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Boolean</span>, <span class="monospaced">Optional</span></p>
 <p class="tableblock">Default=<span class="monospaced">False</span></p></td>
@@ -1161,6 +1550,89 @@ style="
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="_user_a_id_user_object_a">User <a id="user_object"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>userid</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">Integer</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>ID of the user</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>email</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Email of the user</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>firstname</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>First name of the user</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>lastname</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Last name of the user</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>address</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Street and city of the user</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>admin</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">Boolean</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>True if user is admin</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>status</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Either <span class="monospaced">needs_verification</span> (new or deactivated) or <span class="monospaced">verified</span> (user was activated by an admin)</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>registrationdate</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">Date</span> or <span class="monospaced">null</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Date when user was registrated</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>verifieddate</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">Date</span> or <span class="monospaced">null</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Date when user was verified</p></div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph"><p>Only send password on registration or user-data change. The server never sends the password over the wire.</p></div>
+<div class="sect3">
+<h4 id="_example_2">Example</h4>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>{
+   "userid": 42
+   "email": "max.mustermann@online.de",
+   "password": "1234",
+   "firstname": "Max",
+   "lastname": "Mustermann",
+   "address": "Musterstrasse 10, 12345 Musterstadt",
+   "admin": false,
+   "status": "verified",
+   "registrationdate": "2000-12-11T13:55:30.000+0000",
+   "verifieddate": null
+}</pre>
+</div></div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_constraint_a_id_constraint_object_a">Constraint <a id="constraint_object"></a></h3>
@@ -1459,7 +1931,7 @@ style="
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="_example_2">Example</h4>
+<h4 id="_example_3">Example</h4>
 <div class="listingblock">
 <div class="content monospaced">
 <pre>{
@@ -1546,7 +2018,7 @@ style="
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2012-04-11 18:14:50 CEST
+Last updated 2012-04-11 19:02:09 CEST
 </div>
 </div>
 </body>
