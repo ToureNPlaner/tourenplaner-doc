@@ -1,5 +1,6 @@
 ToureNPlaner Protocol Specification
 ====================================
+:toc:
 
 == Introduction
 The protocol is using HTTP/S as Transport Layer. The encoding used is JSON and optionally http://wiki.fasterxml.com/SmileFormat[SMILE] (binary JSON) as used by the Jackson project. The server might sent answers in SMILE if the client adds +application/x-jackson-smile+ to its HTTP Accept Header, plain JSON otherwise.
@@ -144,7 +145,20 @@ URL-Parameters: None
 -----
 
 === +/alg*+ [[alg]]
-fdgfdg
+
+|=======================
+|Description| Request the solution of the given problem instance, where +*+ is the <<urlsuffix, +urlsuffix+>> of an algorithm.
+|HTTP-Method| POST
+|Authentication| Required, if in private mode
+|SSL| Required, if in private mode
+|URL-Parameters| None
+|=======================
+
+==== Request
+A <<request_object, +request+>> object.
+
+==== Response
+A <<response_object, +response+>> object.
 
 == Private Requests
 
@@ -176,7 +190,7 @@ URL: Description
 |version|+Integer+|version of the algorithm
 |name|+String+|Name of the algorithm
 |description|+String+|Description of the algorithm
-|urlsuffix|+String+|The URL suffix of the algorithm, used in <<alg,+alg*+>> Requests
+|urlsuffix[[urlsuffix]]|+String+|The URL suffix of the algorithm, used in <<alg,+alg*+>> Requests
 |constraints|+Array+, +Optional+|Array of <<constraint_object,+Constraint+>> Objects, as used for the algorithm
 |pointconstraints|+Array+, +Optional+|Array of <<constraint_object,+Constraint+>> Objects, as used for the points
 |details|+Object+, +Optional+|
@@ -214,6 +228,97 @@ The JSON data type is +float+.
 [options="header,autowidth",cols="3*"]
 |==================================
 |Name    | Type  | Description
-|min|Float|Minimal value
-|max|Float|Maximum value
+|min|+Float+|Minimal value
+|max|+Float+|Maximum value
+|==================================
+
+
+=== Request [[request_object]]
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|constraints|+Object+|Contains key/values pairs. Where the key is the id of the constraint and the value the corresponding value of the constraint
+|points|+Array+|Array of <<point_object, +Point+>> objects
+|==================================
+----
+{
+   "constraints" : {},
+   "version" : 1,
+   "points" : [
+      {
+         "ln" : 91098577,
+         "lt" : 484241028,
+         "position" : 0,
+         "name" : "Markierung A"
+      },
+      {
+         "ln" : 91091112,
+         "lt" : 484236815,
+         "position" : 1,
+         "name" : "Markierung B"
+      }
+   ]
+}
+----
+
+=== Response [[response_object]]
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|requestid|+Integer+, Only in private mode|The id of the request
+|constraints|+Object+|The constraints as sent in the request
+|points|+Array+|Array of <<point_object, +Point+>> objects as sent in the request. Values might be added or modified and order might get modified!
+|points|+Array+|Array of arrays, each containing both a lt:+Integer and a ln:+Integer pair. Each of the inner arrays represents a route on the map
+|misc|+Object+|Miscellaneous data.
+|==================================
+
+==== Example
+----
+{
+   "way" : [
+      [
+         {
+            "ln" : 91099447,
+            "lt" : 484240964
+         },
+         {
+            "ln" : 91090556,
+            "lt" : 484235728
+         }
+      ]
+   ],
+   "constraints" : {},
+   "misc" : {
+      "distance" : 87,
+      "time" : 4.48615384615385
+   },
+   "points" : [
+      {
+         "ln" : 91098577,
+         "lt" : 484241028,
+         "name" : "Markierung A",
+         "position" : 0
+      },
+      {
+         "distToPrev" : 87,
+         "ln" : 91091112,
+         "lt" : 484236815,
+         "name" : "Markierung B",
+         "position" : 1,
+         "timeToPrev" : 4.48615384615385
+      }
+   ],
+   "requestid" : 13170
+}
+----
+
+
+=== Point [[point_object]]
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|lt|+Integer+|The latitude of the point
+|ln|+Integer+|The longitude of the point
+|...|depends|For each point_constraint a pair of with the id and value of the constraint
+|...|...|Additional data sent will be returned from the server
 |==================================

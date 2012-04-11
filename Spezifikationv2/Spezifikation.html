@@ -730,13 +730,17 @@ install: function(toclevels) {
 }
 
 }
-asciidoc.install();
+asciidoc.install(2);
 /*]]>*/
 </script>
 </head>
 <body class="article">
 <div id="header">
 <h1>ToureNPlaner Protocol Specification</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
@@ -960,7 +964,43 @@ style="
 </div>
 <div class="sect2">
 <h3 id="_span_class_monospaced_alg_span_a_id_alg_a"><span class="monospaced">/alg*</span> <a id="alg"></a></h3>
-<div class="paragraph"><p>fdgfdg</p></div>
+<table class="tableblock frame-all grid-all"
+style="
+width:100%;
+">
+<col style="width:50%;">
+<col style="width:50%;">
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Request the solution of the given problem instance, where <span class="monospaced">*</span> is the <a href="#urlsuffix"><span class="monospaced">urlsuffix</span></a> of an algorithm.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">POST</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Required, if in private mode</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Required, if in private mode</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">None</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_request">Request</h4>
+<div class="paragraph"><p>A <a href="#request_object"><span class="monospaced">request</span></a> object.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_response_2">Response</h4>
+<div class="paragraph"><p>A <a href="#response_object"><span class="monospaced">response</span></a> object.</p></div>
+</div>
 </div>
 </div>
 </div>
@@ -1067,7 +1107,7 @@ style="
 <td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Description of the algorithm</p></div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>urlsuffix</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>urlsuffix<a id="urlsuffix"></a></p></div></div></td>
 <td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
 <td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>The URL suffix of the algorithm, used in <a href="#alg"><span class="monospaced">alg*</span></a> Requests</p></div></div></td>
 </tr>
@@ -1181,12 +1221,12 @@ style="
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">min</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock">Float</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Float</span></p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Minimal value</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">max</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock">Float</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Float</span></p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Maximum value</p></td>
 </tr>
 </tbody>
@@ -1194,13 +1234,188 @@ style="
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_request_a_id_request_object_a">Request <a id="request_object"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">constraints</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Object</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Contains key/values pairs. Where the key is the id of the constraint and the value the corresponding value of the constraint</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">points</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Array</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Array of <a href="#point_object"><span class="monospaced">Point</span></a> objects</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>{
+   "constraints" : {},
+   "version" : 1,
+   "points" : [
+      {
+         "ln" : 91098577,
+         "lt" : 484241028,
+         "position" : 0,
+         "name" : "Markierung A"
+      },
+      {
+         "ln" : 91091112,
+         "lt" : 484236815,
+         "position" : 1,
+         "name" : "Markierung B"
+      }
+   ]
+}</pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_response_a_id_response_object_a">Response <a id="response_object"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">requestid</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span>, Only in private mode</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The id of the request</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">constraints</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Object</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The constraints as sent in the request</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">points</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Array</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Array of <a href="#point_object"><span class="monospaced">Point</span></a> objects as sent in the request. Values might be added or modified and order might get modified!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">points</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Array</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Array of arrays, each containing both a lt:+Integer and a ln:+Integer pair. Each of the inner arrays represents a route on the map</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">misc</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Object</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Miscellaneous data.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_example_2">Example</h4>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>{
+   "way" : [
+      [
+         {
+            "ln" : 91099447,
+            "lt" : 484240964
+         },
+         {
+            "ln" : 91090556,
+            "lt" : 484235728
+         }
+      ]
+   ],
+   "constraints" : {},
+   "misc" : {
+      "distance" : 87,
+      "time" : 4.48615384615385
+   },
+   "points" : [
+      {
+         "ln" : 91098577,
+         "lt" : 484241028,
+         "name" : "Markierung A",
+         "position" : 0
+      },
+      {
+         "distToPrev" : 87,
+         "ln" : 91091112,
+         "lt" : 484236815,
+         "name" : "Markierung B",
+         "position" : 1,
+         "timeToPrev" : 4.48615384615385
+      }
+   ],
+   "requestid" : 13170
+}</pre>
+</div></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_point_a_id_point_object_a">Point <a id="point_object"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">lt</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The latitude of the point</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">ln</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The longitude of the point</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">&#8230;</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">depends</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">For each point_constraint a pair of with the id and value of the constraint</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">&#8230;</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">&#8230;</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Additional data sent will be returned from the server</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2012-04-11 16:41:50 CEST
+Last updated 2012-04-11 18:10:02 CEST
 </div>
 </div>
 </body>
