@@ -1184,19 +1184,16 @@ style="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>requests</p></div></div></td>
-<td class="tableblock halign-left valign-top" ><div><div class="literalblock">
-<div class="content monospaced">
-<pre>Array of &lt;&lt;response_object,+response+&gt;&gt; Objects</pre>
-</div></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Array of <a href="#requestlog_object"><span class="monospaced">Requestlog</span></a> Objects</p></div></div></td>
 </tr>
 </tbody>
 </table>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content monospaced">
 <pre>{
    "number": 100,
    "requests":[
-      +Requestobjects+
+      <a href="#requestlog_object">Requestlogobjects</a>
    ]
 }</pre>
 </div></div>
@@ -1363,6 +1360,99 @@ width:100%;
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_listusers_span_a_id_listusers_a"><span class="monospaced">/listusers</span> <a id="listusers"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+width:100%;
+">
+<col style="width:50%;">
+<col style="width:50%;">
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Get a list of all users</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">limit</span> the number of users to return, <span class="monospaced">offset</span> the offset in the list of users</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_response_8">Response</h4>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">number</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The total number of users</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">users</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Array</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">An array of <a href="#user_object"><span class="monospaced">user</span></a> objects</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_deleteuser_span_a_id_deleteuser_a"><span class="monospaced">/deleteuser</span> <a id="deleteuser"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+width:100%;
+">
+<col style="width:50%;">
+<col style="width:50%;">
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Delete a user with the given <span class="monospaced">id</span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">id</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1444,6 +1534,12 @@ style="
 <td class="tableblock halign-left valign-top" ><p class="tableblock">The minium number of points the algorithm expects</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">maxpoints</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span>, <span class="monospaced">Optional</span></p>
+<p class="tableblock">Default=<span class="monospaced">0</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The maximum number of points the algorithm expects. 0 means unlimited.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">sourceistarget</p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Boolean</span>, <span class="monospaced">Optional</span></p>
 <p class="tableblock">Default=<span class="monospaced">False</span></p></td>
@@ -1518,7 +1614,7 @@ style="
 </tr>
 </tbody>
 </table>
-<div class="paragraph"><p>Just send password on registration or user-data change. Server never sends the password.</p></div>
+<div class="paragraph"><p>Only send password on registration or user-data change. The server never sends the password over the wire.</p></div>
 <div class="sect3">
 <h4 id="_example_2">Example</h4>
 <div class="listingblock">
@@ -1922,7 +2018,7 @@ style="
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2012-04-11 18:42:32 CEST
+Last updated 2012-04-11 19:02:09 CEST
 </div>
 </div>
 </body>

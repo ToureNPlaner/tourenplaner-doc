@@ -219,16 +219,16 @@ A <<user_object,+user+>> Object
 |=======================
 |Name|Description
 |number|Total number of requests of an +id+
-|requests| Array of <<response_object,+response+>> Objects
+|requests|Array of <<requestlog_object,+Requestlog+>> Objects
 |=======================
------
+&&&&
 {
    "number": 100,
    "requests":[
-      +Requestobjects+
+      <<requestlog_object, Requestlogobjects>>
    ]
 }
------
+&&&&
 
 === +/getuser+ [[getuser]]
 [options="autowidth,header",cols="2*"]
@@ -296,7 +296,31 @@ URL: Description
 +/deleteuser+: Delete a user
 |=======================
 
+=== +/listusers+ [[listusers]]
+|=======================
+|Description| Get a list of all users
+|HTTP-Method| GET
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +limit+ the number of users to return, +offset+ the offset in the list of users
+|=======================
 
+==== Response
+[options="autowidth,header",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|number | +Integer+ | The total number of users
+|users | +Array+ | An array of <<user_object,+user+>> objects
+|==================================
+
+=== +/deleteuser+ [[deleteuser]]
+|=======================
+|Description| Delete a user with the given +id+
+|HTTP-Method| GET
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|=======================
 
 == Data Types (Objects)
 === Algorithm [[algorithm_object]]
@@ -320,7 +344,9 @@ Default=False! If the user should be able to select the algorithm
 !minpoints!+Integer+, +Optional+ 
 
 Default=+0+!The minium number of points the algorithm expects
+!maxpoints!+Integer+, +Optional+ 
 
+Default=+0+!The maximum number of points the algorithm expects. 0 means unlimited.
 !sourceistarget!+Boolean+, +Optional+
 
 Default=+False+! If false the request has a source and target
@@ -341,7 +367,7 @@ Default=+False+! If false the request has a source and target
 |registrationdate|+Date+ or +null+|Date when user was registrated
 |verifieddate|+Date+ or +null+|Date when user was verified
 |==================================
-Just send password on registration or user-data change. Server never sends the password.
+Only send password on registration or user-data change. The server never sends the password over the wire.
 
 ==== Example
 -----
