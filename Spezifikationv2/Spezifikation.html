@@ -819,13 +819,143 @@ width:100%;
 </table>
 <div class="sect3">
 <h4 id="_response">Response</h4>
-<div class="literalblock">
-<div class="content monospaced">
-<pre>  { sadjklsajd, }</pre>
-</div></div>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">version</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Float</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The version of the protocol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">servertype</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">String</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Either <span class="monospaced">public</span> or <span class="monospaced">private</span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">sslport</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The SSL port of the server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">algorithms</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Array</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Array of <a href="#algorithm_object"><span class="monospaced">Algorithm</span></a> Objects</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_example">Example</h4>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>{
+   "algorithms" : [
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Traveling Salesman",
+         "urlsuffix" : "tsp",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : true
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Shortest Path CH",
+         "urlsuffix" : "sp",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : false
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Nearest Neighbor Search",
+         "urlsuffix" : "nns",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 1,
+            "hidden" : true,
+            "sourceistarget" : false
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 0,
+         "name" : "Text Renderer",
+         "urlsuffix" : "text_renderer",
+         "pointconstraints" : [
+            {
+               "name" : "Text",
+               "type" : "string",
+               "id" : "text",
+               "description" : "The text to print"
+            },
+            {
+               "name" : "Size",
+               "type" : "enum",
+               "values" : [
+                  "small",
+                  "normal",
+                  "large"
+               ],
+               "id" : "size",
+               "description" : "The size of the text to print"
+            }
+         ],
+         "details" : {
+            "maxpoints" : 1,
+            "minpoints" : 1,
+            "hidden" : false,
+            "sourceistarget" : true
+         }
+      },
+      {
+         "constraints" : [
+            {
+               "min" : 0,
+               "name" : "Maximum Altitude Difference",
+               "type" : "meter",
+               "id" : "maxAltitudeDifference",
+               "description" : "The maximum altitude difference over the path"
+            }
+         ],
+         "version" : 1,
+         "name" : "Constrained Shortest Path",
+         "urlsuffix" : "csp",
+         "pointconstraints" : [],
+         "details" : {
+            "maxpoints" : 2,
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : false
+         }
+      }
+   ],
+   "version" : 0.1,
+   "servertype" : "private",
+   "sslport" : 443
+}</pre>
+</div></div>
 </div>
 </div>
 <div class="sect2">
@@ -839,11 +969,10 @@ width:100%;
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all"
 style="
-width:100%;
 ">
 <caption class="title">Table 2. List of available commands in private mode:</caption>
-<col style="width:50%;">
-<col style="width:50%;">
+<col>
+<col>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top" >URL</th>
@@ -903,11 +1032,175 @@ width:100%;
 </table>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_data_types_objects">Data Types (Objects)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_algorithm_a_id_algorithm_object_a">Algorithm <a id="algorithm_object"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>version</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">Integer</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>version of the algorithm</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>name</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Name of the algorithm</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>description</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Description of the algorithm</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>urlsuffix</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">String</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>The URL suffix of the algorithm, used in <a href="#alg"><span class="monospaced">alg*</span></a> Requests</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>constraints</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">Array</span>, <span class="monospaced">Optional</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Array of <a href="#constraint_object"><span class="monospaced">Constraint</span></a> Objects, as used for the algorithm</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>pointconstraints</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">Array</span>, <span class="monospaced">Optional</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Array of <a href="#constraint_object"><span class="monospaced">Constraint</span></a> Objects, as used for the points</p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>details</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p><span class="monospaced">Object</span>, <span class="monospaced">Optional</span></p></div></div></td>
+<td class="tableblock halign-left valign-top" ><div><table class="tableblock frame-none grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">hidden</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Boolean</span>, <span class="monospaced">Optional</span></p>
+<p class="tableblock">Default=False</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">If the user should be able to select the algorithm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">minpoints</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Integer</span>, <span class="monospaced">Optional</span></p>
+<p class="tableblock">Default=<span class="monospaced">0</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The minium number of points the algorithm expects</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">sourceistarget</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">Boolean</span>, <span class="monospaced">Optional</span></p>
+<p class="tableblock">Default=<span class="monospaced">False</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">If false the request has a source and target</p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_constraint_a_id_constraint_object_a">Constraint <a id="constraint_object"></a></h3>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">String</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">ID of the constraint</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">name</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">String</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">name of the constraint_object</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">String</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">description of the constraint</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><span class="monospaced">String</span></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Either <a href="#integer_constraint"><span class="monospaced">integer</span></a>, <a href="#float_constraint"><span class="monospaced">float</span></a>, <a href="#meter_constraint"><span class="monospaced">meter</span></a>, <a href="#price_constraint"><span class="monospaced">price</span></a>, <a href="#string_constraint"><span class="monospaced">string</span></a> or <a href="#enum_constraint"><span class="monospaced">enum</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_float_constraint_a_id_float_constraint_a">Float Constraint <a id="float_constraint"></a></h4>
+<div class="paragraph"><p>The JSON data type is <span class="monospaced">float</span>.</p></div>
+<div class="sect4">
+<h5 id="_additional_attributes">Additional attributes</h5>
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Name    </th>
+<th class="tableblock halign-left valign-top" > Type  </th>
+<th class="tableblock halign-left valign-top" > Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">min</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Float</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Minimal value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">max</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Float</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Maximum value</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2012-04-11 13:25:29 CEST
+Last updated 2012-04-11 16:41:50 CEST
 </div>
 </div>
 </body>

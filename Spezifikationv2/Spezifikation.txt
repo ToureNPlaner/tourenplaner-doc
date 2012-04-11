@@ -35,12 +35,113 @@ URL-Parameters: None
 
 ==== Response
 
-&&&&
-  { sadjklsajd, }
-&&&&
+[options="autowidth,header",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|version | +Float+ | The version of the protocol
+|servertype | +String+ | Either +public+ or +private+
+|sslport|+Integer+| The SSL port of the server
+|algorithms|+Array+| Array of <<algorithm_object,+Algorithm+>> Objects
+|==================================
 
 ==== Example
-
+-----
+{
+   "algorithms" : [
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Traveling Salesman",
+         "urlsuffix" : "tsp",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : true
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Shortest Path CH",
+         "urlsuffix" : "sp",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : false
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Nearest Neighbor Search",
+         "urlsuffix" : "nns",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 1,
+            "hidden" : true,
+            "sourceistarget" : false
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 0,
+         "name" : "Text Renderer",
+         "urlsuffix" : "text_renderer",
+         "pointconstraints" : [
+            {
+               "name" : "Text",
+               "type" : "string",
+               "id" : "text",
+               "description" : "The text to print"
+            },
+            {
+               "name" : "Size",
+               "type" : "enum",
+               "values" : [
+                  "small",
+                  "normal",
+                  "large"
+               ],
+               "id" : "size",
+               "description" : "The size of the text to print"
+            }
+         ],
+         "details" : {
+            "maxpoints" : 1,
+            "minpoints" : 1,
+            "hidden" : false,
+            "sourceistarget" : true
+         }
+      },
+      {
+         "constraints" : [
+            {
+               "min" : 0,
+               "name" : "Maximum Altitude Difference",
+               "type" : "meter",
+               "id" : "maxAltitudeDifference",
+               "description" : "The maximum altitude difference over the path"
+            }
+         ],
+         "version" : 1,
+         "name" : "Constrained Shortest Path",
+         "urlsuffix" : "csp",
+         "pointconstraints" : [],
+         "details" : {
+            "maxpoints" : 2,
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : false
+         }
+      }
+   ],
+   "version" : 0.1,
+   "servertype" : "private",
+   "sslport" : 443
+}
+-----
 
 === +/alg*+ [[alg]]
 fdgfdg
@@ -48,7 +149,7 @@ fdgfdg
 == Private Requests
 
 .List of available commands in private mode:
-[options="header",format="dsv"]
+[options="autowidth,header",format="dsv"]
 |=======================
 URL: Description
 +/authuser+: Check the provided authentication is correct
@@ -67,3 +168,52 @@ URL: Description
 +/deleteuser+: Delete a user
 |=======================
 
+== Data Types (Objects)
+=== Algorithm [[algorithm_object]]
+[options="header,autowidth",cols="3*a"]
+|==================================
+|Name    | Type  | Description
+|version|+Integer+|version of the algorithm
+|name|+String+|Name of the algorithm
+|description|+String+|Description of the algorithm
+|urlsuffix|+String+|The URL suffix of the algorithm, used in <<alg,+alg*+>> Requests
+|constraints|+Array+, +Optional+|Array of <<constraint_object,+Constraint+>> Objects, as used for the algorithm
+|pointconstraints|+Array+, +Optional+|Array of <<constraint_object,+Constraint+>> Objects, as used for the points
+|details|+Object+, +Optional+|
+:frame: none
+[options="header,autowidth", cols="3*"]
+!==============================================
+!Name    ! Type  ! Description
+!hidden!+Boolean+, +Optional+
+
+Default=False! If the user should be able to select the algorithm
+!minpoints!+Integer+, +Optional+ 
+
+Default=+0+!The minium number of points the algorithm expects
+
+!sourceistarget!+Boolean+, +Optional+
+
+Default=+False+! If false the request has a source and target
+!==============================================
+|==================================
+
+=== Constraint [[constraint_object]]
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|id|+String+|ID of the constraint
+|name|+String+|name of the constraint_object
+|description|+String+|description of the constraint
+|type|+String+|Either <<integer_constraint,+integer+>>, <<float_constraint,+float+>>, <<meter_constraint,+meter+>>, <<price_constraint,+price+>>, <<string_constraint, +string+>> or <<enum_constraint, +enum+>>
+|==================================
+
+==== Float Constraint [[float_constraint]]
+The JSON data type is +float+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|min|Float|Minimal value
+|max|Float|Maximum value
+|==================================
