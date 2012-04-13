@@ -2,6 +2,97 @@ ToureNPlaner Protocol Specification
 ====================================
 :toc:
 
+:eauth_id: EAUTH
+:eauth_status: 401 Unauthorized
+:eauth_message: Wrong username or password
+:eauth_description: 
+:eauth: <<{eauth_id},{eauth_id}>> - {eauth_status} - {eauth_message}
+
+:ebadjson_id: EBADJSON
+:ebadjson_status: 400 Bad Request
+:ebadjson_message: Could not parse JSON object or JSON object is missing
+:ebadjson_description: 
+:ebadjson: <<{ebadjson_id},{ebadjson_id}>> - {ebadjson_status} - {ebadjson_message}
+
+:ebusy_id: EBUSY
+:ebusy_status: 503 Service Unavailable
+:ebusy_message: This server is currently too busy to fulfill the request
+:ebusy_description: 
+:ebusy: <<{ebusy_id},{ebusy_id}>> - {ebusy_status} - {ebusy_message}
+
+:ecompute_id: ECOMPUTE
+:ecompute_status: 400 Bad Request
+:ecompute_message: The computation could not be completed
+:ecompute_description: 
+:ecompute: <<{ecompute_id},{ecompute_id}>> - {ecompute_status} - {ecompute_message}
+
+:edatabase_id: EDATABASE
+:edatabase_status: 500 Internal Server Error
+:edatabase_message: The server cannot contact its database or a database error occurred
+:edatabase_description: 
+:edatabase: <<{edatabase_id},{edatabase_id}>> - {edatabase_status} - {edatabase_message}
+
+:einternal_id: EINTERNAL
+:einternal_status: 500 Internal Server Error
+:einternal_message: An internal server error occurred
+:einternal_description: 
+:einternal: <<{einternal_id},{einternal_id}>> - {einternal_status} - {einternal_message}
+
+:elimit_id: ELIMIT
+:elimit_status: 400 Bad Request
+:elimit_message: The parameter limit is missing or invalid
+:elimit_description: 
+:elimit: <<{elimit_id},{elimit_id}>> - {elimit_status} - {elimit_message}
+
+:enorequestid_id: ENOREQUESTID
+:enorequestid_status: 404 Not Found
+:enorequestid_message: The parameter request id is missing, invalid or unknown to this server
+:enorequestid_description: 
+:enorequestid: <<{enorequestid_id},{enorequestid_id}>> - {enorequestid_status} - {enorequestid_message}
+
+:enotadmin_id: ENOTADMIN
+:enotadmin_status: 403 Forbidden
+:enotadmin_message: You are not an admin
+:enotadmin_description: 
+:enotadmin: <<{enotadmin_id},{enotadmin_id}>> - {enotadmin_status} - {enotadmin_message}
+
+:enotverified_id: ENOTVERIFIED
+:enotverified_status: 403 Forbidden
+:enotverified_message: User account is not verified
+:enotverified_description: 
+:enotverified: <<{enotverified_id},{enotverified_id}>> - {enotverified_status} - {enotverified_message}
+
+:enouserid_id: ENOUSERID
+:enouserid_status: 404 Not Found
+:enouserid_message: The parameter user id is missing, invalid or unknown to this server
+:enouserid_description: 
+:enouserid: <<{enouserid_id},{enouserid_id}>> - {enouserid_status} - {enouserid_message}
+
+:eoffset_id: EOFFSET
+:eoffset_status: 400 Bad Request
+:eoffset_message: The parameter offset is missing or invalid
+:eoffset_description: 
+:eoffset: <<{eoffset_id},{eoffset_id}>> - {eoffset_status} - {eoffset_message}
+
+:eregistered_id: EREGISTERED
+:eregistered_status: 403 Forbidden
+:eregistered_message: This email is already registered
+:eregistered_description: 
+:eregistered: <<{eregistered_id},{eregistered_id}>> - {eregistered_status} - {eregistered_message}
+
+:eunknownalg_id: EUNKNOWNALG
+:eunknownalg_status: 404 Not Found
+:eunknownalg_message: An unknown algorithm was requested
+:eunknownalg_description: 
+:eunknownalg: <<{eunknownalg_id},{eunknownalg_id}>> - {eunknownalg_status} - {eunknownalg_message}
+
+:eunknownurl_id: EUNKNOWNURL
+:eunknownurl_status: 404 Not Found
+:eunknownurl_message: An unknown URL was requested
+:eunknownurl_description: 
+:eunknownurl: <<{eunknownurl_id},{eunknownurl_id}>> - {eunknownurl_status} - {eunknownurl_message}
+
+
 == Introduction
 The protocol is using HTTP/S as Transport Layer. The encoding used is JSON and optionally http://wiki.fasterxml.com/SmileFormat[SMILE] (binary JSON) as used by the Jackson project. The server might sent answers in SMILE if the client adds +application/x-jackson-smile+ to its HTTP Accept Header, plain JSON otherwise.
 
@@ -540,4 +631,52 @@ The JSON data type is +String+.
 |ln|+Integer+|The longitude of the point
 |...|depends|For each point_constraint a pair of with the id and value of the constraint
 |...|...|Additional data sent will be returned from the server
+|==================================
+
+== Errors
+[options="header,autowidth",cols="4*"]
+|==================================
+|Error ID |Http Statuscode |Message and possible Details |Description
+|{eauth_id}[[{eauth_id}]] |{eauth_status}|{eauth_message} |{eauth_description}
+|{ebadjson_id}[[{ebadjson_id}]] |{ebadjson_status}|{ebadjson_message} +
+- Content is empty +
+- JSON user object was not correct (needs email, password, firstname, lastname, address) +
+- JSON user object was not correct ("admin" should be boolean) +
+- JSON user object was not correct ("status" was not a valid value)
+|{ebadjson_description}
+|{ebusy_id}[[{ebusy_id}]] |{ebusy_status}|{ebusy_message} |{ebusy_description}
+|{ecompute_id}[[{ecompute_id}]] |{ecompute_status}|{ecompute_message} |{ecompute_description}
+|{edatabase_id}[[{edatabase_id}]] |{edatabase_status}|{edatabase_message} |{edatabase_description}
+|{einternal_id}[[{einternal_id}]] |{einternal_status}|{einternal_message} +
+- Unspecified server exception
+|{einternal_description}
+|{elimit_id}[[{elimit_id}]] |{elimit_status}|{elimit_message} +
+- The parameter limit is missing +
+- The given parameter limit is not a natural number (positive or zero)
+|{elimit_description}
+|{enorequestid_id}[[{enorequestid_id}]] |{enorequestid_status}|{enorequestid_message} +
+- The given parameter id is not in the database +
+- The parameter id is missing +
+- The given parameter id is not a natural number (positive or zero)
+|{enorequestid_description}
+|{enotadmin_id}[[{enotadmin_id}]] |{enotadmin_status}|{enotadmin_message} +
+- You cannot view requests or responses of other users +
+- You must be admin to list users +
+- You must first logout yourself to register users if you are not an admin. +
+- You must be admin if you want to use the user id parameter
+|{enotadmin_description}
+|{enotverified_id}[[{enotverified_id}]] |{enotverified_status}|{enotverified_message} |{enotverified_description}
+|{enouserid_id}[[{enouserid_id}]] |{enouserid_status}|{enouserid_message} +
+- The given parameter id is not in the database +
+- The parameter id is missing +
+- The given parameter id is not a natural number (positive or zero) +
+- The given parameter id is not 'all' or a natural number (positive or zero)
+|{enouserid_description}
+|{eoffset_id}[[{eoffset_id}]] |{eoffset_status}|{eoffset_message} +
+- The parameter offset is missing +
+- The given parameter offset is not a natural number (positive or zero)
+|{eoffset_description}
+|{eregistered_id}[[{eregistered_id}]] |{eregistered_status}|{eregistered_message} |{eregistered_description}
+|{eunknownalg_id}[[{eunknownalg_id}]] |{eunknownalg_status}|{eunknownalg_message} |{eunknownalg_description}
+|{eunknownurl_id}[[{eunknownurl_id}]] |{eunknownurl_status}|{eunknownurl_message} |{eunknownurl_description}
 |==================================

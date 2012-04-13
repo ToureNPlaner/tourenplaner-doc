@@ -2014,11 +2014,144 @@ style="
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_errors">Errors</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all"
+style="
+">
+<col>
+<col>
+<col>
+<col>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Error ID </th>
+<th class="tableblock halign-left valign-top" >Http Statuscode </th>
+<th class="tableblock halign-left valign-top" >Message and possible Details </th>
+<th class="tableblock halign-left valign-top" >Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EAUTH<a id="EAUTH"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">401 Unauthorized</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Wrong username or password</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EBADJSON<a id="EBADJSON"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">400 Bad Request</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Could not parse JSON object or JSON object is missing<br>
+- Content is empty<br>
+- JSON user object was not correct (needs email, password, firstname, lastname, address)<br>
+- JSON user object was not correct ("admin" should be boolean)<br>
+- JSON user object was not correct ("status" was not a valid value)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EBUSY<a id="EBUSY"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">503 Service Unavailable</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">This server is currently too busy to fulfill the request</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">ECOMPUTE<a id="ECOMPUTE"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">400 Bad Request</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The computation could not be completed</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EDATABASE<a id="EDATABASE"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">500 Internal Server Error</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The server cannot contact its database or a database error occurred</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EINTERNAL<a id="EINTERNAL"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">500 Internal Server Error</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">An internal server error occurred<br>
+- Unspecified server exception</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">ELIMIT<a id="ELIMIT"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">400 Bad Request</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The parameter limit is missing or invalid<br>
+- The parameter limit is missing<br>
+- The given parameter limit is not a natural number (positive or zero)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">ENOREQUESTID<a id="ENOREQUESTID"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">404 Not Found</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The parameter request id is missing, invalid or unknown to this server<br>
+- The given parameter id is not in the database<br>
+- The parameter id is missing<br>
+- The given parameter id is not a natural number (positive or zero)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">ENOTADMIN<a id="ENOTADMIN"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">403 Forbidden</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">You are not an admin<br>
+- You cannot view requests or responses of other users<br>
+- You must be admin to list users<br>
+- You must first logout yourself to register users if you are not an admin.<br>
+- You must be admin if you want to use the user id parameter</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">ENOTVERIFIED<a id="ENOTVERIFIED"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">403 Forbidden</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">User account is not verified</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">ENOUSERID<a id="ENOUSERID"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">404 Not Found</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The parameter user id is missing, invalid or unknown to this server<br>
+- The given parameter id is not in the database<br>
+- The parameter id is missing<br>
+- The given parameter id is not a natural number (positive or zero)<br>
+- The given parameter id is not <em>all</em> or a natural number (positive or zero)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EOFFSET<a id="EOFFSET"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">400 Bad Request</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">The parameter offset is missing or invalid<br>
+- The parameter offset is missing<br>
+- The given parameter offset is not a natural number (positive or zero)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EREGISTERED<a id="EREGISTERED"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">403 Forbidden</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">This email is already registered</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EUNKNOWNALG<a id="EUNKNOWNALG"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">404 Not Found</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">An unknown algorithm was requested</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">EUNKNOWNURL<a id="EUNKNOWNURL"></a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">404 Not Found</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">An unknown URL was requested</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2012-04-11 19:02:09 CEST
+Last updated 2012-04-13 18:27:47 CEST
 </div>
 </div>
 </body>
