@@ -322,7 +322,7 @@ A <<user_object,+user+>> Object
 &&&&
 
 === +/getuser+ [[getuser]]
-[options="autowidth,header",cols="2*"]
+[options="autowidth",cols="2*"]
 |=======================
 |Description| Gets own user-data. If +id+ is present, gets data of this user (admin only).
 |HTTP-Method| GET
