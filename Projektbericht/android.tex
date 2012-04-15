@@ -1,1 +1,16 @@
- 
+\subsection*{Spezifische Vorgaben}
+Vorgegeben wurde die Unterstützung der vom Kunden bereitgestellten Handys. Da auf diesen Android in der Version 2.1 lief setzen wir uns als Ziel alle Versionen ab 2.1 zu untersützen. Zur Darstellung der Karte sollte die Biliothek Mapsforge\footnote{\url{http://code.google.com/p/mapsforge/}} verwendet werden.
+
+Auf Verwaltungsfunktionen für Benutzer, sowie Administratorfunktionen wurde verzicht, da Handys auf Grund des kleinen Bildschirms im Vergleich zu normalen PCs oder Laptops eine im allgemeinen eher schlechtere Übersichtlichkeit haben.
+
+\subsection*{Organisatorisches}
+Das Android-Team bestand wegen des geringeren Funktionsaufwands nur aus zwei Mitgliedern: Steffen Hanikel und Vivian Eggert. Deshalb wurden die meisten Besprechungen bei Problemen eher spontan gehalten und keine festen Treffen außer den projektweiten vereinbart. Trotzdem wurde auch das Ticket-System intensiv zur Verwaltung von Aufgaben verwendet.
+
+\subsection*{Externe Bibliotheken}
+Wie eingangs erwähnt wurde für die Darstellung der Karten Mapsforge eingesetzt, da damit im Gegensatz zur Goolgle Maps API die Darstellung von frei vergfübaren Karten, insbesondere OpenStreetMap Karten, auch offline möglich ist.
+
+Da der JSON-Parser im Android SDK zu langsam war und immer ganze Antworten in den Speicher lud wurde der sehr schnelle und flexible JSON-Parser Jackson\footnote{\url{http://wiki.fasterxml.com/JacksonHome}} verwendet. Auch wenn der große Platzbedarf von $\approx$~1,2~MB ein Nachteil ist.
+
+Leider erst spät im Projekt hat sich die Verwendung der Blibliothek ActionBarSherlock\footnote{\url{http://actionbarsherlock.com/}} als sinnvoll erwiesen. Durch diese können Funktionen der neusten Android Version auch auf älteren Geräten eingesetzt werden. Vor allem die Verwendung der Action Bar ermöglichte eine einfachere, schönere und flexiblere Gestaltung der Oberfläche.
+
+\subsection*{Umsetzung}

@@ -1,4 +1,6 @@
-location ~* (/info|/registeruser|/authuser|/getuser|/updateuser|/getrequest|/listrequests|/listusers|/deleteuser|/algsp|/algtsp|/algnns|/algcsp|/getresponse) {
+location ~* (^/info|^/registeruser|^/authuser|^/getuser|^/updateuser|^/getrequest|^/listrequests|^/listusers|^/deleteuser|^/getresponse|^/alg*) {
+	# Empty string = header will not be sent
+	proxy_set_header  Accept-Encoding  "";
 	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-	proxy_pass https://127.0.0.1:8081$uri;
+	proxy_pass https://127.0.0.1:8081$uri$is_args$query_string;
 }

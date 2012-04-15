@@ -117,12 +117,31 @@
   \begin{itemize}
     \item Archlinux
   \end{itemize}
-  \subsection{Files in the Archlinux package}
+  \subsection{Archlinux Installation}
+  Navigate to the archlinuxpackage folder with the PKGBUILD file. Run
+  \begin{lstlisting}
+makepkg -si
+  \end{lstlisting}
+  to install the dependencies, build the package and install it.
+  \subsection{Debian/Ubuntu Installation}
+  The debian package needs \textit{jarwrapper} to be installed.
+  Navigate to the debianpackage folder so that you see \textit{debian} as a subfolder. Run
+  \begin{lstlisting}
+debuild -uc -us
+  \end{lstlisting}
+  to create a .deb package.
+  Run
+  \begin{lstlisting}
+dpkg -i ../tourenplaner_*.deb
+  \end{lstlisting}
+  to install the package.
+  
+  \subsection{Files in the packages}
 	\begin{itemize}
-	  \item /etc/rc.d/tourenplanerd : a script for starting and stopping of the tourenplaner server as an Archlinux daemon
+	  \item /etc/rc.d/tourenplanerd (Archlinux) or /etc/init.d/tourenplaner (Debian/Ubuntu) : a script for starting and stopping the tourenplaner server as an daemon
 	  \item /etc/tourenplaner.conf : the configuration file
-	  \item /usr/bin/tourenplaner-server : a minimal startscript for the tourenplaner server
-	  \item /usr/share/java/tourenplaner/tourenplaner-server.jar : the server itself
+	  \item /usr/bin/tourenplaner-server : a minimal startscript for the tourenplaner server (Archlinux only)
+	  \item /usr/share/java/tourenplaner/tourenplaner-server.jar (Archlinux) or /usr/share/tourenplaner/tourenplaner-server.jar (Debian/Ubuntu) : the server itself
 	  \item scripts to set up the database for a private server
 		\begin{itemize}
 		  \item /usr/share/tourenplaner/db\_init\_script.sql

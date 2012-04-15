@@ -1,5 +1,97 @@
 ToureNPlaner Protocol Specification
 ====================================
+:toc:
+
+:eauth_id: EAUTH
+:eauth_status: 401 Unauthorized
+:eauth_message: Wrong username or password
+:eauth_description: 
+:eauth: <<{eauth_id},{eauth_id}>> - {eauth_status} - {eauth_message}
+
+:ebadjson_id: EBADJSON
+:ebadjson_status: 400 Bad Request
+:ebadjson_message: Could not parse JSON object or JSON object is missing
+:ebadjson_description: 
+:ebadjson: <<{ebadjson_id},{ebadjson_id}>> - {ebadjson_status} - {ebadjson_message}
+
+:ebusy_id: EBUSY
+:ebusy_status: 503 Service Unavailable
+:ebusy_message: This server is currently too busy to fulfill the request
+:ebusy_description: 
+:ebusy: <<{ebusy_id},{ebusy_id}>> - {ebusy_status} - {ebusy_message}
+
+:ecompute_id: ECOMPUTE
+:ecompute_status: 400 Bad Request
+:ecompute_message: The computation could not be completed
+:ecompute_description: 
+:ecompute: <<{ecompute_id},{ecompute_id}>> - {ecompute_status} - {ecompute_message}
+
+:edatabase_id: EDATABASE
+:edatabase_status: 500 Internal Server Error
+:edatabase_message: The server cannot contact its database or a database error occurred
+:edatabase_description: 
+:edatabase: <<{edatabase_id},{edatabase_id}>> - {edatabase_status} - {edatabase_message}
+
+:einternal_id: EINTERNAL
+:einternal_status: 500 Internal Server Error
+:einternal_message: An internal server error occurred
+:einternal_description: 
+:einternal: <<{einternal_id},{einternal_id}>> - {einternal_status} - {einternal_message}
+
+:elimit_id: ELIMIT
+:elimit_status: 400 Bad Request
+:elimit_message: The parameter limit is missing or invalid
+:elimit_description: 
+:elimit: <<{elimit_id},{elimit_id}>> - {elimit_status} - {elimit_message}
+
+:enorequestid_id: ENOREQUESTID
+:enorequestid_status: 404 Not Found
+:enorequestid_message: The parameter request id is missing, invalid or unknown to this server
+:enorequestid_description: 
+:enorequestid: <<{enorequestid_id},{enorequestid_id}>> - {enorequestid_status} - {enorequestid_message}
+
+:enotadmin_id: ENOTADMIN
+:enotadmin_status: 403 Forbidden
+:enotadmin_message: You are not an admin
+:enotadmin_description: 
+:enotadmin: <<{enotadmin_id},{enotadmin_id}>> - {enotadmin_status} - {enotadmin_message}
+
+:enotverified_id: ENOTVERIFIED
+:enotverified_status: 403 Forbidden
+:enotverified_message: User account is not verified
+:enotverified_description: 
+:enotverified: <<{enotverified_id},{enotverified_id}>> - {enotverified_status} - {enotverified_message}
+
+:enouserid_id: ENOUSERID
+:enouserid_status: 404 Not Found
+:enouserid_message: The parameter user id is missing, invalid or unknown to this server
+:enouserid_description: 
+:enouserid: <<{enouserid_id},{enouserid_id}>> - {enouserid_status} - {enouserid_message}
+
+:eoffset_id: EOFFSET
+:eoffset_status: 400 Bad Request
+:eoffset_message: The parameter offset is missing or invalid
+:eoffset_description: 
+:eoffset: <<{eoffset_id},{eoffset_id}>> - {eoffset_status} - {eoffset_message}
+
+:eregistered_id: EREGISTERED
+:eregistered_status: 403 Forbidden
+:eregistered_message: This email is already registered
+:eregistered_description: 
+:eregistered: <<{eregistered_id},{eregistered_id}>> - {eregistered_status} - {eregistered_message}
+
+:eunknownalg_id: EUNKNOWNALG
+:eunknownalg_status: 404 Not Found
+:eunknownalg_message: An unknown algorithm was requested
+:eunknownalg_description: 
+:eunknownalg: <<{eunknownalg_id},{eunknownalg_id}>> - {eunknownalg_status} - {eunknownalg_message}
+
+:eunknownurl_id: EUNKNOWNURL
+:eunknownurl_status: 404 Not Found
+:eunknownurl_message: An unknown URL was requested
+:eunknownurl_description: 
+:eunknownurl: <<{eunknownurl_id},{eunknownurl_id}>> - {eunknownurl_status} - {eunknownurl_message}
+
 
 == Introduction
 The protocol is using HTTP/S as Transport Layer. The encoding used is JSON and optionally http://wiki.fasterxml.com/SmileFormat[SMILE] (binary JSON) as used by the Jackson project. The server might sent answers in SMILE if the client adds +application/x-jackson-smile+ to its HTTP Accept Header, plain JSON otherwise.
@@ -35,29 +127,257 @@ URL-Parameters: None
 
 ==== Response
 
-&&&&
-  { sadjklsajd, }
-&&&&
+[options="autowidth,header",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|version | +Float+ | The version of the protocol
+|servertype | +String+ | Either +public+ or +private+
+|sslport|+Integer+| The SSL port of the server
+|algorithms|+Array+| Array of <<algorithm_object,+Algorithm+>> Objects
+|==================================
 
 ==== Example
-
+-----
+{
+   "algorithms" : [
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Traveling Salesman",
+         "urlsuffix" : "tsp",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : true
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Shortest Path CH",
+         "urlsuffix" : "sp",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : false
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 1,
+         "name" : "Nearest Neighbor Search",
+         "urlsuffix" : "nns",
+         "pointconstraints" : [],
+         "details" : {
+            "minpoints" : 1,
+            "hidden" : true,
+            "sourceistarget" : false
+         }
+      },
+      {
+         "constraints" : [],
+         "version" : 0,
+         "name" : "Text Renderer",
+         "urlsuffix" : "text_renderer",
+         "pointconstraints" : [
+            {
+               "name" : "Text",
+               "type" : "string",
+               "id" : "text",
+               "description" : "The text to print"
+            },
+            {
+               "name" : "Size",
+               "type" : "enum",
+               "values" : [
+                  "small",
+                  "normal",
+                  "large"
+               ],
+               "id" : "size",
+               "description" : "The size of the text to print"
+            }
+         ],
+         "details" : {
+            "maxpoints" : 1,
+            "minpoints" : 1,
+            "hidden" : false,
+            "sourceistarget" : true
+         }
+      },
+      {
+         "constraints" : [
+            {
+               "min" : 0,
+               "name" : "Maximum Altitude Difference",
+               "type" : "meter",
+               "id" : "maxAltitudeDifference",
+               "description" : "The maximum altitude difference over the path"
+            }
+         ],
+         "version" : 1,
+         "name" : "Constrained Shortest Path",
+         "urlsuffix" : "csp",
+         "pointconstraints" : [],
+         "details" : {
+            "maxpoints" : 2,
+            "minpoints" : 2,
+            "hidden" : false,
+            "sourceistarget" : false
+         }
+      }
+   ],
+   "version" : 0.1,
+   "servertype" : "private",
+   "sslport" : 443
+}
+-----
 
 === +/alg*+ [[alg]]
-fdgfdg
+
+|=======================
+|Description| Request the solution of the given problem instance, where +*+ is the <<urlsuffix, +urlsuffix+>> of an algorithm.
+|HTTP-Method| POST
+|Authentication| Required, if in private mode
+|SSL| Required, if in private mode
+|URL-Parameters| None
+|=======================
+
+==== Request
+A <<request_object, +request+>> object.
+
+==== Response
+A <<response_object, +response+>> object.
 
 == Private Requests
 
 .List of available commands in private mode:
-[options="header",format="dsv"]
+[options="autowidth,header",format="dsv"]
 |=======================
 URL: Description
 +/authuser+: Check the provided authentication is correct
 +/listrequests+: List all request from every user of from a specific user
 +/getuser+: Get information about a user
 +/getreqeuest+: Get a previously issued request
++/getresponse+: Get a previously issued response
 +/updateuser+: Change user information
 +/registeruser+: Register a user
 |=======================
+
+=== +/authuser+ [[authuser]]
+[format="dsv"]
+|=======================
+Description: Checks email and password of an user.
+HTTP-Method: GET
+Server-Typ: Private
+Authentication: Always
+SSL: Always
+URL-Parameters: None
+Status-Code exception: 401 Unauthorized - Authentification failed
+|=======================
+
+==== Response
+A <<user_object,+user+>> Object
+
+=== +/listrequests+ [[listrequests]]
+[options="autowidth",cols="2*a"]
+|=======================
+|Description|Gets own requests, requests of other users (admin only) or all requests (admin only). Sorted downwards.
+|HTTP-Method|GET
+|Server-Typ|Private
+|Authentication|Always
+|SSL|Always
+|URL-Parameters|
+:frame: none
+[options="header,autowidth", cols="3*"]
+!==============================================
+!Name !Type ! Description
+!id!+Integer+ or +String+, +Optional+!id of requested user or +all+ for all requests
+!limit!+Integer+!Maxiumum number of requests
+!offset!+Integer+!Offset to first data record
+!==============================================
+|Status-Code exception|401 Unauthorized - Authentification failed. No rights.
+
+403 Forbidden - No admin rights
+
+404 Not Found - User id not found
+|=======================
+
+==== Response
+[options="autowidth,header",cols="2*a"]
+|=======================
+|Name|Description
+|number|Total number of requests of an +id+
+|requests|Array of <<requestlog_object,+Requestlog+>> Objects
+|=======================
+&&&&
+{
+   "number": 100,
+   "requests":[
+      <<requestlog_object, Requestlogobjects>>
+   ]
+}
+&&&&
+
+=== +/getuser+ [[getuser]]
+[options="autowidth,header",cols="2*"]
+|=======================
+|Description| Gets own user-data. If +id+ is present, gets data of this user (admin only).
+|HTTP-Method| GET
+|Server-Typ| Private
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|Status-Code exception| 401 Unauthorized - Authentification failed. No rights.
+|=======================
+
+==== Response
+A <<user_object,+user+>> Object
+
+=== +/getreqeuest+ [[getrequest]]
+[options="autowidth",cols="2*"]
+|=======================
+|Description| Gets own or any (admin only) request, as sent to server. If answer is NULL empty content will be returned.
+|HTTP-Method| GET
+|Server-Typ| Private
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|Status-Code exception| 401 Unauthorized - Authentification failed.
+
+403 Forbidden - No Admin rights
+
+403 Forbidden - User not verified
+
+404 Not Found - Request not found
+|=======================
+
+==== Response
+A <<request_object,+request+>> Object
+
+=== +/getresponse+ [[getresponse]]
+[options="autowidth",cols="2*"]
+|=======================
+|Description| Gets own or any (admin only) response, as sent from server. If answer is NULL empty content will be returned.
+|HTTP-Method| GET
+|Server-Typ| Private
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|Status-Code exception| 401 Unauthorized - Authentification failed.
+
+403 Forbidden - No Admin rights
+
+403 Forbidden - User not verified
+
+404 Not Found - Request not found
+|=======================
+
+==== Response
+A <<response_object,+response+>> Object
+
 
 .List of available commands which need admin privileges in private mode:
 [options="header",format="dsv"]
@@ -67,3 +387,296 @@ URL: Description
 +/deleteuser+: Delete a user
 |=======================
 
+=== +/listusers+ [[listusers]]
+|=======================
+|Description| Get a list of all users
+|HTTP-Method| GET
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +limit+ the number of users to return, +offset+ the offset in the list of users
+|=======================
+
+==== Response
+[options="autowidth,header",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|number | +Integer+ | The total number of users
+|users | +Array+ | An array of <<user_object,+user+>> objects
+|==================================
+
+=== +/deleteuser+ [[deleteuser]]
+|=======================
+|Description| Delete a user with the given +id+
+|HTTP-Method| GET
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|=======================
+
+== Data Types (Objects)
+=== Algorithm [[algorithm_object]]
+[options="header,autowidth",cols="3*a"]
+|==================================
+|Name    | Type  | Description
+|version|+Integer+|version of the algorithm
+|name|+String+|Name of the algorithm
+|description|+String+|Description of the algorithm
+|urlsuffix[[urlsuffix]]|+String+|The URL suffix of the algorithm, used in <<alg,+alg*+>> Requests
+|constraints|+Array+, +Optional+|Array of <<constraint_object,+Constraint+>> Objects, as used for the algorithm
+|pointconstraints|+Array+, +Optional+|Array of <<constraint_object,+Constraint+>> Objects, as used for the points
+|details|+Object+, +Optional+|
+:frame: none
+[options="header,autowidth", cols="3*"]
+!==============================================
+!Name    ! Type  ! Description
+!hidden!+Boolean+, +Optional+
+
+Default=False! If the user should be able to select the algorithm
+!minpoints!+Integer+, +Optional+ 
+
+Default=+0+!The minium number of points the algorithm expects
+!maxpoints!+Integer+, +Optional+ 
+
+Default=+0+!The maximum number of points the algorithm expects. 0 means unlimited.
+!sourceistarget!+Boolean+, +Optional+
+
+Default=+False+! If false the request has a source and target
+!==============================================
+|==================================
+
+=== User [[user_object]]
+[options="header,autowidth",cols="3*a"]
+|==================================
+|Name    | Type  | Description
+|userid|+Integer+|ID of the user
+|email|+String+|Email of the user
+|firstname|+String+|First name of the user
+|lastname|+String+|Last name of the user
+|address|+String+|Street and city of the user
+|admin|+Boolean+|True if user is admin
+|status|+String+|Either +needs_verification+ (new or deactivated) or +verified+ (user was activated by an admin)
+|registrationdate|+Date+ or +null+|Date when user was registrated
+|verifieddate|+Date+ or +null+|Date when user was verified
+|==================================
+Only send password on registration or user-data change. The server never sends the password over the wire.
+
+==== Example
+-----
+{
+   "userid": 42
+   "email": "max.mustermann@online.de",
+   "password": "1234",
+   "firstname": "Max",
+   "lastname": "Mustermann",
+   "address": "Musterstrasse 10, 12345 Musterstadt",
+   "admin": false,
+   "status": "verified",
+   "registrationdate": "2000-12-11T13:55:30.000+0000",
+   "verifieddate": null
+}
+-----
+
+=== Constraint [[constraint_object]]
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|id|+String+|ID of the constraint
+|name|+String+|name of the constraint_object
+|description|+String+|description of the constraint
+|type|+String+|Either <<integer_constraint,+integer+>>, <<float_constraint,+float+>>, <<meter_constraint,+meter+>>, <<price_constraint,+price+>>, <<string_constraint, +string+>> or <<enum_constraint, +enum+>>
+|==================================
+
+==== Integer Constraint [[integer_constraint]]
+The JSON data type is +Integer+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|min|+Integer+|Minimal value
+|max|+Integer+|Maximum value
+|==================================
+
+==== Float Constraint [[float_constraint]]
+The JSON data type is +Float+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|min|+Float+|Minimal value
+|max|+Float+|Maximum value
+|==================================
+
+==== Meter Constraint [[meter_constraint]]
+The JSON data type is +Float+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|min|+Float+|Minimal value
+|max|+Float+|Maximum value
+|==================================
+
+==== Price Constraint [[price_constraint]]
+The JSON data type is +Float+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|min|+Float+|Minimal value
+|max|+Float+|Maximum value
+|==================================
+
+==== String Constraint [[string_constraint]]
+The JSON data type is +String+.
+
+==== Enum Constraint [[enum_constraint]]
+The JSON data type is +String+. 
+
+===== Additional attributes
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|values|+Array+|Array of allowed +String+ values
+|==================================
+
+=== Request [[request_object]]
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|constraints|+Object+|Contains key/values pairs. Where the key is the id of the constraint and the value the corresponding value of the constraint
+|points|+Array+|Array of <<point_object, +Point+>> objects
+|==================================
+----
+{
+   "constraints" : {},
+   "version" : 1,
+   "points" : [
+      {
+         "ln" : 91098577,
+         "lt" : 484241028,
+         "position" : 0,
+         "name" : "Markierung A"
+      },
+      {
+         "ln" : 91091112,
+         "lt" : 484236815,
+         "position" : 1,
+         "name" : "Markierung B"
+      }
+   ]
+}
+----
+
+=== Response [[response_object]]
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|requestid|+Integer+, Only in private mode|The id of the request
+|constraints|+Object+|The constraints as sent in the request
+|points|+Array+|Array of <<point_object, +Point+>> objects as sent in the request. Values might be added or modified and order might get modified!
+|points|+Array+|Array of arrays, each containing both a lt:+Integer and a ln:+Integer pair. Each of the inner arrays represents a route on the map
+|misc|+Object+|Miscellaneous data.
+|==================================
+
+==== Example
+----
+{
+   "way" : [
+      [
+         {
+            "ln" : 91099447,
+            "lt" : 484240964
+         },
+         {
+            "ln" : 91090556,
+            "lt" : 484235728
+         }
+      ]
+   ],
+   "constraints" : {},
+   "misc" : {
+      "distance" : 87,
+      "time" : 4.48615384615385
+   },
+   "points" : [
+      {
+         "ln" : 91098577,
+         "lt" : 484241028,
+         "name" : "Markierung A",
+         "position" : 0
+      },
+      {
+         "distToPrev" : 87,
+         "ln" : 91091112,
+         "lt" : 484236815,
+         "name" : "Markierung B",
+         "position" : 1,
+         "timeToPrev" : 4.48615384615385
+      }
+   ],
+   "requestid" : 13170
+}
+----
+
+
+=== Point [[point_object]]
+[options="header,autowidth",cols="3*"]
+|==================================
+|Name    | Type  | Description
+|lt|+Integer+|The latitude of the point
+|ln|+Integer+|The longitude of the point
+|...|depends|For each point_constraint a pair of with the id and value of the constraint
+|...|...|Additional data sent will be returned from the server
+|==================================
+
+== Errors
+[options="header,autowidth",cols="4*"]
+|==================================
+|Error ID |Http Statuscode |Message and possible Details |Description
+|{eauth_id}[[{eauth_id}]] |{eauth_status}|{eauth_message} |{eauth_description}
+|{ebadjson_id}[[{ebadjson_id}]] |{ebadjson_status}|{ebadjson_message} +
+- Content is empty +
+- JSON user object was not correct (needs email, password, firstname, lastname, address) +
+- JSON user object was not correct ("admin" should be boolean) +
+- JSON user object was not correct ("status" was not a valid value)
+|{ebadjson_description}
+|{ebusy_id}[[{ebusy_id}]] |{ebusy_status}|{ebusy_message} |{ebusy_description}
+|{ecompute_id}[[{ecompute_id}]] |{ecompute_status}|{ecompute_message} |{ecompute_description}
+|{edatabase_id}[[{edatabase_id}]] |{edatabase_status}|{edatabase_message} |{edatabase_description}
+|{einternal_id}[[{einternal_id}]] |{einternal_status}|{einternal_message} +
+- Unspecified server exception
+|{einternal_description}
+|{elimit_id}[[{elimit_id}]] |{elimit_status}|{elimit_message} +
+- The parameter limit is missing +
+- The given parameter limit is not a natural number (positive or zero)
+|{elimit_description}
+|{enorequestid_id}[[{enorequestid_id}]] |{enorequestid_status}|{enorequestid_message} +
+- The given parameter id is not in the database +
+- The parameter id is missing +
+- The given parameter id is not a natural number (positive or zero)
+|{enorequestid_description}
+|{enotadmin_id}[[{enotadmin_id}]] |{enotadmin_status}|{enotadmin_message} +
+- You cannot view requests or responses of other users +
+- You must be admin to list users +
+- You must first logout yourself to register users if you are not an admin. +
+- You must be admin if you want to use the user id parameter
+|{enotadmin_description}
+|{enotverified_id}[[{enotverified_id}]] |{enotverified_status}|{enotverified_message} |{enotverified_description}
+|{enouserid_id}[[{enouserid_id}]] |{enouserid_status}|{enouserid_message} +
+- The given parameter id is not in the database +
+- The parameter id is missing +
+- The given parameter id is not a natural number (positive or zero) +
+- The given parameter id is not 'all' or a natural number (positive or zero)
+|{enouserid_description}
+|{eoffset_id}[[{eoffset_id}]] |{eoffset_status}|{eoffset_message} +
+- The parameter offset is missing +
+- The given parameter offset is not a natural number (positive or zero)
+|{eoffset_description}
+|{eregistered_id}[[{eregistered_id}]] |{eregistered_status}|{eregistered_message} |{eregistered_description}
+|{eunknownalg_id}[[{eunknownalg_id}]] |{eunknownalg_status}|{eunknownalg_message} |{eunknownalg_description}
+|{eunknownurl_id}[[{eunknownurl_id}]] |{eunknownurl_status}|{eunknownurl_message} |{eunknownurl_description}
+|==================================
