@@ -11,12 +11,12 @@ In seiner Struktur lehnten wir uns somit stark an das Chief Programmer Modell an
 \subsection*{Umsetzung}
 \subsubsection*{Framework}
 Als Grundlage des Servers diente das Netzwerkframework Netty\footnote{\url{http://www.jboss.org/netty}} des JBoss Projekts. Hierbei handelt es sich um ein Java Framework für die Entwicklung Event basierter Serversysteme, welches leicht benutzbare Primitive für die Umsetzung eines HTTP Servers liefert, ohne dabei einen schwergewichtigen Java Application Server oder ähnlichem zu benutzen. Vielmehr wird das HTTP Protokoll direkt in die eigene Software integriert und zur direkten Schnittstelle zur Außenwelt.\\
-Zur Behandlung der als JSON kodierten Eingabedaten wurde schließlich die Bibliothek Jackson\footnote{\url{http://wiki.fasterxml.com/JacksonHome}} verwendet, welche auch ein zu JSON kompatibles Binärformat namens ``Smile'' unterstützt.
+Zur Behandlung der als JSON kodierten Eingabedaten wurde schließlich die Bibliothek Jackson\footnote{\url{http://wiki.fasterxml.com/JacksonHome}} verwendet, welche auch ein zu JSON kompatibles Binärformat namens \glqq Smile\grqq unterstützt.
 \subsubsection*{Graphrepräsentation}
 Da Performanz, vor allem bei der Ausführung von Graphalgorithmen, für die Entwicklung des Servers als entscheidende Eigenschaft angesehen wurde, lag besondere Aufmerksamkeit auf der Entwicklung einer leistungsfähigen, schlanken und dennoch leicht zu benutzenden Graphrepräsentation.\\
 Aufgrund der Vorraussetzung, den Server in Java zu entwickeln, mussten hierzu einige Kniffe angewendet werden.
-So ist es in Java sehr problematisch eine große Anzahl an Objekten anzulegen und zu Verwalten und es werden keine "struct" Datentypen unterstützt die ohne große Speicherverwaltung und Referenzen auskommen.
-Daher musste die Struktur des Graphs in einer Menge von Arrays atomar Datentypen wie zum Beispiel "int" abgelegt werden.\\
+So ist es in Java sehr problematisch eine große Anzahl an Objekten anzulegen und zu Verwalten und es werden keine  \glqq struct\grqq Datentypen unterstützt die ohne große Speicherverwaltung und Referenzen auskomme
+Daher musste die Struktur des Graphs in einer Menge von Arrays atomar Datentypen wie zum Beispiel \glqq int\grqq abgelegt werden.\\
 Um dennoch ein benutzbares Interface zu bieten wurden diese Details, soweit ohne Performance einbußen möglich,  hinter durch den Compiler leicht inlinebarer Methoden versteckt.\\
 So können Kanten und Knoten des Graphs über ganzzahlige Ids angesprochen werden, ohne die genaue Repräsentation zu kennen.
 \subsubsection*{Datenbankanbindung}
