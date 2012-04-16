@@ -372,5 +372,17 @@ For a ``private'' server these locations should be set for the HTTPS port. If ne
 
 It may be desired to run a server in public mode and still use SSL for all requests. This can be achieved with a similar configuration than above.\\
 Run the server with the configuration option \textit{``private'' = false} and the above location rule but modify the port so that it points at the http port of the ToureNPlaner server instead of the ssl port.
-In this configuration nginx will encrypt all traffic between the client and nginx, but the traffic between nginx and the ToureNPlaner server will be unencrypted.
+In this configuration nginx will encrypt all traffic between the client and nginx, but the traffic between nginx and the ToureNPlaner server will be unencrypted.\\
+Instead of full logging into a database we provide a lightweight alternative for public servers: On loglevel FINE we log full requests (but no responses) together with an SHA1 hash of the current day concatenated with the IP of the user. In this mode it is very hard to find which IP has issued which requests while still being useful for statistics.\\
+The whole effort to retain the privacy of the user can be undermined if there is a Reverse Proxy that logs IP addresses and together with the exact time of an access. In nginx this is how to disable IP logging.\\
+First, we define a new logformat named ``no\_ip''. The only difference to the default format is that instead of the IP 0.0.0.0 will be logged.
+\begin{lstlisting}
+log_format no_ip '0.0.0.0 - $remote_user [$time_local] '
+'"$request" $status $body_bytes_sent '
+'"$http_referer" "$http_user_agent"';
+\end{lstlisting}
+Now we find the access\_log directive and add our ``no\_ip'' format after the path. This directive can be server-wide so that any access will be anonymizied or just applied to the tourenplaner location(s).
+\begin{lstlisting}
+access_log /var/log/nginx/access.log no_ip;
+\end{lstlisting}
 \end{document}
