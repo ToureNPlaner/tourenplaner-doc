@@ -1,4 +1,4 @@
-\documentclass[10pt, ngerman,twocolumn,titlepage,parskip=true]{scrartcl}
+\documentclass[DIV12, fontsize=10pt, ngerman,twocolumn,titlepage,parskip=false]{scrartcl}
 \usepackage[utf8]{inputenc}
 \usepackage{array}
 \usepackage{babel}
@@ -7,8 +7,6 @@
 \usepackage[unicode=true,pdfusetitle,bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
 \usepackage{listings}
 \usepackage{color}
-\usepackage{geometry}
-\geometry{a4paper,left=20mm,right=20mm, top=2cm, bottom=4cm} 
 
 \lstset{ %
 	language=C,                % the language of the code
@@ -47,10 +45,16 @@
 % Jeweils eine Seite
 \section*{Projektübersicht}
 \input{projekt}
-\section*{Teamübersicht}
-%\input{server}
-%\input{web}
-%\input{android}
+\clearpage
+\section*{Teamübersicht Server}
+\input{server}
+\clearpage
+\section*{Teamübersicht Webclient}
+\input{web}
+\clearpage
+\section*{Teamübersicht Androidclient}
+\input{android}
+\clearpage
 \section*{Persönliche Übersicht}
 \input{personal}
 
