@@ -8,7 +8,7 @@ Darunter fällt die Verwaltung von Nutzern, deren Daten sowie deren getätigten 
 
 \subsection*{Organisation}
 
-Da der Webclient neben der Tourenberechnung auch die Funktion der Nutzerverwaltung und Administration bereitstellen sollte, besteht dieses Team  aus drei Mitgliedern. 
+Da der Webclient neben der Tourenberechnung auch die Funktion der Nutzerverwaltung und Administration bereitstellen sollte, besteht dieses Team aus drei Mitgliedern. 
 Aufgrund der meisten Erfahrung wurde Philipp Gildein zum Teamleiter bestimmt.
 
 Es wurde versucht die Aufgaben aufzuteilen, was ein unabhängiges Arbeiten möglich machen sollte.
@@ -24,17 +24,17 @@ Der Client wurde nach dem Model-View-Controller Muster strukturiert.
 Durch einen modularen Aufbau ist das einfache Austauschen einzelner (Teil-)Komponenten möglich.
 
 Zur Unterstützung der Mehrsprachigkeit und besseren Übersichtlichkeit im Javascript-Code wurde die gesamte HTML-Struktur in Templates ausgelagert.
-Benötigte Komponenten werden daher bei jeden Laden neu zusammengebaut und an die Landessprache angepasst.
+Benötigte Komponenten werden daher bei jeden Laden der Seite neu zusammengebaut und an die Landessprache angepasst.
 
 \subsection*{Externe Bibliotheken}
 
-Da Javascript nicht alle modernen Programmierkonzepte unterstützt, griffen wir hauptsächlich auf folgende Bibliotheken 
+Da Javascript nicht alle modernen Programmierkonzepte unterstützt, griffen wir hauptsächlich auf folgende Bibliotheken zurück:
 Backbone.js\footnote{\url{http://documentcloud.github.com/backbone/}} (MVC-Implementierung für Javascript), 
 JQuery\footnote{\url{http://jquery.com/}} (http/s Anfragen), 
 underscore.js\footnote{\url{http://documentcloud.github.com/underscore/}} (Erweiterung der Javascript Basisfunktionen),
 Leaflet\footnote{\url{http://leaflet.cloudmade.com/}} (Darstellung der Karte),  
 Twitter's Bootstrap\footnote{\url{http://twitter.github.com/bootstrap/}} (ermöglicht ein vordefiniertes, einheitliches Erscheinungsbild) und
-SeleniumHQ\footnote{\url{http://seleniumhq.org/}} (Systemtest) zurück.
+SeleniumHQ\footnote{\url{http://seleniumhq.org/}} (Systemtest)
 
 \subsection*{Herausforderungen}
 
@@ -44,5 +44,5 @@ Grundsätzlich wurde diese Schwierigkeit schon eingeschränkt, indem der Client 
 
 Eine weitere Herausforderung war die Verbindung zum Server per HTTPS.
 Um eine sichere Kommunikation zu gewährleisten muss sich der Server durch ein Zertifikat ausweisen.
-Wenn dieses Zertifikat nicht offiziell verifiziert und gekauft wurde muss es in jeden Browser manuell importiert werden, was Chrome in aktueller Version nicht mehr unterstützt.
-Unsere Lösung besteht nun darin, dass entweder durch den Serverbetreiber ein Zertifikat gekauft werden muss oder der Server und der Webclient auf der selben HTTPS-Domain laufen müssen.
+Wenn dieses Zertifikat nicht offiziell verifiziert und gekauft wurde, muss es in jeden Browser manuell importiert werden, was Chrome in aktueller Version nicht mehr unterstützt.
+Unsere Lösung besteht nun darin, dass entweder durch den Serverbetreiber ein Zertifikat gekauft werden muss oder der Server und der Webclient auf der selben HTTPS-Domain laufen sollten.
