@@ -4,26 +4,26 @@ Ziel des Projektes war die Entwicklung einer Server-Client-Anwendung, die als ei
 
 \subsection*{Vorgaben}
 
-Vorgaben waren die Verwendung der Programmiersprache Java für den Serverteil und die Erstellung eines Web-, sowie eines Android-Clienten und die Implementierung der folgenden Algorithmen: Shortest Path, Constrained Shortest Path und das Traveling Salesman Problem. Außerdem sollten beide Teile möglichst einfach um weitere Algorithmen erweiterbar sein. Die aufbereiteten Kartendaten wurden vom Kunden bereitgestellt.
+Vorgaben waren die Verwendung der Programmiersprache Java für den Serverteil und die Erstellung eines Web- sowie eines Android-Clienten und die Implementierung der folgenden Algorithmen: Shortest Path, Constrained Shortest Path und das Traveling Salesman Problem. Außerdem sollten beide Teile möglichst einfach um weitere Algorithmen erweiterbar sein. Die aufbereiteten Kartendaten wurden vom Kunden bereitgestellt.
 
-Neben einer Variante, die für den öffentlichen Betrieb ausgelegt sein soll, wurde außerdem eine Variante mit Zugriffskontrolle gefordert bei der man sich als Benutzer anmelden muss und seine alten Abfragen auch abrufen kann. Diese Daten können dann auch für die Abrechnung der potentiell teuren (im Sinne von Rechner-Zeit) Abfragen dienen.
+Neben einer Variante, die für den öffentlichen Betrieb ausgelegt sein soll, wurde außerdem eine Variante mit Zugriffskontrolle gefordert, bei der man sich als Benutzer anmelden muss und seine alten Abfragen auch abrufen kann. Diese Daten können dann auch für die Abrechnung der potentiell teuren (im Sinne von Rechner-Zeit) Abfragen dienen.
 
 \subsection*{Organisation}
 
-Das Projekt wurde in zwei Teams aufgeteilt: Das Server-Team bestehend aus Christoph Haag, Sascha Meusel, Niklas Schnelle, Peter Vollmer und das Client-Team, welches später nochmals in zwei Teile aufgeteilt wurde: Web-Client (Philipp Gildein, Huy Viet Le, Kevin Wenz) und Android-Client (Vivian Eggert, Steffen Hanikel). Auf Grund der geringen Anzahl an Teilnehmern kam es zu einer Doppelbesetzung von Rollen: Projektleiter: Steffen Hanikel, Stellvertretender Projektleiter: Peter Vollmer, Administrator: Christoph Haag.
+Das Projekt wurde auf zwei Teams aufgeteilt: Das Server-Team, bestehend aus Christoph Haag, Sascha Meusel, Niklas Schnelle, Peter Vollmer und das Client-Team, welches später nochmals in zwei Teile aufgeteilt wurde: Web-Client (Philipp Gildein, Huy Viet Le, Kevin Wenz) und Android-Client (Vivian Eggert, Steffen Hanikel). Aufgrund der geringen Anzahl an Teilnehmern kam es zu einer Doppelbesetzung von Rollen: Projektleiter: Steffen Hanikel, Stellvertretender Projektleiter: Peter Vollmer, Administrator: Christoph Haag.
 
 \subsection*{Vorgehen}
 
 Nach der ersten Phase, in der mehrere Projektpläne erstellt und anschließend einer ausgewählt wurde, wie es vom Rahmen des Studienprojekts so vorgegeben ist, sind wir auf agiles Vorgehen umgestiegen. So wurden wöchentlich projektinterne Meetings gehalten und monatlich Treffen mit dem Kunden durchgeführt, bei denen der Fortschritt im Projekt und eventuelle Änderungen der Anforderungen besprochenen wurden, damit das System auch nah an den Wünschen des Kunden blieb.
 
-Um eine gute Zusammenarbeit der Komponenten zu gewährleisten wurde auf das Prinzip der kontinuierliche Integration gesetzt, indem alle Komponenten täglich, automatisch neu gebaut und somit auch von allen im Projekt getestet werden konnten.
+Um eine gute Zusammenarbeit der Komponenten zu gewährleisten, wurde auf das Prinzip der kontinuierliche Integration gesetzt, indem alle Komponenten täglich automatisch neu gebaut und somit auch von allen im Projekt getestet werden konnten.
 Als Versionskontrollsystem wurde jeweils für die Teams und für die Dokumentation ein separates Git-Archiv verwendet. Für die Verwaltung von Aufgaben und Protokollen hat sich Redmine als Wiki und Ticket-System im Einsatz bewährt.
 
 \subsection*{Aufbau}
-Es wurde ein eigenes Protokoll entwickelt, welches auf \mbox{HTTP/S} mit dem Datenformat JSON auf Grund der breiten Unterstützung, einfachen Handhabung und guter Erweiterbarkeit, aufbaut.
+Es wurde ein eigenes Protokoll entwickelt, welches auf \mbox{HTTP/S} mit dem Datenformat JSON aufgrund der breiten Unterstützung, einfachen Handhabung und guter Erweiterbarkeit aufbaut.
 Dies ermöglicht zudem eine gute Skalierbarkeit, indem Anfragen per Load-Balancing verteilt werden.
 Um zu verhindern, dass bei dem Hinzufügen von neuen Algorithmen alle Clienten angepasst werden müssen, wurde vor allem Wert auf eine flexible Definition von Parametern für Algorithmen gelegt.
 
-So holen sich die Clients einmal beim Starten eine Liste der verfügbaren Algorithmen und deren Anforderungen vom Server. In einer typischen Anfrage werden dann Punkte, die der Benutzer auf der Karte ausgewählt hat zur Berechnung an den Server geschickt. Zusätzlich können die Clients auch angewiesen werden verschiedene Daten (Zahlen, Zeichenketten, etc.) für den Algorithmus oder für jeden einzelnen Punkt mitzuliefern. z.\,B. der maximale Höhenunterschied bei Constraint Shortest Path. Als Ergebnis liefert der Server dann diese Liste mit zusätzlichen Informationen (Reisezeit, Distanz) und eventuell in einer anderen Reihenfolge (Traveling Salesman Problem), sowie eine Liste von Wegstücken, die auf der Karte eingezeichnet werden sollen, zurück.
+So holen sich die Clients einmal beim Starten eine Liste der verfügbaren Algorithmen und deren Anforderungen vom Server. In einer typischen Anfrage werden dann Punkte, die der Benutzer auf der Karte ausgewählt hat zur Berechnung an den Server geschickt. Zusätzlich können die Clients auch angewiesen werden, verschiedene Daten (Zahlen, Zeichenketten, etc.) für den Algorithmus oder für jeden einzelnen Punkt mitzuliefern. z.\,B. der maximale Höhenunterschied bei Constraint Shortest Path. Als Ergebnis liefert der Server dann diese Liste mit zusätzlichen Informationen (Reisezeit, Distanz) und eventuell in einer anderen Reihenfolge (Traveling Salesman Problem) sowie eine Liste von Wegstücken, die auf der Karte eingezeichnet werden sollen, zurück.
 
 Im privaten Modus werden zusätzlich die Abfragen in einer Datenbank gespeichert, so dass sie u.a. für spätere Abrechnungszwecke verfügbar sind. Benutzer müssen sich deshalb einmalig beim Server anmelden, damit sie sich dann bei jeder Abfrage authentifizieren können. Sie können die Ergebnisse alter Abfragen auch jederzeit wieder abrufen. Administratoren können Abfragen aller Benutzer abfragen und auch die Daten aller Benutzer ändern oder diese löschen. 	
