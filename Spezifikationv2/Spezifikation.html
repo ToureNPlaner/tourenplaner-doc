@@ -747,7 +747,7 @@ asciidoc.install(2);
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>The protocol is using HTTP/S as Transport Layer. The encoding used is JSON and optionally <a href="http://wiki.fasterxml.com/SmileFormat">SMILE</a> (binary JSON) as used by the Jackson project. The server might sent answers in SMILE if the client adds <span class="monospaced">application/x-jackson-smile</span> to its HTTP Accept Header, plain JSON otherwise.</p></div>
-<div class="paragraph"><p>The server supports two modi: public and privat. In public mode only the info and alg* request are supported. In private mode user authentication is used. The following errors can arise on everytime: "<a href="#EDATABASE">EDATABASE</a> - 500 Internal Server Error - The server cannot contact its database or a database error occurred","<a href="#EINTERNAL">EINTERNAL</a> - 500 Internal Server Error - An internal server error occurred" and "<a href="#EUNKNOWNURL">EUNKNOWNURL</a> - 404 Not Found - An unknown URL was requested"</p></div>
+<div class="paragraph"><p>The server supports two modi: public and private. In public mode only the info and alg* request are supported. In private mode user authentication is used. The following errors can arise in private mode from every alg* request and private request: "<a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password", "<a href="#ENOTVERIFIED">ENOTVERIFIED</a> - 403 Forbidden - User account is not verified" and "<a href="#EDATABASE">EDATABASE</a> - 500 Internal Server Error - The server cannot contact its database or a database error occurred". The following error can arise in public and private mode: "<a href="#EUNKNOWNURL">EUNKNOWNURL</a> - 404 Not Found - An unknown URL was requested"</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -768,11 +768,10 @@ asciidoc.install(2);
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all"
 style="
-width:100%;
 ">
 <caption class="title">Table 1. List of available commands in public mode:</caption>
-<col style="width:50%;">
-<col style="width:50%;">
+<col>
+<col>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top" >URL</th>
@@ -794,10 +793,9 @@ width:100%;
 <h3 id="_span_class_monospaced_info_span_a_id_info_a"><span class="monospaced">/info</span> <a id="info"></a></h3>
 <table class="tableblock frame-all grid-all"
 style="
-width:100%;
 ">
-<col style="width:50%;">
-<col style="width:50%;">
+<col>
+<col>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
@@ -966,10 +964,9 @@ style="
 <h3 id="_span_class_monospaced_alg_span_a_id_alg_a"><span class="monospaced">/alg*</span> <a id="alg"></a></h3>
 <table class="tableblock frame-all grid-all"
 style="
-width:100%;
 ">
-<col style="width:50%;">
-<col style="width:50%;">
+<col>
+<col>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
@@ -994,10 +991,10 @@ width:100%;
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
 <td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EBADJSON">EBADJSON</a> - 400 Bad Request - Could not parse JSON object or JSON object is missing</p>
-<p class="tableblock"><a href="#ENOREQUESTID">ENOREQUESTID</a> - 404 Not Found - The parameter request id is missing, invalid or unknown to this server</p>
-<p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p>
+<p class="tableblock"><a href="#ECOMPUTE">ECOMPUTE</a> - 400 Bad Request - The computation could not be completed</p>
 <p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
 <p class="tableblock"><a href="#EBUSY">EBUSY</a> - 503 Service Unavailable - This server is currently too busy to fulfill the request</p>
+<p class="tableblock"><a href="#EINTERNAL">EINTERNAL</a> - 500 Internal Server Error - An internal server error occurred</p>
 <p class="tableblock"><a href="#EUNKNOWNALG">EUNKNOWNALG</a> - 404 Not Found - An unknown algorithm was requested</p></td>
 </tr>
 </tbody>
@@ -1063,10 +1060,9 @@ style="
 <h3 id="_span_class_monospaced_authuser_span_a_id_authuser_a"><span class="monospaced">/authuser</span> <a id="authuser"></a></h3>
 <table class="tableblock frame-all grid-all"
 style="
-width:100%;
 ">
-<col style="width:50%;">
-<col style="width:50%;">
+<col>
+<col>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
@@ -1094,7 +1090,8 @@ width:100%;
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p>
+<p class="tableblock"><a href="#ENOTVERIFIED">ENOTVERIFIED</a> - 403 Forbidden - User account is not verified</p></td>
 </tr>
 </tbody>
 </table>
@@ -1112,28 +1109,41 @@ style="
 <col>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Description</p></div></div></td>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Gets own requests, requests of other users (admin only) or all requests (admin only). Sorted downwards.</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Gets own requests, requests of other users (admin only) or all requests (admin only). Sorted downwards.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>HTTP-Method</p></div></div></td>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>GET</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">HTTP-Method</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">GET</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Server-Typ</p></div></div></td>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Private</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Server-Typ</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Private</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Authentication</p></div></div></td>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Always</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Authentication</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>SSL</p></div></div></td>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Always</p></div></div></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">SSL</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Always</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>URL-Parameters</p></div></div></td>
-<td class="tableblock halign-left valign-top" ><div><table class="tableblock frame-none grid-all"
+<td class="tableblock halign-left valign-top" ><p class="tableblock">URL-Parameters</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">See table <a href="#listrequestsparameters"><span class="monospaced">URL-Parameters</span></a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
+<p class="tableblock"><a href="#ENOUSERID">ENOUSERID</a> - 404 Not Found - The parameter user id is missing, invalid or unknown to this server</p>
+<p class="tableblock"><a href="#ELIMIT">ELIMIT</a> - 400 Bad Request - The parameter limit is missing or invalid</p>
+<p class="tableblock"><a href="#EOFFSET">EOFFSET</a> - 400 Bad Request - The parameter offset is missing or invalid</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_url_parameters_a_id_listrequestsparameters_a">URL-Parameters <a id="listrequestsparameters"></a></h4>
+<table class="tableblock frame-all grid-all"
 style="
 ">
 <col>
@@ -1163,18 +1173,8 @@ style="
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Offset to first data record</p></td>
 </tr>
 </tbody>
-</table></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p>Status-Code exception</p></div></div></td>
-<td class="tableblock halign-left valign-top" ><div><div class="paragraph"><p></p></div>
-<div class="paragraph"><p></p></div>
-<div class="paragraph"><p></p></div>
-<div class="paragraph"><p></p></div>
-<div class="paragraph"><p></p></div></div></td>
-</tr>
-</tbody>
 </table>
+</div>
 <div class="sect3">
 <h4 id="_response_4">Response</h4>
 <table class="tableblock frame-all grid-all"
@@ -1244,7 +1244,8 @@ style="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
+<p class="tableblock"><a href="#ENOUSERID">ENOUSERID</a> - 404 Not Found - The parameter user id is missing, invalid or unknown to this server</p></td>
 </tr>
 </tbody>
 </table>
@@ -1287,9 +1288,7 @@ style="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p>
-<p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
-<p class="tableblock"><a href="#ENOTVERIFIED">ENOTVERIFIED</a> - 403 Forbidden - User account is not verified</p>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
 <p class="tableblock"><a href="#ENOREQUESTID">ENOREQUESTID</a> - 404 Not Found - The parameter request id is missing, invalid or unknown to this server</p></td>
 </tr>
 </tbody>
@@ -1333,9 +1332,7 @@ style="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p>
-<p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
-<p class="tableblock"><a href="#ENOTVERIFIED">ENOTVERIFIED</a> - 403 Forbidden - User account is not verified</p>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
 <p class="tableblock"><a href="#ENOREQUESTID">ENOREQUESTID</a> - 404 Not Found - The parameter request id is missing, invalid or unknown to this server</p></td>
 </tr>
 </tbody>
@@ -1379,8 +1376,10 @@ style="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p>
-<p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#ENOUSERID">ENOUSERID</a> - 404 Not Found - The parameter user id is missing, invalid or unknown to this server</p>
+<p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
+<p class="tableblock"><a href="#EBADJSON">EBADJSON</a> - 400 Bad Request - Could not parse JSON object or JSON object is missing</p>
+<p class="tableblock"><a href="#EREGISTERED">EREGISTERED</a> - 403 Forbidden - This email is already registered</p></td>
 </tr>
 </tbody>
 </table>
@@ -1427,8 +1426,8 @@ style="
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p>
-<p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
+<p class="tableblock"><a href="#EBADJSON">EBADJSON</a> - 400 Bad Request - Could not parse JSON object or JSON object is missing</p>
 <p class="tableblock"><a href="#EREGISTERED">EREGISTERED</a> - 403 Forbidden - This email is already registered</p></td>
 </tr>
 </tbody>
@@ -1442,11 +1441,10 @@ style="
 <div class="paragraph"><p>A <a href="#user_object"><span class="monospaced">user</span></a> Object except the password.</p></div>
 <table class="tableblock frame-all grid-all"
 style="
-width:100%;
 ">
 <caption class="title">Table 3. List of available commands which need admin privileges in private mode:</caption>
-<col style="width:50%;">
-<col style="width:50%;">
+<col>
+<col>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top" >URL</th>
@@ -1470,10 +1468,9 @@ width:100%;
 <h3 id="_span_class_monospaced_listusers_span_a_id_listusers_a"><span class="monospaced">/listusers</span> <a id="listusers"></a></h3>
 <table class="tableblock frame-all grid-all"
 style="
-width:100%;
 ">
-<col style="width:50%;">
-<col style="width:50%;">
+<col>
+<col>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
@@ -1497,7 +1494,8 @@ width:100%;
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#ENOUSERID">ENOUSERID</a> - 404 Not Found - The parameter user id is missing, invalid or unknown to this server</p>
+<p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p>
 <p class="tableblock"><a href="#ELIMIT">ELIMIT</a> - 400 Bad Request - The parameter limit is missing or invalid</p>
 <p class="tableblock"><a href="#EOFFSET">EOFFSET</a> - 400 Bad Request - The parameter offset is missing or invalid</p></td>
 </tr>
@@ -1537,10 +1535,9 @@ style="
 <h3 id="_span_class_monospaced_deleteuser_span_a_id_deleteuser_a"><span class="monospaced">/deleteuser</span> <a id="deleteuser"></a></h3>
 <table class="tableblock frame-all grid-all"
 style="
-width:100%;
 ">
-<col style="width:50%;">
-<col style="width:50%;">
+<col>
+<col>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Description</p></td>
@@ -1564,7 +1561,7 @@ width:100%;
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" ><p class="tableblock">Status-Code exception</p></td>
-<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#EAUTH">EAUTH</a> - 401 Unauthorized - Wrong username or password</p>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="#ENOUSERID">ENOUSERID</a> - 404 Not Found - The parameter user id is missing, invalid or unknown to this server</p>
 <p class="tableblock"><a href="#ENOTADMIN">ENOTADMIN</a> - 403 Forbidden - You are not an admin</p></td>
 </tr>
 </tbody>
@@ -2251,7 +2248,7 @@ style="
 <div id="footnotes"><hr></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2012-04-16 16:23:58 CEST
+Last updated 2012-04-17 16:50:58 CEST
 </div>
 </div>
 </body>
