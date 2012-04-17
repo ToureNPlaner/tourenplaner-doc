@@ -77,11 +77,10 @@ ToureNPlaner Protocol Specification
 :eunknownurl_message: An unknown URL was requested
 :eunknownurl: <<{eunknownurl_id},{eunknownurl_id}>> - {eunknownurl_status} - {eunknownurl_message}
 
-
 == Introduction
 The protocol is using HTTP/S as Transport Layer. The encoding used is JSON and optionally http://wiki.fasterxml.com/SmileFormat[SMILE] (binary JSON) as used by the Jackson project. The server might sent answers in SMILE if the client adds +application/x-jackson-smile+ to its HTTP Accept Header, plain JSON otherwise.
 
-The server supports two modi: public and privat. In public mode only the info and alg* request are supported. In private mode user authentication is used.
+The server supports two modi: public and private. In public mode only the info and alg* request are supported. In private mode user authentication is used. The following errors can arise in private mode from every alg* request and private request: "{eauth}", "{enotverified}" and "{edatabase}". The following error can arise in public and private mode: "{eunknownurl}"
 
 == Data Formats
 === Coordinates
@@ -93,21 +92,21 @@ Date-Time-Strings are encoded after ISO 8061. E.g.: +2000-12-11T13:55:30.000+000
 == Public Requests
 
 .List of available commands in public mode:
-[options="header",format="dsv"]
+[options="autowidth,header",cols="2*"]
 |=======================
-URL: Description
-<<info,+/info+>>: Get server information
-<<alg,+/alg*+>>: Make a request to the server, where +*+ is the shortname of an algorithm
+|URL| Description
+|<<info,+/info+>>| Get server information
+|<<alg,+/alg*+>>| Make a request to the server, where +*+ is the shortname of an algorithm
 |=======================
 
 === +/info+ [[info]]
-[format="dsv"]
+[options="autowidth",cols="2*"]
 |=======================
-Description: Get information about available algorithms and other properties of the server.
-HTTP-Method: GET
-Authentication: Never
-SSL: Optional
-URL-Parameters: None
+|Description| Get information about available algorithms and other properties of the server.
+|HTTP-Method| GET
+|Authentication| Never
+|SSL| Optional
+|URL-Parameters| None
 |=======================
 
 ==== Response
@@ -221,13 +220,24 @@ URL-Parameters: None
 -----
 
 === +/alg*+ [[alg]]
-
+[options="autowidth",cols="2*"]
 |=======================
 |Description| Request the solution of the given problem instance, where +*+ is the <<urlsuffix, +urlsuffix+>> of an algorithm.
 |HTTP-Method| POST
 |Authentication| Required, if in private mode
 |SSL| Required, if in private mode
 |URL-Parameters| None
+|Status-Code exception|{ebadjson}
+
+{ecompute}
+
+{enotadmin}
+
+{ebusy}
+
+{einternal}
+
+{eunknownalg}
 |=======================
 
 ==== Request
@@ -252,22 +262,24 @@ URL: Description
 |=======================
 
 === +/authuser+ [[authuser]]
-[format="dsv"]
+[options="autowidth",cols="2*"]
 |=======================
-Description: Checks email and password of an user.
-HTTP-Method: GET
-Server-Typ: Private
-Authentication: Always
-SSL: Always
-URL-Parameters: None
-Status-Code exception: 401 Unauthorized - Authentification failed
+|Description| Checks email and password of an user.
+|HTTP-Method| GET
+|Server-Typ| Private
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| None
+|Status-Code exception| {eauth}
+
+{enotverified}
 |=======================
 
 ==== Response
 A <<user_object,+user+>> Object
 
 === +/listrequests+ [[listrequests]]
-[options="autowidth",cols="2*a"]
+[options="autowidth",cols="2*"]
 |=======================
 |Description|Gets own requests, requests of other users (admin only) or all requests (admin only). Sorted downwards.
 |HTTP-Method|GET
@@ -275,20 +287,25 @@ A <<user_object,+user+>> Object
 |Authentication|Always
 |SSL|Always
 |URL-Parameters|
-:frame: none
-[options="header,autowidth", cols="3*"]
-!==============================================
-!Name !Type ! Description
-!id!+Integer+ or +String+, +Optional+!id of requested user or +all+ for all requests
-!limit!+Integer+!Maxiumum number of requests
-!offset!+Integer+!Offset to first data record
-!==============================================
-|Status-Code exception|401 Unauthorized - Authentification failed. No rights.
+See table <<listrequestsparameters, +URL-Parameters+>>
+|Status-Code exception|{enotadmin}
 
-403 Forbidden - No admin rights
+{enouserid}
 
-404 Not Found - User id not found
+{elimit}
+
+{eoffset}
 |=======================
+
+==== URL-Parameters [[listrequestsparameters]]
+[options="header,autowidth", cols="3*"]
+|==============================================
+|Name |Type | Description
+|id|+Integer+ or +String+, +Optional+|id of requested user or +all+ for all requests
+|limit|+Integer+|Maxiumum number of requests
+|offset|+Integer+|Offset to first data record
+|==============================================
+
 
 ==== Response
 [options="autowidth,header",cols="2*a"]
@@ -297,14 +314,14 @@ A <<user_object,+user+>> Object
 |number|Total number of requests of an +id+
 |requests|Array of <<requestlog_object,+Requestlog+>> Objects
 |=======================
-&&&&
+-----
 {
    "number": 100,
    "requests":[
       <<requestlog_object, Requestlogobjects>>
    ]
 }
-&&&&
+-----
 
 === +/getuser+ [[getuser]]
 [options="autowidth",cols="2*"]
@@ -315,7 +332,9 @@ A <<user_object,+user+>> Object
 |Authentication| Always
 |SSL| Always
 |URL-Parameters| +id+
-|Status-Code exception| 401 Unauthorized - Authentification failed. No rights.
+|Status-Code exception| {enotadmin}
+
+{enouserid}
 |=======================
 
 ==== Response
@@ -330,13 +349,9 @@ A <<user_object,+user+>> Object
 |Authentication| Always
 |SSL| Always
 |URL-Parameters| +id+
-|Status-Code exception| 401 Unauthorized - Authentification failed.
+|Status-Code exception| {enotadmin}
 
-403 Forbidden - No Admin rights
-
-403 Forbidden - User not verified
-
-404 Not Found - Request not found
+{enorequestid}
 |=======================
 
 ==== Response
@@ -351,34 +366,83 @@ A <<request_object,+request+>> Object
 |Authentication| Always
 |SSL| Always
 |URL-Parameters| +id+
-|Status-Code exception| 401 Unauthorized - Authentification failed.
+|Status-Code exception| {enotadmin}
 
-403 Forbidden - No Admin rights
-
-403 Forbidden - User not verified
-
-404 Not Found - Request not found
+{enorequestid}
 |=======================
 
 ==== Response
 A <<response_object,+response+>> Object
 
+=== +/updateuser+ [[updateuser]]
+[options="autowidth",cols="2*"]
+|=======================
+|Description| Change the user's details. Users can only change there password. If +id+ is present, updates data of this user (admin only).
+|HTTP-Method| POST
+|Server-Typ| Private
+|Authentication| Always
+|SSL| Always
+|URL-Parameters| +id+
+|Status-Code exception| {enouserid}
+
+{enotadmin}
+
+{ebadjson}
+
+{eregistered}
+|=======================
+
+==== Request ====
+A <<user_object ,+user+>> Object. Send only fields you want to change. Normal privileged users can only change password. Userid, registrationdate and verifieddate are not changeable.
+ 
+==== Response
+A <<user_object,+user+>> Object except the password.
+
+=== +/registeruser+ [[registeruser]]
+[options="autowidth",cols="2*"]
+|=======================
+|Description| Used to register new useraccaounts. Needs e-mail, password, prename, surname and address (optional the admin flag). If you sent an user for authentification, it should be an admin else nothing will be done. If you only want to register you should not sent any authentification. This registered user needs then a registration and has the flag "need_verification"  only.
+|HTTP-Method| POST
+|Server-Typ| Private
+|Authentication| Only for direct activation (Admin)
+|SSL| Always
+|URL-Parameters| None
+|Status-Code exception|{enotadmin}
+
+{ebadjson}
+
+{eregistered}
+|=======================
+
+==== Request ====
+A <<user_object ,+user+>> Object. Userid, registrationdate and verifieddate will be set from the server.
+ 
+==== Response
+A <<user_object,+user+>> Object except the password.
 
 .List of available commands which need admin privileges in private mode:
-[options="header",format="dsv"]
+[options="autowidth,header",cols="2*"]
 |=======================
-URL: Description
-+/listusers+: List all users
-+/deleteuser+: Delete a user
+|URL| Description
+|+/listusers+| List all users
+|+/deleteuser+| Delete a user
 |=======================
 
 === +/listusers+ [[listusers]]
+[options="autowidth",cols="2*"]
 |=======================
 |Description| Get a list of all users
 |HTTP-Method| GET
 |Authentication| Always
 |SSL| Always
 |URL-Parameters| +limit+ the number of users to return, +offset+ the offset in the list of users
+|Status-Code exception| {enouserid}
+
+{enotadmin}
+
+{elimit}
+
+{eoffset}
 |=======================
 
 ==== Response
@@ -390,12 +454,16 @@ URL: Description
 |==================================
 
 === +/deleteuser+ [[deleteuser]]
+[options="autowidth",cols="2*"]
 |=======================
 |Description| Delete a user with the given +id+
 |HTTP-Method| GET
 |Authentication| Always
 |SSL| Always
 |URL-Parameters| +id+
+|Status-Code exception| {enouserid}
+
+{enotadmin}
 |=======================
 
 == Data Types (Objects)

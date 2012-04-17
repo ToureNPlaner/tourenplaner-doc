@@ -127,7 +127,7 @@ Writing algorithm classes for ToureNPlaner consists of three easy steps:
 
   \subsection{Finishing steps}
   The algorithm factory needs to be \textit{registered} in the AlgorithmRegistry. This is also the place to pass the graph to the algorithm.
-  In the de.tourenplaner.server.TourenPlaner class do:
+  In the de.tourenplaner.server.TourenPlaner class find the registerAlgorithms() at the top and put in:
   \begin{lstlisting}[language=java,caption=register your algorithm factory]
           reg.registerAlgorithm(new ExampleAlgorithmFactory(graph));
   \end{lstlisting}

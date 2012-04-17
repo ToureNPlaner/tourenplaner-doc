@@ -6,30 +6,40 @@ Desweiteren galt es eine gut und intuitiv bedienbare Oberfläche zu gestalten.
 Der Webclient sollte außerdem zur Administration eingesetzt werden können.
 Darunter fällt die Verwaltung von Nutzern, deren Daten sowie deren getätigten Anfragen.
 
-\subsection*{Organisation}
+\subsection*{Organisatorisches}
 
-Da der Webclient neben der Tourenberechnung auch die Funktion der Nutzerverwaltung und Administration bereitstellen sollte, aus drei Mitgliedern. 
-Aufgrund der meisten Erfahrung wurde Philipp Gildein zum Projektleiter bestimmt.
+Da der Webclient neben der Tourenberechnung auch die Funktion der Nutzerverwaltung und Administration bereitstellen sollte, besteht dieses Team  aus drei Mitgliedern. 
+Aufgrund der meisten Erfahrung wurde Philipp Gildein zum Teamleiter bestimmt.
 
 Es wurde versucht die Aufgaben aufzuteilen, was ein unabhängiges Arbeiten möglich machen sollte.
 Die grobe Einteilung sah wie folgt aus: Philipp Gildein widmete sich hauptsächlich der groben und grundliegenden Struktur des Clienten, ebenso hat er das Layout und die meisten Designaspekte bearbeitet.
 Huy Viet Le sorgte dafür, dass die Karte und Route angezeigt werden konnten.
-Kevin Wenz kümmerte sich um die Schnittstelle zwischen Clienten und Server, sowie die Tests.
+Kevin Wenz kümmerte sich um die Schnittstelle zwischen Client und Server, sowie die Tests.
 Aufgrund der vielen übergreifenden Funktionen konnte diese Einteilung nicht immer eingehalten werden.
 
 \subsection*{Umsetzung}
 
 Aufgrund des Einsatzes im Webbrowser wurden Javascript (für den logischen Teil), HTML (für das Layout) und CSS (für die Gestaltung) als Implementierungssprachen verwendet.
-Der Client wurde nach dem Model-View-Controller Muster strukturiert. 
+Der Client wurde nach dem Model-View-Controller Muster strukturiert.
 Durch einen modularen Aufbau ist das einfache Austauschen einzelner (Teil-)Komponenten möglich.
+
+Zur Unterstützung der Mehrsprachigkeit und besseren Übersichtlichkeit im Javascript-Code wurde die gesamte HTML-Struktur in Templates ausgelagert.
+Benötigte Komponenten werden daher bei jeden Laden neu zusammengebaut und an die Landessprache angepasst.
 
 \subsection*{Externe Bibliotheken}
 
-Die Programmierung wurde hauptsächlich durch die Bibliotheken 
-Backbone.js\footnote{\url{http://documentcloud.github.com/backbone/}} (MVC-Implementierung für Javascript), 
-JQuery\footnote{\url{http://jquery.com/}} (http/s Anfragen), 
-underscore.js\footnote{\url{http://documentcloud.github.com/underscore/}} (Erweiterung der Javascript Basisfunktionen) und 
-Twitter's Bootstrap\footnote{\url{http://twitter.github.com/bootstrap/}} (ermöglicht ein vordefiniertes, einheitliches Erscheinungsbild) unterstützt.
+Javascript unterstützt nicht alle modernen Programmierkonzepte von Haus aus.
+Deshalb setzten wir Backbone.js\footnote{\url{http://documentcloud.github.com/backbone/}} und dessen einzigste Anforderung underscore.js\footnote{\url{http://documentcloud.github.com/underscore/}} ein, um über eine simple MVC-Implementierung zu verfügen.
+
+Zur Manipulierung des HTML-Layouts und CSS-Designs sowie zum Aufruf der Serverfunktionen über HTTP/S wurde jQuery\footnote{\url{http://jquery.com/}} verwendet.
+Dessen Funktionalität wurde durch den Einsatz kleinerer Plugins noch erweitert.
+
+Um ein einheitliches Erscheinungsbild der Anwendung gewährleisten zu können, setzten wir auf Bootstrap\footnote{\url{http://twitter.github.com/bootstrap/}}, eine CSS-Biliothek, die von Twitter entwickelt wurde.
+
+Zu Beginn der Entwicklung wurde OpenLayers verwendet um die Karte darzustellen. 
+Da sich dies im Verlauf des Projektes als unzureichend bzw. fehlerbehaftet erwies, wurde sie durch Leaflet\footnote{\url{http://leaflet.cloudmade.com/}} ersetzt.
+
+Tests wurden mit QUnit (Unittest) und SeleniumHQ\footnote{\url{http://seleniumhq.org/}} (Systemtest) durchgeführt.
 
 \subsection*{Herausforderungen}
 
@@ -38,6 +48,6 @@ Das Problem hierbei ist, dass verschiedene Browser Programmieranweisungen versch
 Grundsätzlich wurde diese Schwierigkeit schon eingeschränkt, indem der Client nur in aktueller Version des Firefox und Chrome lauffähig sein muss. Außerdem hat die Verwendung externer Bibliotheken die Problematik ebenfalls entschärft.
 
 Eine weitere Herausforderung war die Verbindung zum Server per HTTPS.
-Um eine sichere Kommunikation zu gewährleisten muss sich der Server durch ein Zertifikat ausweisen.
-Wenn dieses Zertifikat nicht offiziell verifiziert und gekauft wurde muss es in jeden Browser manuell importiert werden, was Chrome in aktueller Version nicht mehr unterstützt.
-Unsere Lösung besteht nun darin, dass entwender durch den Serverbetreiber ein Zertifikat gekauft werden muss oder der Server und der Webclient auf der selben HTTPS-Domain laufen müssen.
+Um eine sichere Kommunikation zu gewährleisten, muss sich der Server durch ein Zertifikat ausweisen.
+Wenn dieses Zertifikat nicht offiziell verifiziert wurde, muss es in jeden Browser manuell importiert werden, was Chrome in aktueller Version nur über Umwege unterstützt.
+Unsere Lösung besteht nun darin, dass entweder durch den Serverbetreiber ein Zertifikat gekauft werden muss oder der Server und der Webclient auf derselben Domain laufen müssen.
