@@ -1,12 +1,13 @@
 \documentclass[titlepage,parskip=true]{scrartcl}
 \usepackage[utf8]{inputenc}
 \usepackage{array}
-\usepackage{babel}
 \usepackage{wrapfig}
 \usepackage{longtable}
 \usepackage[unicode=true,pdfusetitle,bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{framed}
+\definecolor{shadecolor}{gray}{.85}
 \usepackage{tabularx}
 \usepackage{hyperref}
 
@@ -43,6 +44,14 @@
 %put your code here
 %\end{lstlisting}
 
+% Repository Links should always be formatted the same, built a command
+\newcommand{\repobox}[2]{
+	\begin{shaded}
+		\textbf{TheoGit}\\\hspace{5mm}\url{#1}\\
+		\textbf{GitHub}\\\hspace{5mm}\url{#2}
+	\end{shaded}
+}
+
 \begin{document}
 
 \maketitle
@@ -52,14 +61,65 @@
 \pagebreak
 
 \section{Introduction}
+The ToureNPlaner projects from the Algorithms Department at the
+University of Stuttgart provide a complete infrastructure for researching, developing,
+testing and employing routing and mapping algorithms based on OpenStreetMap data.
 \section{System Components}
-\section{Installation and Setup}
-\subsection{Server}
-\subsubsection{Getting Graphs}
-\subsubsection{Installation}
+In the following we will describe the original ToureNPlaner subprojects as well
+as related projects, which together form a comprehensive testbed for
+experimenting and working with OpenStreetMap data.  Each section will describe
+the general purpose of its particular subproject and provide links to its source
+repository. For more detailed information
+the individual projects should provide instructions and documentation
+preferably within their README. Additionally \autoref{sec:setup} will provide
+a guided tour for setting up a simple ToureNPlaner system.
 
-\subsection{Android Client}
-\subsection{Web Client}
-\subsection{Prototype Rendering Client}
-\subsection{OpenGL Rendering Client}
+\subsection{ToureNPlaner Server}
+This is the backend server component of the ToureNPlaner system, it provides
+in-memory data structures for handling large graphs such as the European road
+network and offers an easily extended infrastructure for developing algorithms
+using these graphs.
+\repobox{https://theogit.fmi.uni-stuttgart.de/schnelns/tourenplaner-server}{https://github.com/ToureNPlaner/tourenplaner-server}
+\subsection{ToureNPlaner Web Client}
+This subproject provides a web interface for street network routing. It is
+statically hosted and talks to the ToureNPlaner Server directly using
+JavaScript initiated requests.
+\repobox{https://theogit.fmi.uni-stuttgart.de/schnelns/tourenplaner-web}{https://github.com/ToureNPlaner/tourenplaner-web}
+\subsection{ToureNPlaner Android Client}
+The ToureNPlaner Android client provides mobile access to the ToureNPlaner
+servers algorithms and also implements the DORC algorithm for running parts of
+the routing query on the mobile client itself.
+\repobox{https://theogit.fmi.uni-stuttgart.de/schnelns/tourenplaner-android}{https://github.com/ToureNPlaner/tourenplaner-android}
+\subsection{Java CHConstructor}
+This subproject provides a simple CH preprocessing tool written in Java. Its
+performance while in the same ballpark may be slower than the C++ based version
+which is also due to the fact that it skips some special preprocessing steps in
+favor of a simpler approach with fewer special cases. On the other hand this
+makes the resulting CHs better suited for rendering with the URAR algorithms
+although as of now no special provisions for rendering quality have been
+implemented.
+\repobox{https://theogit.fmi.uni-stuttgart.de/schnelns/java-chconstructor}{https://github.com/ToureNPlaner/CHConstructor}
+\subsection{C++ CHConstructor}
+Playing the same role as the Java based CHConstructor this version is written
+in modern C++1x and aims for maximum performance while using very flexible
+template based graph data structures and algorithms. In turn its codebase may
+be harder to understand especially if you aren't well versed in modern C++
+techniques.
+\repobox{https://theogit.fmi.uni-stuttgart.de/nusserae/chconstructor}{https://github.com/chaot4/ch\_constructor}
+\subsection{Java Rendering Client}
+The Java based rendering client implements the URAR algorithm for CH based map
+rendering using a Mercator projection and also supports routing. It is designed
+mainly as a testbed with easy to change algorithm details and simple drawing
+routines. Due to the use of Java AWT based drawing without hardware
+acceleration drawing performance is limited and can be slow at times.
+\repobox{https://theogit.fmi.uni-stuttgart.de/schnelns/chrenderclient}{https://github.com/ToureNPlaner/chrenderclient}
+\subsection{C++ Rendering Client}
+The C++ and OpenGL based rendering client has much better rendering performance
+employing hardware acceleration and drawing on a 3D globe. However at the
+moment there is no support for routing and due to the unavailability of a SMILE
+(binary JSON) library for C++ it uses simple gzipped JSON for its requests,
+resulting in slightly larger bundles and more data usage.
+\repobox{https://theogit.fmi.uni-stuttgart.de/schnelns/chrenderopengl}{https://github.com/ToureNPlaner/chrenderopengl}
+\section{Guided Example Setup}
+\label{sec:setup}
 \end{document}
