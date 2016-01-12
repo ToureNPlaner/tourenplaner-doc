@@ -120,6 +120,17 @@ moment there is no support for routing and due to the unavailability of a SMILE
 (binary JSON) library for C++ it uses simple gzipped JSON for its requests,
 resulting in slightly larger bundles and more data usage.
 \repobox{https://theogit.fmi.uni-stuttgart.de/schnelns/chrenderopengl}{https://github.com/ToureNPlaner/chrenderopengl}
+\subsection{OsmGraphCreator}
+This subproject provides a tool for converting OpenStreetMap data in the
+protocol buffer based format to the text formats understood by most other
+subprojects.
+\repobox{https://theogit.fmi.uni-stuttgart.de/bahrdtdl/osmgraphcreator}{https://github.com/dbahrdt/OsmGraphCreator}
+\subsection{SCCExtractor}
+This subproject provides a tool for extracting the largest strongly connected
+component from a graph. This is useful for creating useful road network graphs
+that still present a single strongly connected component. Many tools also
+accept graphs composed of several components though.
+\repobox{https://theogit.fmi.uni-stuttgart.de/nusserae/scc\_extractor}{https://github.com/chaot4/scc\_extractor}
 \section{Guided Example Setup}
 \label{sec:setup}
 \end{document}
