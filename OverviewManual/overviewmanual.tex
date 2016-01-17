@@ -9,6 +9,7 @@
 \usepackage{framed}
 \definecolor{shadecolor}{gray}{.85}
 \usepackage{tabularx}
+\usepackage[margin=2.0cm]{geometry}
 \usepackage{hyperref}
 
 \lstset{ %
@@ -16,7 +17,7 @@
 	basicstyle=\footnotesize,       % the size of the fonts that are used for the code
 	numbers=left,                   % where to put the line-numbers
 	numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
-	stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+	stepnumber=1,                   % the step between two line-numbers. If it's 1, each line 
 	                                % will be numbered
 	numbersep=5pt,                  % how far the line-numbers are from the code
 	backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
@@ -27,7 +28,7 @@
 	tabsize=4,                      % sets default tabsize to 2 spaces
 	captionpos=b,                   % sets the caption-position to bottom
 	breaklines=true,                % sets automatic line breaking
-	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	breakatwhitespace=true,        % sets if automatic breaks should only happen at whitespace
 	title=\lstname,                 % show the filename of files included with \lstinputlisting;
 	                                % also try caption instead of title
 	escapeinside={\%*}{*)},         % if you want to add a comment within your code
@@ -132,5 +133,107 @@ that still present a single strongly connected component. Many tools also
 accept graphs composed of several components though.
 \repobox{https://theogit.fmi.uni-stuttgart.de/nusserae/scc\_extractor}{https://github.com/chaot4/scc\_extractor}
 \section{Guided Example Setup}
+In this section we will setup a minimal ToureNPlaner system. It is assumed that
+you are running a Unix-like operating system though similar steps should work
+on Windows too, note however that most of these projects have only be tested on
+Linux, though *BSD or MacOS X should work too.
 \label{sec:setup}
+\subsection{Initial Setup}
+For this minimal local setup we will install everything into a single working
+directory, for production setups we recommend installing to meaningful
+locations and running the server as a service e.g. by using systemd. As an
+example the ToureNPlaner Server includes a PKGBUILD for building an Arch Linux
+package.
+\subsection{Getting Graphs}
+In this section we will describe how to get from openly available and updated
+OpenStreetMap data to graphs in a format useable by the ToureNPlaner system.
+Alternatively if you are working at the FMI graphs in the "fmitext" format may
+already be available.
+\subsubsection{Downloading Current OpenStreetMap Graphs}
+In this example we will be using the road network of Baden-Württemberg in the
+Protocol Buffer format (.pbf), available here:
+\url{http://download.geofabrik.de/europe/germany.html}
+\begin{lstlisting}[language=bash]
+mkdir graphs
+wget http://download.geofabrik.de/europe/germany/baden-wuerttemberg-latest.osm.pbf -P graphs
+\end{lstlisting}
+This should give us the latest OpenStreetMap data for Baden-Württemberg in
+"graphs/baden-wuerttemberg-latest.osm.pbf".
+\subsubsection{Converting to the FMI Graph Format}
+To convert the graph to the format used by our tools we will first need to get
+the OsmGraphCreator. This needs as dependencies development files for cmake,
+zlib and Google's protobuf which hopefully should be available as packages in
+most Linux distributions.
+\begin{lstlisting}[language=bash]
+git clone --recursive git@github.com:dbahrdt/OsmGraphCreator.git
+cd OsmGraphCreator
+mkdir build
+cd build
+cmake ../
+make -j
+cd creator
+\end{lstlisting}
+If everything went well you should find the OsmGraphCreator exectuable in
+"OsmGraphCreator/build/creator" if errors occured you might be missing
+dependencies especially the Google protobuf development files.
+
+Now lets convert the previously downloaded Baden-Württemberg graph to fmitext format.
+We also add the -s option here to sort by source-/target node ids.
+\begin{lstlisting}[language=bash]
+./creator -s -g fmimaxspeedtext -t distance -c ../../data/configs/car.cfg -o ../../../graphs/baden-wuerttemberg.txt ../../../graphs/baden-wuerttemberg-latest.osm.pbf
+\end{lstlisting}
+If sucessful this will create a graph file in the fmitext format in "graphs/baden-wuerttemberg.txt"
+\subsubsection{Extracting the Largest Strongly Connected Component (Optional)}
+Now we will extract the largest strongly connected component of the graph so
+that all points are connected. Technically the ToureNPlaner Server works with
+more than one strongly connected component too.
+\begin{lstlisting}[language=bash]
+git clone git@github.com:chaot4/scc_extractor.git
+cd scc_extractor
+./create-build.sh
+cd build
+\end{lstlisting}
+This should compile and test the scc\_extractor, if everything went well we can use it like so
+\begin{lstlisting}[language=bash]
+./scc_extractor -i ../../graphs/baden-wuerttemberg.txt -f FMI_DIST -o ../../graphs/baden-wuerttemberg-scc.txt
+\end{lstlisting}
+\subsection{Computing a Contraction Hierarchy}
+Until now we have dealt with a direct graph representation of the road network.
+We could now simply run Dijkstra's algorithm on these graphs and compute
+shortest paths with it, however every computation would take on the order of
+seconds. So as to make things scale to a point where a single server can handle
+many shortest path computations we need a speed-up scheme.  For this we will
+use Contraction Hierarchies to augment our graphs with shortcuts which allow us
+to speed-up shortest path computations by several orders of magnitude. This
+preprocessing is what tbe CHConstructor subprojects implement. You can both use
+the Java based implementation described in this section or the C++ based one
+described in the next section.
+\begin{lstlisting}[language=bash]
+git clone https://github.com/ToureNPlaner/CHConstructor.git
+cd CHConstructor
+./build.sh
+\end{lstlisting}
+Now we should have built the CH constructor and should be able to use it to
+preprocess the graph created during the previous sections.
+\begin{lstlisting}[language=bash]
+java -jar target/chconstructor-0.1-SNAPSHOT-jar-with-dependencies.jar -if standard -i ../graphs/baden-wuerttemberg-scc.txt -of standard -o ../graphs/baden-wuerttemberg-ch.txt
+\end{lstlisting}
+\subsection{Running the ToureNPlaner Server}
+Now that we have preprocessed our graph we can build and run the ToureNPlaner Server
+\begin{lstlisting}[language=bash]
+git clone https://github.com/ToureNPlaner/tourenplaner-server.git
+cd tourenplaner-server 
+./build.sh jar
+\end{lstlisting}
+This will create a jar file with dependencies included in the target directory. To run it
+wir the previously created graph we need to insert its path in the configuration file by changing
+the graphfile line to
+\begin{verbatim}
+"graphfilepath" : "../graphs/baden-wuerttemberg-ch.txt",
+\end{verbatim}
+Optionally we may also choose a higher count of threads used for computations in the "threads" field.
+Finally we can run the ToureNPlaner Server
+\begin{lstlisting}[language=bash]
+java -jar target/tourenplaner-server-1.0-SNAPSHOT-jar-with-dependencies.jar -c tourenplaner.conf
+\end{lstlisting}
 \end{document}
