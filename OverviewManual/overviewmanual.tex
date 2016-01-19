@@ -183,6 +183,48 @@ We also add the -s option here to sort by source-/target node ids.
 ./creator -s -g fmimaxspeedtext -t distance -c ../../data/configs/car.cfg -o ../../../graphs/baden-wuerttemberg.txt ../../../graphs/baden-wuerttemberg-latest.osm.pbf
 \end{lstlisting}
 If sucessful this will create a graph file in the fmitext format in "graphs/baden-wuerttemberg.txt"
+\subsubsection{Reading Graph Metadata}
+One interesting feature of our graph format we can now try out is the use of a metadata header.
+This header is easily readable as text at the start of both binary and textual graphs in the
+FMI standard format using 
+\begin{lstlisting}[language=bash]
+head -n 50 <graphfile>
+\end{lstlisting}
+and has a format similar to the following example, which comes from a more
+complex CH graph.  This graph has been preprocessed by several tools each
+adding its own metadata headers while preserving all other headers by
+prepending "Origin".
+\begin{verbatim}
+# Type : chgraph
+# Id : 6e4e9a5ea33d8d67c4652bc14d6c8850
+# Revision : 1
+# Timestamp : 1453237855
+# Origin : ch_constructor
+# OriginId : a173bf3f27b0a874b1543f136ceadcba
+# OriginOrigin : scc_extractor
+# OriginOriginId : 0
+# OriginOriginRevision : 1
+# OriginOriginTimestamp : 1453058797
+# OriginOriginType : maxspeed
+# OriginRevision : 1
+# OriginTimestamp : 1453058920
+# OriginType : graph
+
+3434345
+12751981
+0 163354 48.6674214 9.2445576 0 2
+1 163355 48.6694744 9.2432712 0 0
+2 163358 48.6661923 9.2515362 0 0
+\end{verbatim}
+The timestamps are in seconds since the Unix epoch and can be converted using
+the following date command.
+\begin{lstlisting}[language=bash]
+date -d @<numeric_value>
+\end{lstlisting}
+for example the following will output "Tue Jan 19 22:10:55 CET 2016"
+\begin{lstlisting}[language=bash]
+date -d @1453237855
+\end{lstlisting}
 \subsubsection{Extracting the Largest Strongly Connected Component (Optional)}
 Now we will extract the largest strongly connected component of the graph so
 that all points are connected. Technically the ToureNPlaner Server works with
@@ -193,7 +235,8 @@ cd scc_extractor
 ./create-build.sh
 cd build
 \end{lstlisting}
-This should compile and test the scc\_extractor, if everything went well we can use it like so
+This should compile and test the scc\_extractor, if everything went well we can
+use it like so
 \begin{lstlisting}[language=bash]
 ./scc_extractor -i ../../graphs/baden-wuerttemberg.txt -f FMI_DIST -o ../../graphs/baden-wuerttemberg-scc.txt
 \end{lstlisting}
@@ -205,9 +248,11 @@ seconds. So as to make things scale to a point where a single server can handle
 many shortest path computations we need a speed-up scheme.  For this we will
 use Contraction Hierarchies to augment our graphs with shortcuts which allow us
 to speed-up shortest path computations by several orders of magnitude. This
-preprocessing is what tbe CHConstructor subprojects implement. You can both use
-the Java based implementation described in this section or the C++ based one
-described in the next section.
+preprocessing is what tbe CHConstructor subprojects implement.
+\subsubsection{Using the Java based CH Constructor}
+As the first of the two CH Constructors compatible with the ToureNPlaner framework
+we will look at the Java based variant. Building it is easy though maven needs and the
+Java JDK need to be installed.
 \begin{lstlisting}[language=bash]
 git clone https://github.com/ToureNPlaner/CHConstructor.git
 cd CHConstructor
@@ -217,6 +262,19 @@ Now we should have built the CH constructor and should be able to use it to
 preprocess the graph created during the previous sections.
 \begin{lstlisting}[language=bash]
 java -jar target/chconstructor-0.1-SNAPSHOT-jar-with-dependencies.jar -if standard -i ../graphs/baden-wuerttemberg-scc.txt -of standard -o ../graphs/baden-wuerttemberg-ch.txt
+\end{lstlisting}
+\subsubsection{Using the C++ based CH Constructor}
+Alternatively to the previous section you may also use the other CH Constructor written in C++.
+\begin{lstlisting}[language=bash]
+git clone https://github.com/chaot4/ch_constructor.git
+cd ch_constructor
+./create-build.sh
+cd build
+\end{lstlisting}
+This should give us an executable called "ch\_constructor" we can use to compute
+a Contraction Hierarchy.
+\begin{lstlisting}[language=bash]
+./ch_constructor -i ../../graphs/baden-wuerttemberg-scc.txt -f FMI_EUCL -o ../../graphs/baden-wuerttemberg-ch2.txt -g FMI_EUCL_CH
 \end{lstlisting}
 \subsection{Running the ToureNPlaner Server}
 Now that we have preprocessed our graph we can build and run the ToureNPlaner Server
@@ -231,8 +289,8 @@ the graphfile line to
 \begin{verbatim}
 "graphfilepath" : "../graphs/baden-wuerttemberg-ch.txt",
 \end{verbatim}
-Optionally we may also choose a higher count of threads used for computations in the "threads" field.
-Finally we can run the ToureNPlaner Server
+Optionally we may also choose a higher count of threads used for computations
+in the "threads" field.  Finally we can run the ToureNPlaner Server
 \begin{lstlisting}[language=bash]
 java -jar target/tourenplaner-server-1.0-SNAPSHOT-jar-with-dependencies.jar -c tourenplaner.conf
 \end{lstlisting}
